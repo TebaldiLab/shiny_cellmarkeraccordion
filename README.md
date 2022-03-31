@@ -4,6 +4,9 @@ A Web tool for single-cell and spatial RNA-seq cell types annotation
 
 
 
+
+**In order to run the App you have to download the entire folder "TheCellMarkerAccordion" e run the "TheMarkerAccordion_app.R" script.** 
+
 The Cell Marker Accordion web interface allows to easily:
 
 ![immagine](https://user-images.githubusercontent.com/68125242/161060535-0d78fc69-c29d-4003-b1a8-3c94606e8a09.png) Search and download lists of marker genes by cell types.
