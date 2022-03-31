@@ -37,6 +37,8 @@ The Cell Marker Accordion web interface allows to easily:
 
 
 
-Importantly, marker genes can be ranked and selected by their evidence consistency scores, measuring the agreement of different annotation sources
+![immagine](https://user-images.githubusercontent.com/68125242/161091031-909269ea-f6d9-4a61-ba50-f4b71fb00fe1.png) Rank and select marker genes by their evidence consistency scores
+
+
 
 ![immagine](https://user-images.githubusercontent.com/68125242/161061619-a33f593a-96fb-4919-8e6a-324da8d5a259.png)
