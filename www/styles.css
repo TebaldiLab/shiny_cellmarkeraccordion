@@ -1,0 +1,114 @@
+body, label, input, button, select { 
+    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+	font-size: 18px;
+}
+h3, .h3 {
+    font-size: 33px;
+   /* background: url(./logo2_2.png) no-repeat;*/
+   /* background-position: down;*/
+  /*  background-color: #990000;*/
+    /* background-color: white;*/
+    color: #990000;
+ font-weight: bold;
+    padding: 20px;
+    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+    /*text-transform: uppercase;*/
+    text-align: center;
+}
+
+h2, .h2 {
+    font-size: 28px;
+    color: #990000;
+    padding: 20px;
+    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+    text-align: center;
+}
+
+
+
+h4, .h4 {
+        font-size: 20px;
+	text-align: center;
+    padding: 15px;
+	color: #990000;
+    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+    text-transform: uppercase;
+    text-align: center;
+        }
+
+h, .h {
+        font-size: 24px;
+text-align: center; 
+   padding: 15px;
+    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+	color: black;
+        
+}
+
+h5, .h5 {
+        font-size: 24px;
+   padding: 15px;
+    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+	color: black;      
+}
+
+
+
+/* style of entries box text of table */
+.dataTables_length select{
+font-size: 16px;
+}
+/* style of search box text of table */
+.dataTables_filter input {
+font-size: 18px;
+}
+
+.main-header .logo {
+   font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+  font-weight: bold;
+  font-size: 40px;
+}
+
+.skin-blue .main-header .logo {
+                              background-color: #990000;
+                              }
+
+   /* logo when hovered */
+        .skin-blue .main-header .logo:hover {
+                              background-color: #990000;
+                              }
+
+/* navbar (rest of the header) */
+.skin-blue .main-header .navbar {
+                              background-color: #990000;
+                              }
+
+/* toggle button when hovered  */                    
+                                .skin-blue .main-header .navbar .sidebar-toggle:hover{
+                                background-color: #000000;
+                                }
+
+.shiny-output-error-validation {
+        color: #990000;
+        font-weight: bold;
+        font-size: 24px;
+      }
+
+    /* active selected tab in the sidebarmenu */
+                                .skin-blue .main-sidebar .sidebar .sidebar-menu .active a{
+                                background-color: #990000;
+                                }
+
+
+/* style of entries box of cell types  */ 
+.box-celltypes {font-size: 18px; line-height: 1.6; background: white;}
+
+
+                                /* body */
+                                .content-wrapper, .right-side {
+                                background-color: white;
+                                }
+
+
+hr {border-top: 1px solid #000000;}
+.tab-content { padding-left: 20px; padding-right: 30px; }
