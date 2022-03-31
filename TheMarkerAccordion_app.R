@@ -1,11 +1,7 @@
 library("rstudioapi")  
 setwd(dirname(getActiveDocumentContext()$path)) 
 
-
 library(shinydashboard)
-
-
-library(rsconnect)
 library(shiny)
 library(stringr)
 library(DiagrammeR)
@@ -17,12 +13,12 @@ library(data.table)
 library(ontologyPlot)
 library(ontoProc)
 library(writexl)
-library(DiagrammeR)
 library(dplyr)
 library(shinyBS)
 library(shinyhelper)
-library(shinydashboard)
 library(shinydashboardPlus)
+
+source("packages.R")
 
 
 #marker_table<-read.table("C:/Users/emmab/Desktop/PhD/Datasets_SC/Anno_marker-based/Marker/Original_site/6marker_alltissue_integration_wide_sub.txt",sep='\t',header=TRUE)
@@ -93,7 +89,8 @@ ui <- dashboardPage(
     )
   ),
   dashboardBody(tags$head(
-    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css")),
+    tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
+    tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);")),
     tabItems(
       # First tab content
       tabItem(tabName = "dashboard",
@@ -103,10 +100,13 @@ ui <- dashboardPage(
                 div(img(src = "Logo.png"),style="text-align: center;"),
                 br(),
                 br(),
+                tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);"),
                 p(style="text-align: justify;", HTML("<h>A crucial and challenging step in single-cell and spatial data analysis is the annotation of cell types. The Cell Marker Accordion adress the need for robust and reproducible cell type identification through standardization and integration of multiple published gene marker databases. <br> The Cell Marker Accordion web interface allows to easily: </h> "))),
 
       titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes by cell types. </h>")))),          
-      titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types by marker genes. </h>")))),                                                                                                                titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browsed hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options </h>"))))),                                        
+      titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types by marker genes. </h>")))),                                                                                                              
+      titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options. </h>")))),
+      titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency scores. </h>"))))),                                        
                                                                                                                                               
   
       
