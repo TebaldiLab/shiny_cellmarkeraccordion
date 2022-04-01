@@ -127,9 +127,9 @@ ui <- dashboardPage(
                            tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #990000}")),
                            tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: #990000}")),
                            titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,offset=0, sliderInput(inputId = "height", label = "Height", min = 200, max = 3500, value = 400, step = 200,width="80%"),
+                           column(width=6,offset=0, sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
                                   br(),
-                                  sliderInput(inputId = "width", label = "Width", min = 200, max = 3500, value = 400, step=200,width="80%"))),
+                                  sliderInput(inputId = "width", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -137,7 +137,7 @@ ui <- dashboardPage(
         }'))),
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  fluidRow(column(12,align="center",uiOutput('scalableplot'))),
+                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplot')))),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#test {
@@ -148,10 +148,12 @@ ui <- dashboardPage(
                   br(),
                   br(),
 
-                  titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help', 'Info',icon= icon("info"), align="left")))),
+                  conditionalPanel(condition= "input.descendantsof != ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help', 'Info',icon= icon("info"), align="left"))))),
+                   conditionalPanel(condition= "input.descendantsof == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty', 'Info',icon= icon("info"), align="left"))))),
+                                                    
                   fluidRow(column(width=6,wellPanel(id="sidebar2",
                                                     fluidRow(column(4,radioButtons('times','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
-                                                             column(4,radioButtons("unitedescendant","Merge subtypes", c("Yes","No"),selected="No")),
+                                                             conditionalPanel(condition= "input.descendantsof != ''", column(4,radioButtons("unitedescendant","Merge subtypes", c("Yes","No"),selected="No"))),
                                                              column(4,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")))))),
                   fluidRow(column(4,radioButtons("downloadType", "Download Format", choices = c("CSV" = ".csv",
                                                                                                 "XLSX" = ".xlsx",
@@ -212,7 +214,7 @@ ui <- dashboardPage(
         }'))),
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  fluidRow(column(12,align="center",uiOutput('scalableplotM'))),
+                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotM')))),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testM {
@@ -267,6 +269,17 @@ server <- function(input, output, session) {
       title = "Table Option Information",
       HTML("<strong> EC_score </strong> = Evidence consistency score. Marker genes can be ranked and selected by their evidence consistency scores, measuring the agreement of different annotation sources.<br>
       <strong> Merged subtypes </strong>:  if subtypes of at least one input cell type is displayed
+      <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
+      <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
+      #textInput('text2', 'You can also put UI elements here')
+    ))
+  })
+  
+  
+  observeEvent(input$help_empty,{
+    showModal(modalDialog(
+      title = "Table Option Information",
+      HTML("<strong> EC_score </strong> = Evidence consistency score. Marker genes can be ranked and selected by their evidence consistency scores, measuring the agreement of different annotation sources.<br>
       <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
       <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
@@ -482,8 +495,8 @@ server <- function(input, output, session) {
         node_list[,fillcolor:= ifelse(label %in%  marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1")]
       }
       
-      node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
-                                            ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
+      # node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
+      #                                       ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
       
       node_list<-node_list[, fontcolor:="black"]
       
@@ -660,8 +673,8 @@ server <- function(input, output, session) {
         node_list[,fillcolor:= ifelse(label %in%  marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1")]
       }
       
-      node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
-                                            ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
+      # node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
+      #                                       ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
       
       node_list<-node_list[, fontcolor:="black"]
       
@@ -985,8 +998,8 @@ server <- function(input, output, session) {
         node_list[,fillcolor:= ifelse(label %in%  marker_table[celltype %in% unique(tableFileMarker()$cell_type)]$celltype, "#FF8C69","#E1E1E1")]
         
       }
-      node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
-                                            ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
+      # node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
+      #                                       ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
       
       node_list<-node_list[, fontcolor:="black"]
       
@@ -1157,8 +1170,8 @@ server <- function(input, output, session) {
         node_list[,fillcolor:= ifelse(label %in%  marker_table[celltype %in% unique(tableFileMarker()$cell_type)]$celltype, "#FF8C69","#E1E1E1")]
         
       }
-      node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
-                                            ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
+      # node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
+      #                                       ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
       
       node_list<-node_list[, fontcolor:="black"]
       
