@@ -25,9 +25,11 @@ source("packages.R")
 marker_table<-read.table("data/6marker_alltissue_integration_wide_sub.txt",sep='\t',header=TRUE)
 marker_table<-as.data.table(marker_table)
 marker_table<-marker_table[!duplicated(marker_table[,c("marker","OBO.Ontology.ID")])]
-marker_table_long<-read.table("data/6marker_alltissue_integration_long_sub.txt",sep='\t',header=TRUE)
-marker_table_long<-as.data.table(marker_table_long)
-marker_table_long<-marker_table_long[!duplicated(marker_table_long[,c(1,3)])]
+#compute specificity 
+mark_spec<-ddply(marker_table,.(marker),nrow)
+colnames(mark_spec)<-c("marker","specificity")
+marker_table<-merge(marker_table,mark_spec,by="marker",all.x = TRUE)
+marker_table[,specificity:=1/specificity]
 
 
 celltype_hs<-unique(marker_table[species=="Human",c("OBO.Ontology.ID","species")])
@@ -44,8 +46,7 @@ colnames(celltype_species)<-c("celltype","celltype_species")
 
 marker_table<-merge(celltype_species,marker_table,by.x="celltype",by.y="OBO.Ontology.ID")
 marker_table<-as.data.table(marker_table)
-marker_table_long<-merge(celltype_species,marker_table_long,by.x="celltype",by.y="OBO.Ontology.ID")
-marker_table_long<-as.data.table(marker_table_long)
+
 
 cell_onto<-get_ontology("data/cl-basic.obo", propagate_relationships = c("is_a","develops_from"), extract_tags = "everything")
 
@@ -333,12 +334,12 @@ server <- function(input, output, session) {
   
   markerTable <- reactive({
     marker_table_simple<-marker_table[celltype_species %in% (input$celltype) & species %in% input$species & times >= str_replace_all(input$times, ">=","")]
-    marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","species","times","original_celltype.CellMarker",
+    marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
                                                 "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                                 "original_celltype.MSigDB")]
     
     
-    colnames(marker_table_simple)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","original_celltype.CellMarker",
+    colnames(marker_table_simple)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity","original_celltype.CellMarker",
                                      "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                      "original_celltype.MSigDB")  
     marker_table_simple
@@ -369,18 +370,16 @@ server <- function(input, output, session) {
       # re-count the times a marker for a specific cell type appear 
     }
     
-    unite_table<- setDT(marker_table[,-c("celltype","celltype_species","cell_ID","gene_description")])[, lapply(.SD, function(x) sum(!is.na(x))), c("ancestor","marker","species")]
+    unite_table<- setDT(marker_table[,-c("celltype","celltype_species","cell_ID","gene_description","specificity")])[, lapply(.SD, function(x) sum(!is.na(x))), c("ancestor","marker","species")]
     unite_table[,times:=rowSums(!(unite_table[,c(4:9)]==0))]
     unite_table<-merge(unite_table[,c("ancestor","marker","species","times")],marker_table,by=c("ancestor","marker","species"))
     unite_table<-unite_table[times >= str_replace_all(input$times, ">=","")]
-    #count_duplicated<-ddply(marker_table_long,.(ancestor,  marker,species),nrow)
-    #colnames(count_duplicated)<-c("ancestor","marker","species","times")
-    #unite_table<-merge(marker_table_long,count_duplicated,by=c("ancestor","marker","species"))
+
     
-    unite_table<- unite_table[,c("ancestor","celltype","cell_ID","marker","gene_description","species","times","original_celltype.CellMarker",
+    unite_table<- unite_table[,c("ancestor","celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
                                  "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                  "original_celltype.MSigDB")]
-    colnames(unite_table)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","original_celltype.CellMarker",
+    colnames(unite_table)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","specificity","original_celltype.CellMarker",
                              "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                              "original_celltype.MSigDB")
     unite_table
@@ -390,10 +389,10 @@ server <- function(input, output, session) {
     type_notdesc<-input$celltype[!(input$celltype %in% input$descendantsof)]
     table_notdesc<-marker_table[celltype_species %in% (type_notdesc) & species %in% input$species & times >= str_replace_all(input$times, ">=","")]
     table_notdesc[,ancestor:=NA]
-    table_notdesc<-table_notdesc[,c("ancestor","celltype","cell_ID","marker","gene_description","species","times","original_celltype.CellMarker",
+    table_notdesc<-table_notdesc[,c("ancestor","celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
                                     "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                     "original_celltype.MSigDB")]
-    colnames(table_notdesc)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","original_celltype.CellMarker",
+    colnames(table_notdesc)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","specificity","original_celltype.CellMarker",
                                "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                "original_celltype.MSigDB") 
     rbind(uniteDescendant(),table_notdesc)
@@ -819,7 +818,7 @@ server <- function(input, output, session) {
       outputTable()
     }
     else if(length(outputTable())!=0 & input$tabletype=="Simple"){
-      outputTable()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score")]
+      outputTable()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity")]
     } 
   })
   
@@ -865,11 +864,11 @@ server <- function(input, output, session) {
     marker_dt<-tolower(marker_table$marker)
     validate(need(marker_input %in% marker_dt, "Please insert valid marker genes!"))
     gene_marker<-marker_table[tolower(marker) %in% tolower(marker_vec$marker_gene)]
-    gene_marker<-gene_marker[,c("celltype","cell_ID","marker","gene_description","species","times","original_celltype.CellMarker",
+    gene_marker<-gene_marker[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
                                 "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                 "original_celltype.MSigDB")]
     
-    colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","original_celltype.CellMarker",
+    colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity","original_celltype.CellMarker",
                              "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                              "original_celltype.MSigDB")  
     gene_marker<-gene_marker[species %in% input$speciesM]
@@ -890,11 +889,11 @@ server <- function(input, output, session) {
     marker_vec<-as.data.frame(unlist(strsplit(mark, "[\\|, \r\n+]+")))
     colnames(marker_vec)<-"marker_gene"
     table_marker_file<-marker_table[tolower(marker) %in% tolower(marker_vec$marker_gene)]
-    table_marker_file<-table_marker_file[,c("celltype","cell_ID","marker","gene_description","species","times","original_celltype.CellMarker",
+    table_marker_file<-table_marker_file[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
                                             "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                             "original_celltype.MSigDB")]
     
-    colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","original_celltype.CellMarker",
+    colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity","original_celltype.CellMarker",
                                    "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                    "original_celltype.MSigDB")  
     table_marker_file<-table_marker_file[species %in% input$speciesM]
@@ -1311,7 +1310,7 @@ server <- function(input, output, session) {
       outputTableM()
     }
     else if(length(outputTableM())!=0 & input$tabletypeM=="Simple"){
-      outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score")]
+      outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity")]
     }
 
     
@@ -1330,7 +1329,7 @@ server <- function(input, output, session) {
       if(nchar(input$marker)>1 | !is.null(input$markerfile)) {
         if(input$downloadTypeM == ".csv"){ 
           if(input$tabletypeM=="Simple"){
-            write.csv(outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score")], file, row.names = FALSE, quote=FALSE) 
+            write.csv(outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity")], file, row.names = FALSE, quote=FALSE) 
           }
           else if (input$tabletypeM=="Complete"){
             write.csv(outputTableM(), file, row.names = FALSE, quote=FALSE) 
@@ -1340,7 +1339,7 @@ server <- function(input, output, session) {
         }
       else if(input$downloadTypeM == ".xlsx") {
         if(input$tabletypeM=="Simple"){
-          write_xlsx(outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score")], file)
+          write_xlsx(outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity")], file)
         }
         else if (input$tabletypeM=="Complete"){
           write_xlsx(outputTableM(), file)
@@ -1350,7 +1349,7 @@ server <- function(input, output, session) {
               }
       else if(input$downloadTypeM == ".tsv") {
         if(input$tabletypeM=="Simple"){
-          write.table(outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score")], file, quote = FALSE, 
+          write.table(outputTableM()[,c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity")], file, quote = FALSE, 
                       sep='\t', row.names = FALSE)
           }
         else if (input$tabletypeM=="Complete"){
