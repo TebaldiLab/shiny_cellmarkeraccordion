@@ -22,36 +22,11 @@ source("packages.R")
 
 
 #marker_table<-read.table("C:/Users/emmab/Desktop/PhD/Datasets_SC/Anno_marker-based/Marker/Original_site/6marker_alltissue_integration_wide_sub.txt",sep='\t',header=TRUE)
-marker_table<-read.table("data/6marker_alltissue_integration_wide_sub.txt",sep='\t',header=TRUE)
-marker_table<-as.data.table(marker_table)
-marker_table<-marker_table[!duplicated(marker_table[,c("marker","OBO.Ontology.ID")])]
-#compute specificity 
-mark_spec<-ddply(marker_table,.(marker),nrow)
-colnames(mark_spec)<-c("marker","specificity")
-marker_table<-merge(marker_table,mark_spec,by="marker",all.x = TRUE)
-marker_table[,specificity:=format(round(1/specificity,2), nsmall=2)]
-
-
-celltype_hs<-unique(marker_table[species=="Human",c("OBO.Ontology.ID","species")])
-celltype_mm<-unique(marker_table[species=="Mouse",c("OBO.Ontology.ID","species")])
-celltype<-merge(celltype_hs,celltype_mm,by="OBO.Ontology.ID",all=TRUE)
-celltype[,V1:= paste0(species.x,", ",species.y)]
-celltype[,celltype_species:=str_replace(V1, "Human, Mouse","Hs, Mm")]
-celltype[,celltype_species:=str_replace(celltype_species, "Human, NA","Hs")]
-celltype[,celltype_species:=str_replace(celltype_species, "NA, Mouse","Mm")]
-
-celltype_species<-paste0(celltype$OBO.Ontology.ID," (",celltype$celltype_species,")")
-celltype_species<-cbind(celltype$OBO.Ontology.ID,celltype_species)
-colnames(celltype_species)<-c("celltype","celltype_species")
-
-marker_table<-merge(celltype_species,marker_table,by.x="celltype",by.y="OBO.Ontology.ID")
+marker_table<-read.table("data/Hema_Accordion_wideTable.txt",sep='\t',header=TRUE)
 marker_table<-as.data.table(marker_table)
 
-
+#load ontology 
 cell_onto<-get_ontology("data/cl-basic.obo", propagate_relationships = c("is_a","develops_from"), extract_tags = "everything")
-
-
-
 onto_plot<-onto_plot2(cell_onto, marker_table$cell_ID)
 nodes<-as.data.table(onto_plot@nodes)
 nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
@@ -59,11 +34,13 @@ nodes<-nodes[, V1:=str_replace_all(V1,"\n"," ")]
 nodes<-nodes[, V1:=str_sub(V1,1,nchar(V1)-1)]
 onto_plot@nodes<-nodes$V1
 
+#ontology cell types
 ontology_celltype<-as.data.frame(cell_onto[["name"]])
 colnames(ontology_celltype)<-"cell_type"
 ontology_celltype$cell_ID<-rownames(ontology_celltype)
 ontology_celltype<-as.data.table(ontology_celltype)
 
+#definition of cell types
 ontology_def<-as.data.frame(cell_onto[["def"]])
 colnames(ontology_def)<-"cell_def"
 ontology_def$cell_ID<-rownames(ontology_def)
@@ -151,11 +128,15 @@ ui <- dashboardPage(
 
                   conditionalPanel(condition= "input.descendantsof != ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help', 'Info',icon= icon("info"), align="left"))))),
                    conditionalPanel(condition= "input.descendantsof == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty', 'Info',icon= icon("info"), align="left"))))),
-                                                    
-                  fluidRow(column(width=6,wellPanel(id="sidebar2",
-                                                    fluidRow(column(4,radioButtons('times','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
-                                                             conditionalPanel(condition= "input.descendantsof != ''", column(4,radioButtons("unitedescendant","Merge subtypes", c("Yes","No"),selected="No"))),
-                                                             column(4,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")))))),
+                  
+                    fluidRow(column(width=12,wellPanel(id="sidebar2",
+                                                    fluidRow(column(2,radioButtons('times','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
+                                                             column(3,radioButtons('database_spec','database_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
+                                                             column(3,radioButtons('query_spec','query_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
+                                                             column(2,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),
+                                                             conditionalPanel(condition= "input.descendantsof != ''", column(2,radioButtons("unitedescendant","Merge subtypes", c("Yes","No"),selected="No"))))))),
+
+                  
                   fluidRow(column(4,radioButtons("downloadType", "Download Format", choices = c("CSV" = ".csv",
                                                                                                 "XLSX" = ".xlsx",
                                                                                                 "TSV" = ".tsv"),inline = TRUE),
@@ -225,9 +206,11 @@ ui <- dashboardPage(
                   conditionalPanel(id="testM",condition= "input.plot1M_click",wellPanel(textOutput("cell_type_defM"))),
                   br(),
                   br(),
-                  titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpM', 'Info',icon= icon("info"), align="left")))),                  fluidRow(column(width=6,wellPanel(id="sidebar2M",
-                                                    fluidRow(column(4,radioButtons('timesM','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
-                                                             column(4,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
+                  titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpM', 'Info',icon= icon("info"), align="left")))),                  
+                  fluidRow(column(width=8,wellPanel(id="sidebar2M",
+                                                    fluidRow(column(3,radioButtons('timesM','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
+                                                             column(3,radioButtons('database_specM','database_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
+                                                             column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
                   fluidRow(column(4,radioButtons("downloadTypeM", "Download Format", choices = c("CSV" = ".csv",
                                                                                                 "XLSX" = ".xlsx",
                                                                                                 "TSV" = ".tsv"),inline = TRUE),
@@ -268,7 +251,12 @@ server <- function(input, output, session) {
   observeEvent(input$help,{
     showModal(modalDialog(
       title = "Table Option Information",
-      HTML("<strong> EC_score </strong> = Evidence consistency score. Marker genes can be ranked and selected by their evidence consistency scores, measuring the agreement of different annotation sources.<br>
+      HTML("Marker genes can be ranked and selected by: <br>
+      <ul><li> <strong> EC_score </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+       <li> <strong> database specificity </strong>: whether a gene is a marker for different cell types present in all the accordion database </li>
+        <li> <strong> query specificity </strong> : whether a gene is a marker for different cell types present in the query input </li></ul>
+
+      In addition:  <br>
       <strong> Merged subtypes </strong>:  if subtypes of at least one input cell type is displayed
       <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
       <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
@@ -280,9 +268,12 @@ server <- function(input, output, session) {
   observeEvent(input$help_empty,{
     showModal(modalDialog(
       title = "Table Option Information",
-      HTML("<strong> EC_score </strong> = Evidence consistency score. Marker genes can be ranked and selected by their evidence consistency scores, measuring the agreement of different annotation sources.<br>
-      <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
-      <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
+      HTML("Marker genes can be ranked and selected by: <br>
+             <ul><li> <strong> EC_score </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+             <li> <strong> database specificity </strong>: whether a gene is a marker for different cell types present in all the accordion database </li>
+             <li> <strong> query specificity </strong> : whether a gene is a marker for different cell types present in the query input </li></ul>
+             In addition: <br>
+             <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
@@ -327,6 +318,7 @@ server <- function(input, output, session) {
     dt_subnodes<-as.data.table(V(subnetwork)$name)
     as.data.table(unique(marker_table[celltype %in% dt_subnodes$V1]$cell_ID))
   })
+  
   selectedBoth <- reactive({
     rbind(selectedData(),selectedDescendant())
     
@@ -337,18 +329,20 @@ server <- function(input, output, session) {
 
     #compute specificity 
     mark_spec<-ddply(marker_table_simple,.(marker),nrow)
-    colnames(mark_spec)<-c("marker","rel_specificity")
+    colnames(mark_spec)<-c("marker","query_specificity")
     marker_table_simple<-merge(marker_table_simple,mark_spec,by="marker",all.x = TRUE)
-    marker_table_simple[,rel_specificity:=format(round(1/rel_specificity,2), nsmall=2)]
+    marker_table_simple[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
     
-    marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","rel_specificity","original_celltype.CellMarker",
+    marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","query_specificity","original_celltype.CellMarker",
                                                 "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                                 "original_celltype.MSigDB")]
     colnames(marker_table_simple)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                                      "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                      "original_celltype.MSigDB")  
+    #filter on specificity
+    marker_table_simple<-marker_table_simple[database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")]
     marker_table_simple
-  })
+    })
   
   uniteDescendant <- reactive ({
     onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
@@ -387,7 +381,8 @@ server <- function(input, output, session) {
                              "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                              "original_celltype.MSigDB")
     unite_table
-  })
+
+    })
   
   descendantTable <- reactive ({
     type_notdesc<-input$celltype[!(input$celltype %in% input$descendantsof)]
@@ -402,16 +397,20 @@ server <- function(input, output, session) {
                                "original_celltype.MSigDB") 
     combine_table<-rbind(uniteDescendant(),table_notdesc)
     #compute specificity 
-    mark_spec<-ddply(combine_table,.(marker),nrow)
-    colnames(mark_spec)<-c("marker","rel_specificity")
-    combine_table<-merge(combine_table,mark_spec,by="marker",all.x = TRUE)
-    combine_table[,rel_specificity:=format(round(1/rel_specificity,2), nsmall=2)]
+    combine_table<-as.data.table(combine_table)
     
-    colnames(combine_table)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
-                               "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                               "original_celltype.MSigDB")   
+    mark_spec<-ddply(combine_table,.(marker),nrow)
+    colnames(mark_spec)<-c("marker","query_specificity")
+    combine_table<-merge(combine_table,mark_spec,by="marker",all.x = TRUE)
+    combine_table[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
+
+    combine_table<-combine_table[,c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
+                                              "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
+                                              "original_celltype.MSigDB")]
+    combine_table<-combine_table[database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")]
     combine_table
-  })
+    
+    })
   
 
   Plot <- reactive({
@@ -864,9 +863,11 @@ server <- function(input, output, session) {
   observeEvent(input$helpM,{
     showModal(modalDialog(
       title = "Table Option Information",
-      HTML("<strong> EC_score </strong> = Evidence consistency score. Marker genes can be ranked and selected by their evidence consistency scores, measuring the agreement of different annotation sources.<br>
-      <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
-      #textInput('text2', 'You can also put UI elements here')
+      HTML("Marker genes can be ranked and selected by: <br>
+             <ul><li> <strong> EC_score </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+             <li> <strong> database specificity </strong>: whether a gene is a marker for different cell types present in all the accordion database </li></ul>
+             In addition: <br>
+             <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
     ))
   })
   
@@ -884,10 +885,12 @@ server <- function(input, output, session) {
                                 "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                 "original_celltype.MSigDB")]
     
-    colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","specificity","original_celltype.CellMarker",
+    colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
                              "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                              "original_celltype.MSigDB")  
-    gene_marker<-gene_marker[species %in% input$speciesM]
+    gene_marker<-gene_marker[species %in% input$speciesM & database_specificity >= str_replace_all(input$database_specM, ">=|=","")]
+    
+    
     gene_marker
   })
   
@@ -913,7 +916,7 @@ server <- function(input, output, session) {
     colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
                                    "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                    "original_celltype.MSigDB")  
-    table_marker_file<-table_marker_file[species %in% input$speciesM]
+    table_marker_file<-table_marker_file[species %in% input$speciesM & database_specificity >= str_replace_all(input$database_specM, ">=|=","")]
     table_marker_file  
     })
   
@@ -1315,6 +1318,7 @@ server <- function(input, output, session) {
 
   outputTableM<-reactive({
     if(nchar(input$marker)>1){
+      
       tableMarkerInput()[EC_score>= str_replace_all(input$timesM, ">=","")]
     }
     else if(!is.null(input$markerfile)){
