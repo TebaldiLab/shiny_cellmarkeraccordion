@@ -30,8 +30,7 @@ The Cell Marker Accordion web interface allows to easily:
 
 ![immagine](https://user-images.githubusercontent.com/68125242/161060791-fa1c6097-f0c8-45d1-bd6e-b4ea8dc61f91.png) Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options
 
-![immagine](https://user-images.githubusercontent.com/68125242/169997398-0e9bf977-7c1c-48f7-a3cb-72c9fab1e0d5.png)
-
+![immagine](https://user-images.githubusercontent.com/68125242/169997529-eafb704e-f39f-439f-ab5d-b2b5d741e87b.png)
 
 
 
