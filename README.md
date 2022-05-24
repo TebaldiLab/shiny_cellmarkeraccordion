@@ -37,8 +37,9 @@ The Cell Marker Accordion web interface allows to easily:
 
 
 
-![immagine](https://user-images.githubusercontent.com/68125242/161091031-909269ea-f6d9-4a61-ba50-f4b71fb00fe1.png) Rank and select marker genes by their evidence consistency scores
+![immagine](https://user-images.githubusercontent.com/68125242/161091031-909269ea-f6d9-4a61-ba50-f4b71fb00fe1.png) Rank and select marker genes by query or
+database specificity and by their evidence consistency scores
 
 
 
-![immagine](https://user-images.githubusercontent.com/68125242/161061619-a33f593a-96fb-4919-8e6a-324da8d5a259.png)
+![immagine](https://user-images.githubusercontent.com/68125242/169997056-4c5b76a1-3c44-4305-99d1-07b89d7c7bbf.png)
