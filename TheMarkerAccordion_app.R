@@ -21,9 +21,13 @@ library(shinydashboardPlus)
 #source("packages.R")
 source('helper_function.R')
 
-#marker_table<-read.table("C:/Users/emmab/Desktop/PhD/Datasets_SC/Anno_marker-based/Marker/Original_site/6marker_alltissue_integration_wide_sub.txt",sep='\t',header=TRUE)
-marker_table<-read.table("data/Hema_Accordion_wideTable.txt",sep='\t',header=TRUE)
+#marker_table_orig<-read.table("data/Hema_Accordion_wideTable.txt",sep='\t',header=TRUE)
+marker_table<-fread("data/Hema_Accordion_8db.txt",sep='\t',header=TRUE)
 marker_table<-as.data.table(marker_table)
+
+#update HGNC symbol 
+# marker_table<-update_HGNC(in_list,anno_file="C:/Users/emmab/Desktop/PhD/Rscript_vari/hgnc/hgnc_complete_set_2022/hgnc_tables_2022.RData")
+# hgnc_symbol_imm<-as.data.table(hgnc_symbol_imm)[!is.na(previous)][type!="orphan"]
 
 #load ontology 
 cell_onto<-get_ontology("data/cl-basic.obo", propagate_relationships = c("is_a","develops_from"), extract_tags = "everything")
@@ -168,7 +172,10 @@ ui <- dashboardPage(
                   tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human Reference Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
                          tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
                   tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8")))),
+                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8")),
+                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
+                         tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
+                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/")))),
       
       
       
@@ -180,7 +187,7 @@ ui <- dashboardPage(
                                                                                     choiceValues =
                                                                                       list("Human","Mouse"),selected = c("Human","Mouse"),inline=TRUE),
                                                     br(),
-                                                    textInput("marker", "Insert marker genes", value = "", width = NULL, placeholder = NULL),
+                                                    textInput("marker", "Insert marker genes", value = "CD34", width = NULL, placeholder = NULL),
                                                     fileInput("markerfile", "Load text file with marker genes ",buttonLabel=list(icon("upload")),
                                                               multiple = FALSE),
                                                     checkboxInput("cellidM","Plot CL_ID",value=FALSE))),
@@ -242,7 +249,10 @@ ui <- dashboardPage(
                   tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human Reference Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
                          tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
                   tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8" )))),
+                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8" )),
+                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
+                         tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
+                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/")))),
       
       #NERVOUS SYSTEM PART
       tabItem(tabName = "celltype_n",
@@ -319,8 +329,11 @@ ui <- dashboardPage(
                   tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
                          tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
                   tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human Reference Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")))),
-      
+                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
+                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
+                        tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
+                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/")))),
+  
       
       
       
@@ -391,7 +404,10 @@ ui <- dashboardPage(
                   tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
                          tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
                   tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human Reference Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html"))))
+                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
+                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
+                         tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
+                  tags$p(tags$strong("Abcam"),tags$a(href="https://www.abcam.com/"))))
       
     )
   )
@@ -629,13 +645,13 @@ server <- function(input, output, session) {
       validate(need(marker_input %in% marker_dt, "Please insert valid marker genes!"))
       gene_marker<-marker_table[tolower(marker) %in% tolower(marker_vec$marker_gene)]
       
-      gene_marker<-gene_marker[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
+      gene_marker<-gene_marker[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                   "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                  "original_celltype.MSigDB")]
+                                  "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
       
-      colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
+      colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                               "original_celltype.MSigDB")  
+                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")  
       gene_marker<-gene_marker[species %in% input$speciesM]
       
       
@@ -653,13 +669,13 @@ server <- function(input, output, session) {
     colnames(marker_vec)<-"marker_gene"
     table_marker_file<-marker_table[tolower(marker) %in% tolower(marker_vec$marker_gene)]
     
-    table_marker_file<-table_marker_file[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
+    table_marker_file<-table_marker_file[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                             "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                            "original_celltype.MSigDB")]
+                                            "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
     
-    colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
+    colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                    "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                   "original_celltype.MSigDB")  
+                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")  
     table_marker_file <- table_marker_file[species %in% input$speciesM]
     table_marker_file
     

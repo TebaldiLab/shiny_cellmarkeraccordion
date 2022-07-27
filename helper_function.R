@@ -820,12 +820,12 @@ select_descendant<-function(onto_plot, marker_table, input_descendant){
   subnetwork <- induced.subgraph(onto_igraph, vids = as.vector(unlist(neighborhood(onto_igraph, distan, nodes = node$V1, mode = 'out'))))
   dt_subnodes<-as.data.table(V(subnetwork)$name)
   table_descendant<-marker_table[celltype %in% dt_subnodes$V1]
-  table_descendant<-table_descendant[,c("celltype_species","celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
+  table_descendant<-table_descendant[,c("celltype_species","celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                         "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                        "original_celltype.MSigDB")]
-  colnames(table_descendant)<-c("celltype_species","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
+                                        "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+  colnames(table_descendant)<-c("celltype_species","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                 "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                "original_celltype.MSigDB")
+                                "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
   return(table_descendant)
 }
 #merge descendats ----
@@ -858,12 +858,12 @@ table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descen
   unite_table<-merge(unite_table[,c("ancestor","marker","species","times")],marker_table,by=c("ancestor","marker","species"))
   
   
-  unite_table<- unite_table[,c("ancestor","celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
+  unite_table<- unite_table[,c("ancestor","celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                               "original_celltype.MSigDB")]
-  colnames(unite_table)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
+                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+  colnames(unite_table)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                            "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                           "original_celltype.MSigDB")
+                           "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
   return(unite_table)
   
 }
@@ -875,12 +875,12 @@ table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_
   table_not_desc<-as.data.table(table_not_desc)
   table_not_desc<-table_not_desc[celltype_species %in% input_celltype]
   table_not_desc[,ancestor:=NA]
-  table_not_desc<-table_not_desc[,c("ancestor","celltype","cell_ID","marker","gene_description","species","times","specificity","original_celltype.CellMarker",
+  table_not_desc<-table_not_desc[,c("ancestor","celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                     "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                    "original_celltype.MSigDB")]
-  colnames(table_not_desc)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","original_celltype.CellMarker",
+                                    "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+  colnames(table_not_desc)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                               "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                              "original_celltype.MSigDB")
+                              "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
   combine_table<-rbind(table_not_desc,merged_descendant_table)
   
   #compute specificity 
@@ -891,9 +891,9 @@ table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_
   combine_table[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
   
   
-  combine_table<-combine_table[,c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
+  combine_table<-combine_table[,c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                                   "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                  "original_celltype.MSigDB")]
+                                  "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
   return(combine_table)
   
 }
@@ -909,13 +909,13 @@ table_desc_other<-function(marker_table,input_celltype,descendant_table,input_sp
   table_all<-merge(table_all,mark_spec,by="marker",all.x = TRUE)
   table_all[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
   
-  table_all<-table_all[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","query_specificity","original_celltype.CellMarker",
+  table_all<-table_all[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","query_specificity","original_celltype.CellMarker",
                           "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                          "original_celltype.MSigDB")]
+                          "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
   
-  colnames(table_all)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
+  colnames(table_all)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                          "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                         "original_celltype.MSigDB")
+                         "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
   return(table_all)
 }
 
@@ -929,12 +929,14 @@ table_input_celltypes<-function(marker_table,input_celltype,input_species){
   marker_table_simple<-merge(marker_table_simple,mark_spec,by="marker",all.x = TRUE)
   marker_table_simple[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
   
-  marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","species","times","specificity","query_specificity","original_celltype.CellMarker",
+  marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","query_specificity","original_celltype.CellMarker",
                                               "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                              "original_celltype.MSigDB")]
-  colnames(marker_table_simple)<-c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
+                                              "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+  colnames(marker_table_simple)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                                    "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                   "original_celltype.MSigDB")  
+                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")  
   #filter on specificity
   return(marker_table_simple)
 }
+
+
