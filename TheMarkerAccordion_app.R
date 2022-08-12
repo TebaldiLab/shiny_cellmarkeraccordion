@@ -22,7 +22,9 @@ library(shinydashboardPlus)
 source('helper_function.R')
 
 #marker_table_orig<-read.table("data/Hema_Accordion_wideTable.txt",sep='\t',header=TRUE)
-marker_table<-fread("data/Hema_Accordion_8db.txt",sep='\t',header=TRUE)
+#marker_table<-fread("data/Hema_Accordion_8db.txt",sep='\t',header=TRUE)
+marker_table<-fread("data/Hema_Accordion_9db.txt",sep='\t',header=TRUE)
+
 marker_table<-as.data.table(marker_table)
 
 #update HGNC symbol 
@@ -86,7 +88,7 @@ ui <- dashboardPage(
                 br(),
                 br(),
                 tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);"),
-                p(style="text-align: justify;", HTML("<h>A crucial and challenging step in single-cell and spatial data analysis is the annotation of cell types. The Cell Marker Accordion adress the need for robust and reproducible cell type identification through standardization and integration of multiple published gene marker databases. <br> The Cell Marker Accordion web interface allows to easily: </h> "))),
+                p(style="text-align: justify;", HTML("<h>A crucial and challenging step in single-cell and spatial data analysis is the annotation of cell types. The Cell Marker Accordion adresses the need for robust and reproducible cell type identification through standardization and integration of multiple published gene marker databases. <br> The Cell Marker Accordion web interface allows to easily: </h> "))),
               
               titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes by cell types. </h>")))),          
               titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types by marker genes. </h>")))),                                                                                                              
@@ -105,7 +107,7 @@ ui <- dashboardPage(
                                                                          list("Human","Mouse"),selected = c("Human","Mouse"),inline=TRUE),
                                                     br(),
                                                     pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
+                                                    pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
                                                     checkboxInput("cellid","Plot CL_ID",value=FALSE))),
                            br(),
                            #change style sliderinput
@@ -173,9 +175,8 @@ ui <- dashboardPage(
                          tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
                   tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
                          tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8")),
-                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
-                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/")))),
+                  tags$p(tags$strong("ThermoFisher"), tags$a(href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
+                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide")))),
       
       
       
@@ -250,165 +251,8 @@ ui <- dashboardPage(
                          tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
                   tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
                          tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8" )),
-                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
-                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/")))),
-      
-      #NERVOUS SYSTEM PART
-      tabItem(tabName = "celltype_n",
-              div(fluidRow(column(width=6,wellPanel(id="sidebar_n",
-                                                    checkboxGroupInput("species_n", "Select species:",
-                                                                       choiceNames =
-                                                                         list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                                                       choiceValues =
-                                                                         list("Human","Mouse"),selected = c("Human","Mouse"),inline=TRUE),
-                                                    br(),
-                                                    pickerInput('celltype_n', 'Cell type', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    pickerInput('descendantsof_n', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    checkboxInput("cellid_n","Plot CL_ID",value=FALSE))),
-                           br(),
-                           #change style sliderinput
-                           tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #990000}")),
-                           tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: #990000}")),
-                           titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,offset=0, sliderInput(inputId = "height_n", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
-                                  br(),
-                                  sliderInput(inputId = "width_n", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
-                  tags$head(tags$style(HTML('
-         #sidebar_n {
-            background-color: #ad000019;
-            font-size: 16px;
-        }'))),
-                  #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
-                  titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplot_n')))),
-                  #grVizOutput("plot1"),
-                  tags$style(
-                    '#test_n {
-    cursor: grap;
-    color: black;
-    }'),
-                  conditionalPanel(id="test_n",condition= "input.plot1_n_click",wellPanel(textOutput("cell_type_def_n"))),
-                  br(),
-                  br(),
-                  
-                  conditionalPanel(condition= "input.descendantsof_n != ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_n', 'Info',icon= icon("info"), align="left"))))),
-                  conditionalPanel(condition= "input.descendantsof_n == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty_n', 'Info',icon= icon("info"), align="left"))))),
-                  
-                  fluidRow(column(width=12,wellPanel(id="sidebar2_n",
-                                                     fluidRow(column(2,radioButtons('times_n','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
-                                                              column(3,radioButtons('database_spec_n','database_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                              column(3,radioButtons('query_spec_n','query_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                              column(2,radioButtons("tabletype_n","Table type",c("Simple","Complete"),selected="Simple")),
-                                                              conditionalPanel(condition= "input.descendantsof_n != ''", column(2,radioButtons("mergeDescendant_n","Merge subtypes", c("Yes","No"),selected="No"))))))),
-                  
-                  
-                  fluidRow(column(4,radioButtons("downloadType_n", "Download Format", choices = c("CSV" = ".csv",
-                                                                                                  "XLSX" = ".xlsx",
-                                                                                                  "TSV" = ".tsv"),inline = TRUE),
-                                  column(4,downloadButton("downloadData_n", "Download")))),
-                  
-                  tags$head(tags$style(HTML('
-         #sidebar2_n {
-            background-color: #ad000019;
-            font-size: 16px;
-        }'))),
-                  # bsTooltip("times", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
-                  #           options = NULL),
-                  br(),
-                  br(),
-                  dataTableOutput('table1_n'),
-                  br(),
-                  tags$p("References",style = "font-size:25px;"),
-                  tags$p(tags$strong("CellMarker"), tags$a("CellMarker: a manually curated resource of cell markers in human and mouse, Nucleic Acids Research 2019",href="https://pubmed.ncbi.nlm.nih.gov/30289549/"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://bio-bigdata.hrbmu.edu.cn/CellMarker/")),
-                  tags$p(tags$strong("PanglaoDB"), tags$a("PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data, Database 2019",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://panglaodb.se/")),
-                  tags$p(tags$strong("GeneMarkeR"), tags$a("GeneMarkeR: A Database and User Interface for scRNA-seq Marker Genes, Front. Genet. 2021",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://shiny.ph.iu.edu/GeneMarkeR/")),
-                  tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
-                  tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human Reference Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
-                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
-                        tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
-                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/")))),
-  
-      
-      
-      
-      tabItem(tabName="marker_n", 
-              div(fluidRow(column(width=6,wellPanel(id="sidebar_n",checkboxGroupInput("speciesM_n", "Select species:",
-                                                                                      choiceNames =
-                                                                                        list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                                                                      choiceValues =
-                                                                                        list("Human","Mouse"),selected = c("Human","Mouse"),inline=TRUE),
-                                                    br(),
-                                                    textInput("marker_n", "Insert marker genes", value = "", width = NULL, placeholder = NULL),
-                                                    fileInput("markerfile_n", "Load text file with marker genes ",buttonLabel=list(icon("upload")),
-                                                              multiple = FALSE),
-                                                    checkboxInput("cellidM_n","Plot CL_ID",value=FALSE))),
-                           br(),
-                           #change style sliderinput
-                           tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: #990000}")),
-                           tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #990000}")),
-                           titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,offset=0, sliderInput(inputId = "heightM_n", label = "Height", min = 200, max = 3500, value = 400, step = 200,width="80%"),
-                                  br(),
-                                  sliderInput(inputId = "widthM_n", label = "Width", min = 200, max = 3500, value = 400, step=200,width="80%"))),
-                  tags$head(tags$style(HTML('
-         #sidebarM_n {
-            background-color: #ad000019;
-            font-size: 16px;
-        }'))),
-                  #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
-                  titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotM_n')))),
-                  #grVizOutput("plot1"),
-                  tags$style(
-                    '#testM_n {
-    cursor: grap;
-    color: black;
-    }'),
-                  conditionalPanel(id="testM_n",condition= "input.plot1M_n_click",wellPanel(textOutput("cell_type_defM_n"))),
-                  br(),
-                  br(),
-                  titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpM_n', 'Info',icon= icon("info"), align="left")))),                  
-                  fluidRow(column(width=8,wellPanel(id="sidebar2M_n",
-                                                    fluidRow(column(3,radioButtons('timesM_n','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
-                                                             column(3,radioButtons('database_specM_n','database_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                             column(3,radioButtons("tabletypeM_n","Table type",c("Simple","Complete"),selected="Simple")))))),
-                  fluidRow(column(4,radioButtons("downloadTypeM_n", "Download Format", choices = c("CSV" = ".csv",
-                                                                                                   "XLSX" = ".xlsx",
-                                                                                                   "TSV" = ".tsv"),inline = TRUE),
-                                  column(4,downloadButton("downloadDataM_n", "Download")))),
-                  
-                  tags$head(tags$style(HTML('
-         #sidebar2M_n {
-            background-color: #ad000019;
-            font-size: 16px;
-        }'))),
-                  # bsTooltip("times", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
-                  #           options = NULL),
-                  br(),
-                  br(),
-                  dataTableOutput('table1M_n'),
-                  br(),
-                  tags$p("References",style = "font-size:25px;"),
-                  tags$p(tags$strong("CellMarker"), tags$a("CellMarker: a manually curated resource of cell markers in human and mouse, Nucleic Acids Research 2019",href="https://pubmed.ncbi.nlm.nih.gov/30289549/"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://bio-bigdata.hrbmu.edu.cn/CellMarker/")),
-                  tags$p(tags$strong("PanglaoDB"), tags$a("PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data, Database 2019",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://panglaodb.se/")),
-                  tags$p(tags$strong("GeneMarkeR"), tags$a("GeneMarkeR: A Database and User Interface for scRNA-seq Marker Genes, Front. Genet. 2021",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://shiny.ph.iu.edu/GeneMarkeR/")),
-                  tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
-                  tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human Reference Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
-                  tags$p(tags$strong("Blood Proteoform"), tags$a("The Blood Proteoform Atlas: A reference map of proteoforms in human hematopoietic cells,Science 2022",href="https://www.science.org/stoken/author-tokens/ST-317/full"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://blood-proteoform-atlas.org/")),
-                  tags$p(tags$strong("Abcam"),tags$a(href="https://www.abcam.com/"))))
-      
+                  tags$p(tags$strong("ThermoFisher"), tags$a(href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
+                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide"))))
     )
   )
   
@@ -455,7 +299,7 @@ server <- function(input, output, session) {
     updatePickerInput(session,'celltype', selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"),
                       choices=unique(marker_table[species %in% input$species]$celltype_species),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 103)))
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(marker_table$celltype))))
   })
   
   controlDescendant<-reactive({
@@ -647,11 +491,11 @@ server <- function(input, output, session) {
       
       gene_marker<-gene_marker[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                   "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                  "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                                  "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
       
       colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")  
+                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")  
       gene_marker<-gene_marker[species %in% input$speciesM]
       
       
@@ -671,11 +515,11 @@ server <- function(input, output, session) {
     
     table_marker_file<-table_marker_file[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                             "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                            "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                                            "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
     
     colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                    "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")  
+                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")  
     table_marker_file <- table_marker_file[species %in% input$speciesM]
     table_marker_file
     

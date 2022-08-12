@@ -822,10 +822,10 @@ select_descendant<-function(onto_plot, marker_table, input_descendant){
   table_descendant<-marker_table[celltype %in% dt_subnodes$V1]
   table_descendant<-table_descendant[,c("celltype_species","celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                         "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                        "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                                        "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
   colnames(table_descendant)<-c("celltype_species","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                 "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
+                                "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")
   return(table_descendant)
 }
 #merge descendats ----
@@ -860,10 +860,10 @@ table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descen
   
   unite_table<- unite_table[,c("ancestor","celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
   colnames(unite_table)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                            "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                           "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
+                           "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")
   return(unite_table)
   
 }
@@ -877,10 +877,10 @@ table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_
   table_not_desc[,ancestor:=NA]
   table_not_desc<-table_not_desc[,c("ancestor","celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
                                     "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                    "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                                    "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
   colnames(table_not_desc)<-c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                               "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                              "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
+                              "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")
   combine_table<-rbind(table_not_desc,merged_descendant_table)
   
   #compute specificity 
@@ -893,7 +893,7 @@ table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_
   
   combine_table<-combine_table[,c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                                   "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                  "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                                  "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
   return(combine_table)
   
 }
@@ -911,11 +911,11 @@ table_desc_other<-function(marker_table,input_celltype,descendant_table,input_sp
   
   table_all<-table_all[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","query_specificity","original_celltype.CellMarker",
                           "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                          "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                          "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
   
   colnames(table_all)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                          "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                         "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")
+                         "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")
   return(table_all)
 }
 
@@ -931,10 +931,10 @@ table_input_celltypes<-function(marker_table,input_celltype,input_species){
   
   marker_table_simple<-marker_table_simple[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","query_specificity","original_celltype.CellMarker",
                                               "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                              "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")]
+                                              "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
   colnames(marker_table_simple)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","query_specificity","original_celltype.CellMarker",
                                    "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam")  
+                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")  
   #filter on specificity
   return(marker_table_simple)
 }
