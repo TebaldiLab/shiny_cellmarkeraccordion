@@ -17,6 +17,9 @@ library(dplyr)
 library(shinyBS)
 library(shinyhelper)
 library(shinydashboardPlus)
+library(readxl)
+library(plyr)
+
 
 #source("packages.R")
 source('helper_function.R')
@@ -26,7 +29,19 @@ source('helper_function.R')
 marker_table<-fread("data/Hema_Accordion_9db.txt",sep='\t',header=TRUE)
 
 marker_table<-as.data.table(marker_table)
+colnames(marker_table)<-c("cell_type","celltype_species","marker",                        
+                          "marker_type","EC_score","cell_ID",                       
+                          "cell_def","species","gene_description","original_celltype.ASCTB","original_celltype.Abcam","original_celltype.Azimuth",    
+                          "original_celltype.CellMarker","original_celltype.CellTypist","original_celltype.GeneMarkeR",
+                          "original_celltype.MSigDB","original_celltype.PanglaoDB","original_celltype.ThermoFisher","database_specificity")
 
+marker_table_long<- melt(marker_table, id.vars = c("cell_type","celltype_species","marker",                        
+                                                   "marker_type","EC_score","cell_ID",                       
+                                                   "cell_def","species","gene_description","database_specificity"))
+marker_table_long<-marker_table_long[!is.na(value)]
+marker_table_long<-marker_table_long[,-c("EC_score","database_specificity")]
+colnames(marker_table_long)<-c("cell_type","celltype_species","marker","marker_type",           
+              "cell_ID", "cell_def", "species","gene_description","database","orig.name")
 #update HGNC symbol 
 # marker_table<-update_HGNC(in_list,anno_file="C:/Users/emmab/Desktop/PhD/Rscript_vari/hgnc/hgnc_complete_set_2022/hgnc_tables_2022.RData")
 # hgnc_symbol_imm<-as.data.table(hgnc_symbol_imm)[!is.na(previous)][type!="orphan"]
@@ -56,6 +71,25 @@ ontology_def[,cell_def:=str_remove_all(cell_def, '"')]
 ontology_def[,cell_def:=str_remove_all(cell_def, "\\$")]
 ontology_def[,cell_def:=tstrsplit(cell_def, "[", fixed = TRUE, keep = 1)]
 
+#gene description
+#human
+description_hs<-read_excel("data/ensembl_gene_description/Ensembl_Hs_38.p13.xlsx",col_names = T)
+colnames(description_hs)<-c("gene_name","gene_description","gene_synonym")
+description_hs<-as.data.table(description_hs)
+description_hs[,gene_description:=tstrsplit(gene_description,"[",fixed=TRUE,keep=1)]
+description_hs<-description_hs[!gene_name==""]
+description_hs[,gene_name:= str_trim(gene_name)]
+description_hs[,gene_synonym:= str_trim(gene_synonym)]
+#mouse
+description_mm<-read_excel("data/ensembl_gene_description/Ensembl_Mm_m39.xlsx",col_names=T)
+colnames(description_mm)<-c("gene_name","gene_description","gene_synonym")
+description_mm<-as.data.table(description_mm)
+description_mm[,gene_description:=tstrsplit(gene_description,"[",fixed=TRUE,keep=1)]
+description_mm<-description_mm[!gene_name==""]
+description_mm[,gene_name:= str_trim(gene_name)]
+description_mm[,gene_synonym:= str_trim(gene_synonym)]
+
+
 ui <- dashboardPage(
   dashboardHeader(titleWidth  = 500,title = tagList(
     tags$span(
@@ -75,6 +109,7 @@ ui <- dashboardPage(
                    )
   ),
   dashboardBody(tags$head(
+    tags$style("#shiny-modal img { max-width: 100%; }"),
     tags$script(HTML("$('body').addClass('sidebar-mini');")),
     tags$link(rel = "stylesheet", type = "text/css", href = "styles.css"),
     tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);")),
@@ -104,11 +139,14 @@ ui <- dashboardPage(
                                                                        choiceNames =
                                                                          list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
                                                                        choiceValues =
-                                                                         list("Human","Mouse"),selected = c("Human","Mouse"),inline=TRUE),
+                                                                         list("Human","Mouse"),selected = c("Human"),inline=TRUE),
                                                     br(),
+                                                    splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom annotation",buttonLabel=list(icon("upload")),multiple = FALSE),
+                                                                actionButton('usermarkerinfo', 'InputFile',icon= icon("file-circle-question"), align="left",style='margin-top:30px')),
                                                     pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
+                                                    br(),
                                                     pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
-                                                    checkboxInput("cellid","Plot CL_ID",value=FALSE))),
+                                                    checkboxInput("cellid","Plot cell_ID",value=FALSE))),
                            br(),
                            #change style sliderinput
                            tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #990000}")),
@@ -139,7 +177,7 @@ ui <- dashboardPage(
                   conditionalPanel(condition= "input.descendantsof == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty', 'Info',icon= icon("info"), align="left"))))),
                   
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
-                                                     fluidRow(column(2,radioButtons('times','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
+                                                     fluidRow(column(2,radioButtons('EC_score','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
                                                               column(3,radioButtons('database_spec','database_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                               column(3,radioButtons('query_spec','query_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                               column(2,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),
@@ -156,7 +194,7 @@ ui <- dashboardPage(
             background-color: #ad000019;
             font-size: 16px;
         }'))),
-                  # bsTooltip("times", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
+                  # bsTooltip("EC_score", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
                   #           options = NULL),
                   br(),
                   br(),
@@ -175,10 +213,8 @@ ui <- dashboardPage(
                          tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
                   tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
                          tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8")),
-                  tags$p(tags$strong("ThermoFisher"), tags$a(href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
-                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide")))),
-      
-      
+                  tags$p(tags$strong("ThermoFisher"), tags$a("ThermoFisher",href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
+                  tags$p(tags$strong("Abcam"), tags$a("Abcam", href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide")))),
       
       
       tabItem(tabName="marker_h", 
@@ -186,12 +222,12 @@ ui <- dashboardPage(
                                                                                     choiceNames =
                                                                                       list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
                                                                                     choiceValues =
-                                                                                      list("Human","Mouse"),selected = c("Human","Mouse"),inline=TRUE),
+                                                                                      list("Human","Mouse"),selected = c("Human"),inline=TRUE),
                                                     br(),
                                                     textInput("marker", "Insert marker genes", value = "CD34", width = NULL, placeholder = NULL),
                                                     fileInput("markerfile", "Load text file with marker genes ",buttonLabel=list(icon("upload")),
                                                               multiple = FALSE),
-                                                    checkboxInput("cellidM","Plot CL_ID",value=FALSE))),
+                                                    checkboxInput("cellidM","Plot cell_ID",value=FALSE))),
                            br(),
                            #change style sliderinput
                            tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: #990000}")),
@@ -218,8 +254,8 @@ ui <- dashboardPage(
                   br(),
                   br(),
                   titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpM', 'Info',icon= icon("info"), align="left")))),                  
-                  fluidRow(column(width=8,wellPanel(id="sidebar2M",
-                                                    fluidRow(column(3,radioButtons('timesM','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
+                  fluidRow(column(width=12,wellPanel(id="sidebar2M",
+                                                    fluidRow(column(3,radioButtons('EC_scoreM','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
                                                              column(3,radioButtons('database_specM','database_specificity', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                              column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
                   fluidRow(column(4,radioButtons("downloadTypeM", "Download Format", choices = c("CSV" = ".csv",
@@ -232,11 +268,12 @@ ui <- dashboardPage(
             background-color: #ad000019;
             font-size: 16px;
         }'))),
-                  # bsTooltip("times", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
+                  # bsTooltip("EC_score", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
                   #           options = NULL),
                   br(),
                   br(),
                   dataTableOutput('table1M'),
+                  tableOutput("tb"),
                   br(),
                   tags$p("References",style = "font-size:25px;"),
                   tags$p(tags$strong("CellMarker"), tags$a("CellMarker: a manually curated resource of cell markers in human and mouse, Nucleic Acids Research 2019",href="https://pubmed.ncbi.nlm.nih.gov/30289549/"),
@@ -251,8 +288,8 @@ ui <- dashboardPage(
                          tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
                   tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
                          tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8" )),
-                  tags$p(tags$strong("ThermoFisher"), tags$a(href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
-                  tags$p(tags$strong("Abcam"), tags$a(href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide"))))
+                  tags$p(tags$strong("ThermoFisher"), tags$a("ThermoFisher",href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
+                  tags$p(tags$strong("Abcam"), tags$a("Abcam",href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide"))))
     )
   )
   
@@ -262,6 +299,26 @@ server <- function(input, output, session) {
   ############ HEMATOPOIETIC SYSTEM 
   
   ###### server for cell type search 
+  
+  observeEvent(input$usermarkerinfo,{
+    showModal(modalDialog(
+      title = "Marker genes input file",
+      HTML("Add your list of marker genes to be integrated with the Accordion. <br>
+      The file must contain at least two columns:
+             <ul><li> <strong> 1. </strong>: cell types based on the Cell Ontology nomenclature </li>
+             <li> <strong> 2. </strong>: marker genes </li>
+             You can also provide additional columns:
+             <li> <strong> 3. </strong>: marker type (default positive) <br> <ul><li> positive: whether the gene is a positive marker 
+             </li><li> negative: whether the gene is a negative marker </li></ul>
+             <li> <strong> 4. </strong>: species (default Human. You can also select the species using the above box) <br> <ul><li> Human </li><li> Mouse </li></ul>
+             <br>
+           <strong> Example </strong>"),
+      HTML("<img src=input_file_example.jpg>"),
+      easyClose = TRUE,
+      footer = NULL
+    ))
+  })
+  
   
   observeEvent(input$help,{
     showModal(modalDialog(
@@ -293,18 +350,119 @@ server <- function(input, output, session) {
     ))
   })
   
+  markerTable <-reactive ({
+    if(!is.null(input$usermarker)){
+    file_load_marker<-input$usermarker
+    fileName_marker <- file_load_marker$datapath
+    ext <-  tools::file_ext(fileName_marker)
+    req(file_load_marker)
+    validate(need(ext %in% c("csv", "xlsx","txt"), "Please upload a csv, txt or xlsx file"))
+    if(ext=="xlsx"){
+      user_inputfile<-read_excel(fileName_marker)
+    }
+    if(ext=="csv" | ext == "txt"){
+      user_inputfile<-fread(fileName_marker)
+
+    }
+    user_inputfile<-as.data.table(user_inputfile)
+    validate(need(ncol(user_inputfile) >=2, "Insufficient number of columns! Need at least cell type and marker columns"))
+    
+    if(ncol(user_inputfile)==2){
+      colnames(user_inputfile)<-c("cell_type","marker")
+      user_inputfile[,marker_type:="positive"]
+      user_inputfile[,species:= input$species]
+      
+    } else if (ncol(user_inputfile)==3){
+      if(toupper("positive") %in% toupper(as.character(as.data.frame(user_inputfile)[,3])) | toupper("negative") %in% toupper(as.character(as.data.frame(user_inputfile)[,3]))){
+      colnames(user_inputfile)<-c("cell_type","marker","marker_type")
+      user_inputfile[,species:= input$species]
+      user_inputfile[,marker_type:=tolower(marker_type)]
+      
+      } else if(toupper("Human") %in% toupper(as.character(as.data.frame(user_inputfile)[,3])) | toupper("Mouse") %in% toupper(as.character(as.data.frame(user_inputfile)[,3]))){
+        colnames(user_inputfile)<-c("cell_type","marker","species")
+        user_inputfile[,marker_type:="positive"]
+        user_inputfile[,species:=tolower(species)]
+        user_inputfile[,species:=str_to_title(species)]
+        user_inputfile<-user_inputfile[,c("cell_type","marker","marker_type","species")]
+        
+      }
+    } else if (ncol(user_inputfile)==4){
+      colnames(user_inputfile)<-c("cell_type","marker","marker_type","species")
+      }
+      
+    #merge user marker with ontology
+    user_inputfile<-merge(user_inputfile, ontology_celltype,by="cell_type")
+    user_inputfile<-merge(user_inputfile,ontology_def[,-"cell_type"],by="cell_ID")
+    
+    dt_hs<-merge(user_inputfile[species=="Human"],description_hs[,c("gene_name","gene_description")],by.x="marker",by.y="gene_name",all.x=TRUE)
+    dt_hs_na<-dt_hs[is.na(gene_description)]
+    dt_hs_na<-merge(dt_hs_na[,-("gene_description")],description_hs[,c("gene_synonym","gene_description")],by.x="marker",by.y="gene_synonym",all.x=TRUE)
+    dt_hs<-rbind(dt_hs[!(is.na(gene_description))],dt_hs_na)
+    
+    dt_mm<-merge(user_inputfile[species=="Mouse"],description_mm[,c("gene_name","gene_description")],by.x="marker",by.y="gene_name",all.x=TRUE)
+    dt_mm_na<-dt_mm[is.na(gene_description)]
+    dt_mm_na<-merge(dt_mm_na[,-("gene_description")],description_mm[,c("gene_synonym","gene_description")],by.x="marker",by.y="gene_synonym",all.x=TRUE)
+    dt_mm<-rbind(dt_mm[!(is.na(gene_description))],dt_mm_na)
+    
+    user_inputfile<-rbind(dt_hs,dt_mm)
+    user_inputfile<-unique(user_inputfile)
+    
+    #add column celltype_species (for app)
+    celltype_hs<-unique(user_inputfile[species=="Human",c("cell_type","species")])
+    celltype_mm<-unique(user_inputfile[species=="Mouse",c("cell_type","species")])
+    celltype<-merge(celltype_hs,celltype_mm,by="cell_type",all=TRUE)
+    celltype[,V1:= paste0(species.x,", ",species.y)]
+    celltype[,celltype_species:=str_replace(V1, "Human, Mouse","Hs, Mm")]
+    celltype[,celltype_species:=str_replace(celltype_species, "Human, NA","Hs")]
+    celltype[,celltype_species:=str_replace(celltype_species, "NA, Mouse","Mm")]
+    celltype_species<-paste0(celltype$cell_type," (",celltype$celltype_species,")")
+    celltype_species<-cbind(celltype$cell_type,celltype_species)
+    colnames(celltype_species)<-c("cell_type","celltype_species")
+    user_inputfile<-merge(celltype_species,user_inputfile,by="cell_type")
+    user_inputfile<-as.data.table(user_inputfile)
+    user_inputfile<-user_inputfile[,c("cell_type","celltype_species","marker","marker_type","cell_ID","cell_def","species","gene_description")]
+    user_inputfile[,database:="original_celltype.custom"]
+    user_inputfile[,orig.name:=cell_type]
+    
+    #union of accordion markers and user marker
+    combine_table_long<-rbind(user_inputfile,marker_table_long)
+    combine_table_long<-unique(combine_table_long)
+    
+    #compute specificity 
+    mark_spec<-ddply(combine_table_long,.(marker),nrow)
+    colnames(mark_spec)<-c("marker","database_specificity")
+    combine_table_long<-merge(combine_table_long,mark_spec,by="marker",all.x = TRUE)
+    combine_table_long[,database_specificity:=format(round(1/database_specificity,2), nsmall=2)]
+    
+    
+    count_duplicated<-ddply(combine_table_long,.(cell_type,  marker, species),nrow)
+    colnames(count_duplicated)<-c("cell_type","marker","species","EC_score")
+    combine_table_long<-merge(combine_table_long,count_duplicated,by=c("cell_type","marker","species"))
+
+    combine_table<-dcast(combine_table_long, cell_type + celltype_species + marker +                        
+                         marker_type +EC_score+cell_ID+cell_def+species+gene_description+database_specificity ~ database, value.var = "orig.name")
+    
+    combine_table
+    }
+    else {
+      marker_table
+    }
+    })  
   
-  
-  observeEvent(input$species,{
-    updatePickerInput(session,'celltype', selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"),
-                      choices=unique(marker_table[species %in% input$species]$celltype_species),
-                      option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(marker_table$celltype))))
+  toListen <- reactive({
+    list(input$species,input$usermarker)
   })
+  
+  observeEvent(toListen(),{ 
+      updatePickerInput(session,'celltype', selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"),
+                        choices=unique(markerTable()[species %in% input$species]$celltype_species),
+                        option=list(`actions-box` = TRUE,style="box-celltypes"),
+                        choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTable()$cell_type))))
+        })
   
   controlDescendant<-reactive({
     onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
-    node<-as.data.table(unique(marker_table[celltype_species %in% input$celltype]$celltype))
+    node<-as.data.table(unique(markerTable()[celltype_species %in% input$celltype]$cell_type))
     dt<- data.table(celltype=character(), distance=numeric())
     for (i in 1:nrow(node)){
       distan<-max(eccentricity(onto_igraph, vids = node[i]$V1, mode = c("out")))
@@ -315,37 +473,38 @@ server <- function(input, output, session) {
     as.data.table(dt)
   })
   
+  
   observeEvent(input$celltype,{
     updatePickerInput(session,'descendantsof',
-                      choices=unique(marker_table[species %in% input$species & celltype %in% controlDescendant()[distance!=0]$celltype]$celltype_species),
+                      choices=unique(markerTable()[species %in% input$species & cell_type %in% controlDescendant()[distance!=0]$cell_type]$celltype_species),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 103)))
   })
   
   descendantTable<-reactive ({
     if(length(input$descendantsof)>0){
-      select_descendant(onto_plot, marker_table, input$descendantsof)
+      select_descendant(onto_plot, markerTable(), input$descendantsof)
     }
     
   })
   
   mergeDescendantTable<-reactive ({
     if(length(input$descendantsof)>0 & input$mergeDescendant=="Yes"){
-      table_merge_descendant(onto_plot, cell_onto, marker_table, input$descendantsof,input$species)
+      table_merge_descendant(onto_plot, cell_onto, markerTable(), input$descendantsof,input$species)
     }
   })
   
   markerTableOutput <- reactive ({
     #table with descandants merged
     if(length(input$descendantsof)!=0 & input$mergeDescendant=="Yes"){ 
-      table_merged_desc_other(marker_table,input$celltype,mergeDescendantTable(),input$species)
+      table_merged_desc_other(markerTable(),input$celltype,mergeDescendantTable(),input$species)
     }
     #table with descendants NOT merged 
     else if (length(input$descendantsof)!=0 & input$mergeDescendant=="No"){
-      table_desc_other(marker_table,input$celltype,descendantTable(),input$species)
+      table_desc_other(markerTable(),input$celltype,descendantTable(),input$species)
     }
     else if(length(input$descendantsof)==0){
-      table_input_celltypes(marker_table,input$celltype,input$species)
+      table_input_celltypes(markerTable(),input$celltype,input$species)
     }
     
   })
@@ -353,17 +512,17 @@ server <- function(input, output, session) {
   markerTablePlot <- reactive ({
     #plot with descendants
     if (length(input$descendantsof)!=0){
-      table_desc_other(marker_table,input$celltype,descendantTable(),input$species)
+      table_desc_other(markerTable(),input$celltype,descendantTable(),input$species)
     }
     else if(length(input$descendantsof)==0){
-      table_input_celltypes(marker_table,input$celltype,input$species)
+      table_input_celltypes(markerTable(),input$celltype,input$species)
     }
     
   })
   
   Plot <- reactive({
     if (length(input$celltype) > 1 | length(input$descendantsof)>=1)
-    {  ontosubplot<-onto_plot2(cell_onto,markerTablePlot()$CL_ID ,cex=0.8)
+    {  ontosubplot<-onto_plot2(cell_onto,markerTablePlot()$cell_ID ,cex=0.8)
     nodes<-as.data.table(ontosubplot@nodes)
     nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
     nodes<-nodes[, V1:=str_replace_all(V1,"\n"," ")]
@@ -373,7 +532,7 @@ server <- function(input, output, session) {
     
     }
     else if(length(input$celltype) == 1 ){
-      ontosubplot<-onto_plot(cell_onto,markerTablePlot()$CL_ID ,cex=0.8)
+      ontosubplot<-onto_plot(cell_onto,markerTablePlot()$cell_ID ,cex=0.8)
       ontosubplot2<-make_graphNEL_from_ontology_plot(ontosubplot)
       dt_onto2<-as.data.table(ontosubplot2@nodes)
       label<-merge(dt_onto2,ontology_celltype,by.x="V1",by.y="cell_ID")
@@ -387,10 +546,10 @@ server <- function(input, output, session) {
   
   output$plot1 <- renderGrViz({
     if(length(input$descendantsof)>=1){
-      hierac_plot1_desc(marker_table, ontology_celltype,Plot(),input$celltype,descendantTable(),input$cellid)
+      hierac_plot1_desc(markerTable(), ontology_celltype,Plot(),input$celltype,descendantTable(),input$cellid)
     }
     else{
-      hierac_plot1(marker_table, ontology_celltype,Plot(),input$celltype,input$cellid)
+      hierac_plot1(markerTable(), ontology_celltype,Plot(),input$celltype,input$cellid)
     }
     
   })
@@ -403,7 +562,7 @@ server <- function(input, output, session) {
   
   
   click_plot<-reactive ({
-    click_node1(marker_table, ontology_celltype,Plot(),input$celltype,input$descendantsof,mergeDescendantTable(),input$cellid,ontology_def) 
+    click_node1(markerTable(), ontology_celltype,Plot(),input$celltype,input$descendantsof,mergeDescendantTable(),input$cellid,ontology_def) 
   })
   
   
@@ -422,17 +581,17 @@ server <- function(input, output, session) {
   
   outputTable<-reactive({
     if(length(input$celltype)!=0 & input$tabletype=="Complete"){
-      markerTableOutput()[EC_score>= str_replace_all(input$times, ">=","") & database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")]
+      markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")]
     }
     else if(length(input$celltype)!=0 & input$tabletype=="Simple"){
       if(input$mergeDescendant=="Yes"){
-        markerTableOutput()[EC_score>= str_replace_all(input$times, ">=","") & database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")
-        ][,c("cell_type_ancestor","cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity")]
+        markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")
+        ][,c("cell_type_ancestor","cell_type","cell_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity")]
         
       } 
       else{
-        markerTableOutput()[EC_score>= str_replace_all(input$times, ">=","") & database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")
-        ][,c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity")]
+        markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & database_specificity >= str_replace_all(input$database_spec, ">=|=","") & query_specificity >= str_replace_all(input$query_spec, ">=|=","")
+        ][,c("cell_type","cell_ID","marker","gene_description","species","EC_score","database_specificity","query_specificity")]
       }
     }
     
@@ -442,6 +601,7 @@ server <- function(input, output, session) {
   output$table1 <- renderDataTable({
     outputTable()
   })
+  
   
   # Downloadable csv of selected dataset 
   
@@ -489,13 +649,10 @@ server <- function(input, output, session) {
       validate(need(marker_input %in% marker_dt, "Please insert valid marker genes!"))
       gene_marker<-marker_table[tolower(marker) %in% tolower(marker_vec$marker_gene)]
       
-      gene_marker<-gene_marker[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
+      gene_marker<-gene_marker[,c("cell_type","cell_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                   "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
       
-      colnames(gene_marker)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
-                               "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                               "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")  
       gene_marker<-gene_marker[species %in% input$speciesM]
       
       
@@ -505,7 +662,6 @@ server <- function(input, output, session) {
   
   #table base on input file genes marker 
   tableFileMarker<-reactive ({
-    
     file_load<-input$markerfile
     fileName <- file_load$datapath    
     mark<-readChar(fileName, file.info(fileName)$size)
@@ -513,13 +669,10 @@ server <- function(input, output, session) {
     colnames(marker_vec)<-"marker_gene"
     table_marker_file<-marker_table[tolower(marker) %in% tolower(marker_vec$marker_gene)]
     
-    table_marker_file<-table_marker_file[,c("celltype","cell_ID","marker","gene_description","marker_type","species","times","specificity","original_celltype.CellMarker",
+    table_marker_file<-table_marker_file[,c("cell_type","cell_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
                                             "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
                                             "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")]
     
-    colnames(table_marker_file)<-c("cell_type","CL_ID","marker","gene_description","marker_type","species","EC_score","database_specificity","original_celltype.CellMarker",
-                                   "original_celltype.PanglaoDB","original_celltype.GeneMarkeR","original_celltype.Azimuth","original_celltype.ASCTB",
-                                   "original_celltype.MSigDB","original_celltype.CellTypist","original_celltype.Abcam","original_celltype.ThermoFisher")  
     table_marker_file <- table_marker_file[species %in% input$speciesM]
     table_marker_file
     
@@ -545,7 +698,7 @@ server <- function(input, output, session) {
   
   PlotM <- reactive({
     if (nrow(tableInputComplete())>=1) {
-      cell_matching<-unique(tableInputComplete()$CL_ID)
+      cell_matching<-unique(tableInputComplete()$cell_ID)
       if(length(cell_matching)>1){
         ontosubplot<-onto_plot2(cell_onto,cell_matching ,cex=0.8)
         nodes<-as.data.table(ontosubplot@nodes)
@@ -603,11 +756,11 @@ server <- function(input, output, session) {
   
   outputTableM<-reactive({
     if(nrow(tableInputComplete())!=0 & input$tabletypeM=="Complete"){
-      tableInputComplete()[EC_score >= str_replace_all(input$timesM, ">=","") & database_specificity >= str_replace_all(input$database_specM, ">=|=","")]
+      tableInputComplete()[EC_score >= str_replace_all(input$EC_scoreM, ">=","") & database_specificity >= str_replace_all(input$database_specM, ">=|=","")]
     }
     else if(nrow(tableInputComplete())!=0 & input$tabletypeM=="Simple"){
-      tableInputComplete()[EC_score>= str_replace_all(input$timesM, ">=","") & database_specificity >= str_replace_all(input$database_specM, ">=|=","")
-      ][,c("cell_type","CL_ID","marker","gene_description","species","EC_score","database_specificity")]
+      tableInputComplete()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & database_specificity >= str_replace_all(input$database_specM, ">=|=","")
+      ][,c("cell_type","cell_ID","marker","gene_description","species","EC_score","database_specificity")]
     }
     
     
