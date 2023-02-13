@@ -2,6 +2,7 @@ body, label, input, button, select {
     font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
 	font-size: 18px;
 }
+
 h3, .h3 {
     font-size: 33px;
    /* background: url(./logo2_2.png) no-repeat;*/
@@ -9,7 +10,7 @@ h3, .h3 {
   /*  background-color: #990000;*/
     /* background-color: white;*/
     color: #990000;
- font-weight: bold;
+    font-weight: bold;
     padding: 20px;
     font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
     /*text-transform: uppercase;*/
@@ -30,7 +31,7 @@ h4, .h4 {
         font-size: 20px;
 	text-align: center;
     padding: 15px;
-	color: #990000;
+    color: #990000;
     font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
     text-transform: uppercase;
     text-align: center;
@@ -38,9 +39,9 @@ h4, .h4 {
 
 h, .h {
         font-size: 24px;
-text-align: center; 
-   padding: 15px;
-    font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+	text-align: center; 
+   	padding: 15px;
+    	font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
 	color: black;
         
 }
@@ -52,7 +53,28 @@ h5, .h5 {
 	color: black;      
 }
 
+h6, .h6 {
+        font-size: 24px;
+   	  padding: 15px;
+        font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+	  color: black;  
+        text-align: left; 
+        font-weight: bold;
+   
+}
 
+h7, .h7 {
+      font-size: 24px;
+	text-align: center; 
+   	padding-top: -10px;
+	margin-top: 0px;
+   	padding-bottom: 30px;
+ 	padding-left: 25vh;
+    	font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
+	font-weight: bold;
+	color: black;
+        
+}
 
 /* style of entries box text of table */
 .dataTables_length select{
@@ -111,3 +133,4 @@ font-size: 18px;
 
 hr {border-top: 1px solid #000000;}
 .tab-content { padding-left: 20px; padding-right: 30px; }
+
