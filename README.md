@@ -18,7 +18,7 @@ The Cell Marker Accordion web interface allows to easily:
 
 ![immagine](https://user-images.githubusercontent.com/68125242/161060692-a4fef177-904f-4ea3-9bba-b4bc237e7145.png) Search and download lists of cell types by marker genes.
 
-![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/d9d4e0c3-4286-43e2-b22f-7117d6d2ec1f)
+![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/85657e7c-a8f1-4bc5-b65b-4d1ffc56b51f)
 
 
 
