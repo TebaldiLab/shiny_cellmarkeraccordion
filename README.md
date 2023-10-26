@@ -1,4 +1,4 @@
-![circle-notch-solid](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/bcb5819d-b75a-4af3-a945-225e0ee1bd78)# TheCellMarkerAccordion 
+# TheCellMarkerAccordion 
 A Web tool for single-cell and spatial RNA-seq cell types annotation
 ![Logo](https://user-images.githubusercontent.com/68125242/161058801-e3a83d1b-f12f-4cde-89e7-2a1207e99149.png)
 
@@ -9,9 +9,7 @@ A Web tool for single-cell and spatial RNA-seq cell types annotation
 
 The Cell Marker Accordion web interface allows to easily:
 
-![immagine](https://user-images.githubusercontent.com/68125242/161060535-0d78fc69-c29d-4003-b1a8-3c94606e8a09.png)
-
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="50" height="50">
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="20" height="20">
 
 Search and download lists of marker genes by cell types. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.
 
