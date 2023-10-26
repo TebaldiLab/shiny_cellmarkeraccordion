@@ -1,16 +1,17 @@
-
-list.of.packages <- c("shinydashboard","shiny","stringr","DiagrammeR","igraph",
-                      "shinyWidgets","ontologyIndex","data.table","plyr","ontologyPlot",
-                      "writexl", "dplyr", "shinyBS","shinyhelper",
-                      "shinydashboardPlus", "readxl","rstatix", "tidyverse")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) suppressMessages(suppressWarnings({install.packages(new.packages, dependencies = T)}))
-
-list.of.packages.bio<-c("ontoProc")
-new.packages_bio <- list.of.packages.bio[!(list.of.packages.bio %in% installed.packages()[,"Package"])]
-if(length(new.packages_bio)) suppressMessages(suppressWarnings({install.packages(new.packages_bio, dependencies = T)}))
+library("rstudioapi")  
+setwd(dirname(getActiveDocumentContext()$path)) 
 
 
+# list.of.packages <- c("shinydashboard","shiny","stringr","DiagrammeR","igraph",
+#                       "shinyWidgets","ontologyIndex","data.table","plyr","ontologyPlot",
+#                       "writexl", "dplyr", "shinyBS","shinyhelper",
+#                       "shinydashboardPlus", "readxl","rstatix", "tidyverse")
+# new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
+# if(length(new.packages)) suppressMessages(suppressWarnings({install.packages(new.packages, dependencies = T)}))
+# 
+# list.of.packages.bio<-c("ontoProc")
+# new.packages_bio <- list.of.packages.bio[!(list.of.packages.bio %in% installed.packages()[,"Package"])]
+# if(length(new.packages_bio)) suppressMessages(suppressWarnings({install.packages(new.packages_bio, dependencies = T)}))
 
 library(shinydashboard)
 library(shiny)
@@ -20,7 +21,6 @@ library(igraph)
 library(shinyWidgets)
 library(ontologyIndex)
 library(plyr)
-library(data.table)
 library(ontologyPlot)
 library(ontoProc)
 library(writexl)
@@ -29,14 +29,16 @@ library(shinyBS)
 library(shinyhelper)
 library(shinydashboardPlus)
 library(readxl)
+library(plyr)
 library(rstatix)
 library(tidyverse)
+library(data.table)
 
 source('helper_function.R')
 
-marker_table<-fread("data/Hema_Accordion_2023.txt",sep='\t',header=TRUE)
-
-
+load("data/accordion_marker.rda")
+marker_table<-accordion_marker
+rm(accordion_marker)
 marker_table_long<- melt(marker_table, id.vars = c("cell_type","celltype_species","marker",                        
                                                    "marker_type","EC_score","cell_ID",                       
                                                    "cell_def","species","gene_description","database_specificity"))
@@ -55,7 +57,9 @@ marker_table_collapse[,disease_type:="healthy"]
 marker_table_collapse[,disease_id:=NA]
 
 #load disease accordion marker
-marker_disease<-fread("data/dt_accordion_disease_collapse_Feb23.tsv",header = TRUE)
+load("data/accordion_disease_marker.rda")
+marker_disease<-accordion_disease_marker
+rm(accordion_disease_marker)
 colnames(marker_disease)[13] <- "reference"
 
 marker_table_complete<-rbind(marker_table_collapse[,c("disease_type","disease_id","cell_type","celltype_species","cell_ID","cell_def","marker",                        
@@ -733,7 +737,7 @@ server <- function(input, output, session) {
 
 
   click_plot<-reactive ({
-    click_node1(markerTableComplete(),Plot(),input$celltype,input$descendantsof,mergeDescendantTable(),input$cellid)
+    click_node(marker_table_complete,ontology_celltype,Plot(),markerTableComplete(),input$cellid, ontology_def)
   })
 
 
@@ -924,7 +928,7 @@ server <- function(input, output, session) {
   
   
   click_plotM<-reactive ({
-    click_node2(marker_table_complete, ontology_celltype, PlotM(), tableInputComplete(),input$cellidM, ontology_def)
+    click_node(marker_table_complete, ontology_celltype, PlotM(), tableInputComplete(),input$cellidM, ontology_def)
   })
   
   
@@ -1291,7 +1295,7 @@ server <- function(input, output, session) {
     
     
     click_plotA<-reactive ({
-      click_node2(marker_table_complete, ontology_celltype, PlotA(), tablePlotOntology(),input$cellidA, ontology_def)
+      click_node(marker_table_complete, ontology_celltype, PlotA(), tablePlotOntology(),input$cellidA, ontology_def)
     })
     
     
