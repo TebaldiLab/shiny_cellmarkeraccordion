@@ -22,11 +22,12 @@ The Cell Marker Accordion web interface allows to easily:
 
 <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options
 
-![immagine](https://user-images.githubusercontent.com/68125242/169997529-eafb704e-f39f-439f-ab5d-b2b5d741e87b.png)
+![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/2b87c289-1159-45c6-a855-54528a168393)
 
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"> Rank and select marker genes by query or
 database specificity and by their evidence consistency scores
+![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a8d5fb4d-368c-493c-8372-3fef3add5e9c)
 
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35">
