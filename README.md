@@ -29,10 +29,12 @@ The Cell Marker Accordion web interface allows to easily:  <br />
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"> Rank and select marker genes by query or
 database specificity and by their evidence consistency scores.  <br />
 <br />
+
 ![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a8d5fb4d-368c-493c-8372-3fef3add5e9c)
 
  <br />
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"> User can upload a file containing markers for every cluster, or just related to one entity, and the tool retrieves the respective cell type with the highest correlation.  <br />
 <br />
+
 ![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/213a2174-804f-4f6f-be5e-aaf1ee73a245)
 
