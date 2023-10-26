@@ -33,5 +33,9 @@ The Cell Marker Accordion web interface allows to easily:
 database specificity and by their evidence consistency scores
 
 
-
+User can upload a file containing markers for every cluster, or just related to one entity, and the tool retrieves the respective cell type with the highest correlation. 
 ![immagine](https://user-images.githubusercontent.com/68125242/169997056-4c5b76a1-3c44-4305-99d1-07b89d7c7bbf.png)
+
+
+![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/213a2174-804f-4f6f-be5e-aaf1ee73a245)
+
