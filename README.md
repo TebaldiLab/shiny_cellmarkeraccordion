@@ -10,48 +10,13 @@ A Web tool for single-cell and spatial RNA-seq cell types annotation
 The Cell Marker Accordion web interface allows to easily:
 
 ![immagine](https://user-images.githubusercontent.com/68125242/161060535-0d78fc69-c29d-4003-b1a8-3c94606e8a09.png)
-![Uploading circle-no<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg
-   viewBox="0 0 512 512"
-   version="1.1"
-   id="svg1"
-   sodipodi:docname="circle-notch-solid.svg"
-   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
-   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
-   xmlns="http://www.w3.org/2000/svg"
-   xmlns:svg="http://www.w3.org/2000/svg">
-  <defs
-     id="defs1" />
-  <sodipodi:namedview
-     id="namedview1"
-     pagecolor="#ffffff"
-     bordercolor="#666666"
-     borderopacity="1.0"
-     inkscape:showpageshadow="2"
-     inkscape:pageopacity="0.0"
-     inkscape:pagecheckerboard="0"
-     inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="2.9238281"
-     inkscape:cx="255.82899"
-     inkscape:cy="256"
-     inkscape:window-width="3200"
-     inkscape:window-height="1711"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
-     inkscape:window-maximized="1"
-     inkscape:current-layer="svg1" />
-  <!--! Font Awesome Pro 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
-  <path
-     d="M222.7 32.1c5 16.9-4.6 34.8-21.5 39.8C121.8 95.6 64 169.1 64 256c0 106 86 192 192 192s192-86 192-192c0-86.9-57.8-160.4-137.1-184.1c-16.9-5-26.6-22.9-21.5-39.8s22.9-26.6 39.8-21.5C434.9 42.1 512 140 512 256c0 141.4-114.6 256-256 256S0 397.4 0 256C0 140 77.1 42.1 182.9 10.6c16.9-5 34.8 4.6 39.8 21.5z"
-     id="path1"
-     style="fill:#9c0000;fill-opacity:1" />
-</svg>
-tch-solid.svg…]()
+
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="50" height="50">
 
 Search and download lists of marker genes by cell types. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.
 
 ![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/1397db7d-5a8e-485f-9781-a8e6a4a98546)
+
 
 
 
