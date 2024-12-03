@@ -1,6 +1,6 @@
 # hierachies plot function cell types input ----
-hierac_plot1<-function(marker_table, graphnel_plot, input_celltype,input_cellid) {
-  if (length(input_celltype) >= 1) {
+hierac_plot1<-function(marker_table, graphnel_plot, input_celltype,input_cellid, input_disease) {
+  if (length(input_celltype) >= 1 & "healthy" %in% input_disease) {
     onto_igraph<-graph_from_graphnel(graphnel_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
     V(onto_igraph)$label = V(onto_igraph)$name
     V(onto_igraph)$name = factor(V(onto_igraph)$name, levels=as.character(V(onto_igraph)$name))
@@ -36,13 +36,13 @@ hierac_plot1<-function(marker_table, graphnel_plot, input_celltype,input_cellid)
       node_list<-nodes 
       node_list$type<-NULL
       node_list<-as.data.table(node_list)
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$cell_type, "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
       
       node_list[,value:=0.8]
       
     }
     if (length(input_celltype)>=1){
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$cell_type, "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
     }
   
   
@@ -50,14 +50,14 @@ hierac_plot1<-function(marker_table, graphnel_plot, input_celltype,input_cellid)
     node_list<-node_list[, fontcolor:="black"]
     
     if(input_cellid==TRUE){
-      node_list<-merge(node_list,marker_table[,c("cell_type","cell_ID")], by.x="label",by.y="cell_type")
+      node_list<-merge(node_list,marker_table[,c("celltype","celltype_ID")], by.x="label",by.y="celltype")
       node_list<-as.data.table(node_list)
-      node_list<-node_list[, label:= paste0(label," ", cell_ID)]
+      node_list<-node_list[, label:= paste0(label," ", celltype_ID)]
       
     }
     node_list<-unique(node_list)
     
-    id_disease<-node_list[label %in% unique(marker_table[condition !="healthy"]$cell_type)]$id
+    id_disease<-node_list[label %in% unique(marker_table[DO_diseasetype !="healthy"]$celltype)]$id
     node_list<-node_list[, label:=str_replace_all(label, " ", "\n")]
     
     edge_list<-nodes_edges[,c("from_id","to_id")]
@@ -164,8 +164,8 @@ hierac_plot1<-function(marker_table, graphnel_plot, input_celltype,input_cellid)
 }
 
 
-hierac_plot1_desc<-function(marker_table, graphnel_plot, input_celltype,descendant_table,input_cellid) {
-  if (length(input_celltype) >= 1) {
+hierac_plot1_desc<-function(marker_table, graphnel_plot, input_celltype,descendant_table,input_cellid, input_disease) {
+  if (length(input_celltype) >= 1 & "healthy" %in% input_disease) {
     onto_igraph<-graph_from_graphnel(graphnel_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
     V(onto_igraph)$label = V(onto_igraph)$name
     V(onto_igraph)$name = factor(V(onto_igraph)$name, levels=as.character(V(onto_igraph)$name))
@@ -201,21 +201,21 @@ hierac_plot1_desc<-function(marker_table, graphnel_plot, input_celltype,descenda
       node_list<-nodes 
       node_list$type<-NULL
       node_list<-as.data.table(node_list)
-      #node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$cell_type, "#FF8C69", "#E1E1E1"))]
+      #node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
       node_list[,value:=0.8]
       
     }
-       # node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(marker_table[celltype_species %in% input_celltype]$cell_type, "#FF8C69",
-       #                               ifelse(label %in% unique(descendant_table$cell_type),"#FFDB58","#E1E1E1")))]
+       # node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69",
+       #                               ifelse(label %in% unique(descendant_table$celltype),"#FFDB58","#E1E1E1")))]
     
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$cell_type, "#FF8C69", "#E1E1E1"))]
-      node_list[,fillcolor:= ifelse(!(label %in%  marker_table[celltype_species %in% input_celltype]$cell_type) & label %in% unique(descendant_table$cell_type), "#FFDB58", fillcolor)]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(!(label %in%  marker_table[celltype_species %in% input_celltype]$celltype) & label %in% unique(descendant_table$celltype), "#FFDB58", fillcolor)]
       node_list<-node_list[, fontcolor:="black"]
     
     if(input_cellid==TRUE){
-      node_list<-merge(node_list,marker_table[,c("cell_type","cell_ID")], by.x="label",by.y="cell_type")
+      node_list<-merge(node_list,marker_table[,c("celltype","celltype_ID")], by.x="label",by.y="celltype")
       node_list<-as.data.table(node_list)
-      node_list<-node_list[, label:= paste0(label," ", cell_ID)]
+      node_list<-node_list[, label:= paste0(label," ", celltype_ID)]
       
     }
     node_list<-unique(node_list)
@@ -323,8 +323,8 @@ hierac_plot1_desc<-function(marker_table, graphnel_plot, input_celltype,descenda
 }
 
 
-hierac_plot2<-function(marker_table, graphnel_plot, table_complete_input,input_cellid) {
-  if (nrow(table_complete_input)>=1) {
+hierac_plot2<-function(marker_table, graphnel_plot, table_complete_input,input_cellid, input_disease) {
+  if (nrow(table_complete_input)>=1 & input_disease == "healthy") {
     onto_igraph<-graph_from_graphnel(graphnel_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
     V(onto_igraph)$label = V(onto_igraph)$name
     V(onto_igraph)$name = factor(V(onto_igraph)$name, levels=as.character(V(onto_igraph)$name))
@@ -361,28 +361,28 @@ hierac_plot2<-function(marker_table, graphnel_plot, table_complete_input,input_c
       node_list<-nodes 
       node_list$type<-NULL
       node_list<-as.data.table(node_list)
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(label %in%  unique(marker_table$cell_type), "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  unique(marker_table$celltype), "#FF8C69", "#E1E1E1"))]
       
       node_list[,value:=0.8]
       
     }
     if (nrow(nodes)>1){
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[condition !="healthy"]$cell_type), "#FF6A6A", ifelse(label %in%  unique(marker_table$cell_type), "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  unique(marker_table$celltype), "#FF8C69", "#E1E1E1"))]
     }
     
     
     node_list<-node_list[, fontcolor:="black"]
     
     if(input_cellid==TRUE){
-      node_list<-merge(node_list,marker_table[,c("cell_type","cell_ID")], by.x="label",by.y="cell_type")
+      node_list<-merge(node_list,marker_table[,c("celltype","celltype_ID")], by.x="label",by.y="celltype")
       node_list<-as.data.table(node_list)
-      node_list<-node_list[, label:= paste0(label," ", cell_ID)]
+      node_list<-node_list[, label:= paste0(label," ", celltype_ID)]
       
     }
     #assign color
     node_list<-unique(node_list)
     
-    id_disease<-node_list[label %in% unique(marker_table[condition !="healthy"]$cell_type)]$id
+    id_disease<-node_list[label %in% unique(marker_table[DO_diseasetype !="healthy"]$celltype)]$id
     node_list<-node_list[, label:=str_replace_all(label, " ", "\n")]
     
     edge_list<-nodes_edges[,c("from_id","to_id")]
@@ -494,9 +494,9 @@ hierac_plot2<-function(marker_table, graphnel_plot, table_complete_input,input_c
 
 #click_node function ----
 
-click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_complete_input,cellid, ontology_def){
+click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_complete_input,cellid, ontology_def, input_disease){
   
-  if (nrow(table_complete_input)>=1) {
+  if (nrow(table_complete_input)>=1 & input_disease =="healthy") {
     onto_igraph<-graph_from_graphnel(graphnel_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
     V(onto_igraph)$label = V(onto_igraph)$name
     V(onto_igraph)$name = factor(V(onto_igraph)$name, levels=as.character(V(onto_igraph)$name))
@@ -537,22 +537,22 @@ click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_compl
       node_list[,value:=0.8]
       
     }
-    node_list[,fillcolor:= ifelse(label %in%  marker_table[cell_type %in% unique(table_complete_input$cell_type)]$cell_type, "#FF8C69","#E1E1E1")]
+    node_list[,fillcolor:= ifelse(label %in%  marker_table[celltype %in% unique(table_complete_input$celltype)]$celltype, "#FF8C69","#E1E1E1")]
     
     
-    # node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$cell_type, "#7B1B02",
-    #                                       ifelse(label %in% marker_table[celltype_species %in% input$celltype]$cell_type, "#FF8C69","#E1E1E1"))]
+    # node_list<-node_list[, color:= ifelse(label %in%  marker_table[celltype_species %in% input$descendantsof]$celltype, "#7B1B02",
+    #                                       ifelse(label %in% marker_table[celltype_species %in% input$celltype]$celltype, "#FF8C69","#E1E1E1"))]
     
     node_list<-node_list[, fontcolor:="black"]
     
-    node_list<-merge(node_list,ontology_def[,c("cell_def","cell_type")],by.x="label",by.y="cell_type")
+    node_list<-merge(node_list,ontology_def[,c("cell_definition","celltype")],by.x="label",by.y="celltype")
     node_list<-unique(node_list)
     
     
     if(cellid==TRUE){
-      node_list<-merge(node_list,ontology_celltype,by.x="label",by.y="cell_type")
+      node_list<-merge(node_list,ontology_celltype,by.x="label",by.y="celltype")
       node_list<-as.data.table(node_list)
-      node_list<-node_list[, label:= paste0(label," ", cell_ID)]
+      node_list<-node_list[, label:= paste0(label," ", celltype_ID)]
       
     }
     node_list<-unique(node_list)
@@ -592,7 +592,7 @@ click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_compl
           value = "URWEC_score"
         )
       
-      return(as.data.table(i_graph_2 %>% get_node_df())[,c("label","id_external","cell_def")])
+      return(as.data.table(i_graph_2 %>% get_node_df())[,c("label","id_external","cell_definition")])
     }
     
     
@@ -648,7 +648,7 @@ click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_compl
           value = 1
         )  #FF0000=red , #008000 green  ,
       
-      return(as.data.table(i_graph_2 %>% get_node_df())[,c("label","id_external","cell_def")])
+      return(as.data.table(i_graph_2 %>% get_node_df())[,c("label","id_external","cell_definition")])
     }
   }  
 }
@@ -657,42 +657,42 @@ click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_compl
 #select descendant ----
 select_descendant<-function(onto_plot, marker_table, input_descendant){
   onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
-  node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant)]$cell_type))
+  node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant)]$celltype))
   distan<-max(eccentricity(onto_igraph, vids = node$V1, mode = c("out")))
   subnetwork <- induced.subgraph(onto_igraph, vids = as.vector(unlist(neighborhood(onto_igraph, distan, nodes = node$V1, mode = 'out'))))
   dt_subnodes<-as.data.table(V(subnetwork)$name)
-  table_descendant<-marker_table[cell_type %in% dt_subnodes$V1]
+  table_descendant<-marker_table[celltype %in% dt_subnodes$V1]
   return(table_descendant)
 }
 #merge descendats ----
 table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descendant,input_species,col_name){
   onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
-  node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant)]$cell_type))
+  node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant)]$celltype))
   distan<-max(eccentricity(onto_igraph, vids = node$V1, mode = c("out")))
   subnetwork <- induced.subgraph(onto_igraph, vids = as.vector(unlist(neighborhood(onto_igraph, distan, nodes = node$V1, mode = 'out'))))
   dt_subnodes<-as.data.table(V(subnetwork)$name)
-  subnodes_id<-as.data.table(unique(marker_table[cell_type %in% dt_subnodes$V1]$cell_ID))
+  subnodes_id<-as.data.table(unique(marker_table[celltype %in% dt_subnodes$V1]$celltype_ID))
   onto_subplot<-onto_plot2(cell_onto, subnodes_id$V1,cex=0.8)
   
-  marker_table<-marker_table[cell_type %in% dt_subnodes$V1]
-  marker_table<-marker_table[,cell_type_ancestor:= NA]
+  marker_table<-marker_table[celltype %in% dt_subnodes$V1]
+  marker_table<-marker_table[,celltype_ancestor:= NA]
   marker_table<-marker_table[,-c("EC_score")]
   marker_table<-marker_table[species %in% input_species]
   
   for (i in 1:length(input_descendant)){
     onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
-    node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant[[i]])]$cell_type))
+    node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant[[i]])]$celltype))
     distan<-max(eccentricity(onto_igraph, vids = node$V1, mode = c("out")))
     subnetwork <- induced.subgraph(onto_igraph, vids = as.vector(unlist(neighborhood(onto_igraph, distan, nodes = node$V1, mode = 'out'))))
     dt_subnodes<-as.data.table(V(subnetwork)$name)
-    marker_table<-marker_table[,cell_type_ancestor:=ifelse(cell_type %in% dt_subnodes$V1,marker_table[celltype_species %in% input_descendant[[i]]]$cell_type,cell_type_ancestor)]
+    marker_table<-marker_table[,celltype_ancestor:=ifelse(celltype %in% dt_subnodes$V1,marker_table[celltype_species %in% input_descendant[[i]]]$celltype,celltype_ancestor)]
     # re-count the EC_score a marker for a specific cell type appear 
   }
   
-  unite_table<- setDT(marker_table[,-c("disease_id","cell_type","celltype_species","cell_ID","cell_def","gene_description","database_specificity")])[, lapply(.SD, function(x) sum(!is.na(x))), c("cell_type_ancestor","marker","species")]
+  unite_table<- setDT(marker_table[,-c("DO_ID","celltype","celltype_species","celltype_ID","cell_definition","gene_description","specificity_score")])[, lapply(.SD, function(x) sum(!is.na(x))), c("celltype_ancestor","marker","species")]
   unite_table[,EC_score:=rowSums(!(unite_table[,c(4:9)]==0))]
-  unite_table<-merge(unite_table[,c("cell_type_ancestor","marker","species","EC_score")],marker_table,by=c("cell_type_ancestor","marker","species"))
-  col_sel<-c("disease_type","cell_type_ancestor",col_name[ !col_name =="disease_type"])  
+  unite_table<-merge(unite_table[,c("celltype_ancestor","marker","species","EC_score")],marker_table,by=c("celltype_ancestor","marker","species"))
+  col_sel<-c("DO_diseasetype","celltype_ancestor",col_name[ !col_name =="DO_diseasetype"])  
   unite_table<- unite_table[, ..col_sel]
 
   return(unite_table)
@@ -702,24 +702,14 @@ table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descen
 # create table with merged descendant + the other cell types ----
 table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_table,input_species,col_name){
   
-  table_not_desc<-marker_table[!(cell_type %in% merged_descendant_table$cell_type)]
+  table_not_desc<-marker_table[!(celltype %in% merged_descendant_table$celltype)]
   table_not_desc<-as.data.table(table_not_desc)
   table_not_desc<-table_not_desc[celltype_species %in% input_celltype]
-  table_not_desc[,cell_type_ancestor:=NA]
-  col_sel<-c("disease_type","cell_type_ancestor",col_name[ !col_name =="disease_type"])  
+  table_not_desc[,celltype_ancestor:=NA]
+  col_sel<-c("DO_diseasetype","celltype_ancestor",col_name[!col_name =="DO_diseasetype"])  
   table_not_desc<- table_not_desc[, ..col_sel]
-
   
   combine_table<-rbind(table_not_desc,merged_descendant_table)
-  
-  #compute specificity 
-  combine_table<-as.data.table(combine_table)
-  mark_spec<-ddply(combine_table,.(marker),nrow)
-  colnames(mark_spec)<-c("marker","query_specificity")
-  combine_table<-merge(combine_table,mark_spec,by="marker",all.x = TRUE)
-  combine_table[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
-  col_sel<-c("disease_type","cell_type_ancestor",col_name[ !col_name =="disease_type"])  
-  
   combine_table<- combine_table[, ..col_sel]
   
   return(combine_table)
@@ -730,32 +720,16 @@ table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_
 table_desc_other<-function(marker_table,input_celltype,descendant_table,input_species,col_name){
   all_types<-c(input_celltype,descendant_table$celltype_species)
   table_all<-marker_table[celltype_species %in% all_types & species %in% input_species]
-  #compute specificity 
-  table_all<-as.data.table(table_all)
-  mark_spec<-ddply(table_all,.(marker),nrow)
-  colnames(mark_spec)<-c("marker","query_specificity")
-  table_all<-merge(table_all,mark_spec,by="marker",all.x = TRUE)
-  table_all[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
-  col_sel<-c(col_name,"query_specificity")
-  table_all<- table_all[, ..col_sel]
+  table_all<- table_all[, ..col_name]
   
   return(table_all)
 }
 
 #marker table with only input cell types (no descendant)
-table_input_celltypes<-function(marker_table,input_celltype,input_species,col_name){
-  marker_table_simple<-marker_table[celltype_species %in% input_celltype & species %in% input_species]
-  
-  #compute specificity 
-  mark_spec<-ddply(marker_table_simple,.(marker),nrow)
-  colnames(mark_spec)<-c("marker","query_specificity")
-  marker_table_simple<-merge(marker_table_simple,mark_spec,by="marker",all.x = TRUE)
-  marker_table_simple[,query_specificity:=format(round(1/query_specificity,2), nsmall=2)]
-  col_sel<-c(col_name,"query_specificity")
-  marker_table_simple<- marker_table_simple[, ..col_sel]
+table_input_celltypes<-function(marker_table,input_celltype, input_species, input_tissue, input_disease){
+  marker_table_simple<-marker_table[celltype_species %in% input_celltype & species %in% input_species & Uberon_tissue %in% input_tissue & DO_diseasetype %in% input_disease]
   
   #filter on specificity
   return(marker_table_simple)
 }
-
 
