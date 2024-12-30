@@ -108,7 +108,7 @@ ui <- dashboardPage(
       
       # Second tab content: Search markers according to cell types 
       tabItem(tabName = "celltype_h",
-              div(fluidRow(column(width=6,wellPanel(id="sidebar",
+              div(fluidRow(column(width=8,wellPanel(id="sidebar",
                                                     checkboxGroupInput("species", "Select species:",
                                                                        choiceNames =
                                                                          list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
@@ -116,13 +116,14 @@ ui <- dashboardPage(
                                                                          list("Human","Mouse"),selected = c("Human"),inline=TRUE),
                                                     br(),
                                                     #pickerInput('disease', 'Hematologic disorder', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    pickerInput('disease', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    pickerInput('tissue', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
+                                                    pickerInput('disease', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    pickerInput('tissue', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     #checkboxInput("collapse_tissue","",value=FALSE))),
                                                     checkboxInput("tissue_aware","Tissue aware",value=TRUE),
+                                                    pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE,selected=celltype_list, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    
                                                     splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom annotation",buttonLabel=list(icon("upload")),multiple = FALSE),
                                                                 actionButton('usermarkerinfo', 'InputFile',icon= icon("file-circle-question"), align="left",style='margin-top:30px')),
-                                                    pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE,selected=celltype_list, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
                                                     br(),
                                                     pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
                                                     checkboxInput("cellid","Plot celltype_ID",value=FALSE))),
@@ -131,7 +132,7 @@ ui <- dashboardPage(
                            tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #990000}")),
                            tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: #990000}")),
                            titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,offset=0, sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
+                           column(width=4,offset=0, sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
                                   br(),
                                   sliderInput(inputId = "width", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
                   tags$head(tags$style(HTML('
@@ -237,7 +238,7 @@ ui <- dashboardPage(
                   br(),
                   titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpM', 'Info',icon= icon("info"), align="left")))),                  
                   fluidRow(column(width=12,wellPanel(id="sidebar2M",
-                                                     fluidRow(column(3,radioButtons('EC_scoreM','EC_score', c(">=1",">=2",">=3",">=4"),selected = ">=1")),
+                                                     fluidRow(column(3,radioButtons('EC_scoreM','EC_score', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"), selected = ">=1")),
                                                               column(3,radioButtons('specificityM','Specificity_score', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                               column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
                   fluidRow(column(4,radioButtons("downloadTypeM", "Download Format", choices = c("CSV" = ".csv",
@@ -372,9 +373,7 @@ ui <- dashboardPage(
 )
 server <- function(input, output, session) {
   
-  ############ HEMATOPOIETIC SYSTEM 
-  
-  ###### server for cell type search 
+  ###### server for cell type search ----
   
   observeEvent(input$usermarkerinfo,{
     showModal(modalDialog(
@@ -537,7 +536,7 @@ server <- function(input, output, session) {
   })
   
   observeEvent(toListen_tissue(),{
-    updatePickerInput(session,'tissue', selected="blood",
+    updatePickerInput(session,'tissue', selected=tissue_list,
                       choices=unique(markerTableComplete()[DO_diseasetype %in% input$disease & species %in% input$species]$Uberon_tissue),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTableComplete()$Uberon_tissue))))
@@ -652,7 +651,6 @@ server <- function(input, output, session) {
       final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
       final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
     }
-    final_table
   })
   
   markerTablePlot <- reactive ({
@@ -668,7 +666,8 @@ server <- function(input, output, session) {
 
   Plot <- reactive({
      healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
-    if (length(healthy_ct) > 1 | length(input$descendantsof)>=1 & "healthy" %in% input$disease){  
+    if("healthy" %in% input$disease){
+    if (length(healthy_ct) > 1 | length(input$descendantsof)>=1){  
       ontosubplot<-onto_plot2(cell_onto,markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID ,cex=0.8)
       nodes<-as.data.table(ontosubplot@nodes)
       nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
@@ -678,7 +677,7 @@ server <- function(input, output, session) {
       nodes<-nodes[, V1:=str_sub(V1,1,nchar(V1)-1)]
       ontosubplot@nodes<-nodes$V1
       ontosubplot   
-    } else if(length(healthy_ct) == 1 & "healthy" %in% input$disease){
+    } else if(length(healthy_ct) == 1 & length(input$tissue) > 0){
       ontosubplot<-onto_plot(cell_onto,markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID ,cex=0.8)
       ontosubplot2<-make_graphNEL_from_ontology_plot(ontosubplot)
       dt_onto2<-as.data.table(ontosubplot2@nodes)
@@ -687,6 +686,8 @@ server <- function(input, output, session) {
       ontosubplot2@nodes<-ontosubplot[["node_attributes"]][["label"]]
 
       ontosubplot2
+      
+    }
     }
   })
 
@@ -696,8 +697,7 @@ server <- function(input, output, session) {
     if(length(healthy_ct>=1)){
       if(length(input$descendantsof)>=1){
         hierac_plot1_desc(markerTableComplete(),Plot(),healthy_ct,descendantTable(),input$cellid, input$disease)
-      }
-      else{
+      }else{
         hierac_plot1(markerTableComplete(),Plot(),healthy_ct,input$cellid, input$disease)
       }
     }
@@ -763,19 +763,19 @@ server <- function(input, output, session) {
       }
     }  else if(length(input$celltype)!=0 & input$tabletype=="Simple" & input$tissue_aware==TRUE){
       if(input$mergeDescendant=="Yes"){
-        markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
-                                                                                                                                                      c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype_ancestor","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score","resource")]
+        unique(markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
+                                                                                                                                                      c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype_ancestor","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score")])
       }else{
-        markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
-                                                                                                                                                      c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score","resource")]
+        unique(markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
+                                                                                                                                                      c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score")])
       }
     } else if(length(input$celltype)!=0 & input$tabletype=="Simple" & input$tissue_aware==FALSE){
       if(input$mergeDescendant=="Yes"){
-        markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
-                                                                                                                                                      c("species","DO_diseasetype","DO_ID","celltype_ancestor","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score","resource")]
+        unique(markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
+                                                                                                                                                      c("species","DO_diseasetype","DO_ID","celltype_ancestor","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score")])
       }else{
-        markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
-                                                                                                                                                      c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score","resource")]
+        unique(markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
+                                                                                                                                                      c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score")])
       }
     } 
 
@@ -907,10 +907,11 @@ server <- function(input, output, session) {
   })
   
   
+
   
   PlotM <- reactive({
     healthy_ct<-tableInputComplete()[DO_diseasetype =="healthy"]$celltype_ID
-    if (length(healthy_ct)>=1) {
+    if (length(healthy_ct)>=1 & "healthy" %in% input$diseaseM) {
       cell_matching<-unique(tableInputComplete()$celltype_ID)
       if(length(cell_matching)>1){
         ontosubplot<-onto_plot2(cell_onto,cell_matching ,cex=0.8)
@@ -940,7 +941,10 @@ server <- function(input, output, session) {
   
   
   output$plot1M <- renderGrViz({ 
-    hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM) 
+    healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
+    if(length(healthy_ct>=1)){
+      hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM) 
+    }
     
   })
   
