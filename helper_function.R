@@ -36,13 +36,13 @@ hierac_plot1<-function(marker_table, graphnel_plot, input_celltype,input_cellid,
       node_list<-nodes 
       node_list$type<-NULL
       node_list<-as.data.table(node_list)
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_ID %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
       
       node_list[,value:=0.8]
       
     }
     if (length(input_celltype)>=1){
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_ID %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
     }
   
   
@@ -208,8 +208,8 @@ hierac_plot1_desc<-function(marker_table, graphnel_plot, input_celltype,descenda
        # node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69",
        #                               ifelse(label %in% unique(descendant_table$celltype),"#FFDB58","#E1E1E1")))]
     
-      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_species %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
-      node_list[,fillcolor:= ifelse(!(label %in%  marker_table[celltype_species %in% input_celltype]$celltype) & label %in% unique(descendant_table$celltype), "#FFDB58", fillcolor)]
+      node_list[,fillcolor:= ifelse(label %in%  unique(marker_table[DO_diseasetype !="healthy"]$celltype), "#FF6A6A", ifelse(label %in%  marker_table[celltype_ID %in% input_celltype]$celltype, "#FF8C69", "#E1E1E1"))]
+      node_list[,fillcolor:= ifelse(!(label %in%  marker_table[celltype_ID %in% input_celltype]$celltype) & label %in% unique(descendant_table$celltype), "#FFDB58", fillcolor)]
       node_list<-node_list[, fontcolor:="black"]
     
     if(input_cellid==TRUE){
@@ -324,7 +324,7 @@ hierac_plot1_desc<-function(marker_table, graphnel_plot, input_celltype,descenda
 
 
 hierac_plot2<-function(marker_table, graphnel_plot, table_complete_input,input_cellid, input_disease) {
-  if (nrow(table_complete_input)>=1 & input_disease == "healthy") {
+  if (nrow(table_complete_input)>=1 &  "healthy" %in% input_disease) {
     onto_igraph<-graph_from_graphnel(graphnel_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
     V(onto_igraph)$label = V(onto_igraph)$name
     V(onto_igraph)$name = factor(V(onto_igraph)$name, levels=as.character(V(onto_igraph)$name))
@@ -496,7 +496,7 @@ hierac_plot2<-function(marker_table, graphnel_plot, table_complete_input,input_c
 
 click_node<-function(marker_table, ontology_celltype, graphnel_plot, table_complete_input,cellid, ontology_def, input_disease){
   
-  if (nrow(table_complete_input)>=1 & input_disease =="healthy") {
+  if (nrow(table_complete_input)>=1 & "healthy" %in% input_disease) {
     onto_igraph<-graph_from_graphnel(graphnel_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
     V(onto_igraph)$label = V(onto_igraph)$name
     V(onto_igraph)$name = factor(V(onto_igraph)$name, levels=as.character(V(onto_igraph)$name))
