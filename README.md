@@ -4,21 +4,22 @@ A Web tool for single-cell and spatial RNA-seq cell types annotation
 
 A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
 To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets. 
-
+The Cell Marker Accordion database includes thousand of markers associated with both human and mouse cell types from different tissues, in physiological and pathological conditions.
 
 **In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script.** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
 
 The Cell Marker Accordion web interface allows to easily:  <br />
 
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types in different tissues. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
 
-![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/1397db7d-5a8e-485f-9781-a8e6a4a98546)
+![immagine](https://github.com/user-attachments/assets/96363569-7b09-4eaf-b267-aea3558dea9a)
+
 
  <br />
 
  <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> Search and download lists of cell types by marker genes.  <br />
 
-![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/85657e7c-a8f1-4bc5-b65b-4d1ffc56b51f)
+![immagine](https://github.com/user-attachments/assets/23399d3f-8a45-41ed-ba81-8890abe51aa9)
 
  <br />
 <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.  <br />
