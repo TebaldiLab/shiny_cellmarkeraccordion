@@ -2,14 +2,15 @@
 A Web tool for single-cell and spatial RNA-seq cell types annotation
 ![Logo](https://user-images.githubusercontent.com/68125242/161058801-e3a83d1b-f12f-4cde-89e7-2a1207e99149.png)
 
+A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
+To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets. 
 
 
-
-**In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script.** 
+**In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script.** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
 
 The Cell Marker Accordion web interface allows to easily:  <br />
 
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types in different tissues. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
 
 ![immagine](https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/1397db7d-5a8e-485f-9781-a8e6a4a98546)
 
