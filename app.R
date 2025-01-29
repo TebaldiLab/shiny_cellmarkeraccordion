@@ -35,7 +35,7 @@ source('helper_function.R')
 
 ### REMEMBER TO CHANGE WHEN LOAD ON GITHUB -----
 setwd(dirname(getActiveDocumentContext()$path)) #locally
-#setwd("./home/rdds/www/apps/CellMarkerAccordion/") #for github
+#setwd("/home/rdds/www/apps/CellMarkerAccordion/") #for github
 
 
 load("data/accordion_complete.rda")
@@ -184,22 +184,8 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                   br(),
                   br(),
                   dataTableOutput('table1'),
-                  br(),
-                  tags$p("resources",style = "font-size:25px;"),
-                  tags$p(tags$strong("CellMarker"), tags$a("CellMarker: a manually curated resource of cell markers in human and mouse, Nucleic Acids Research 2019",href="https://pubmed.ncbi.nlm.nih.gov/30289549/"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://bio-bigdata.hrbmu.edu.cn/CellMarker/")),
-                  tags$p(tags$strong("PanglaoDB"), tags$a("PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data, Database 2019",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://panglaodb.se/")),
-                  tags$p(tags$strong("GeneMarkeR"), tags$a("GeneMarkeR: A Database and User Interface for scRNA-seq Marker Genes, Front. Genet. 2021",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://shiny.ph.iu.edu/GeneMarkeR/")),
-                  tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
-                  tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human resource Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
-                  tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8")),
-                  tags$p(tags$strong("ThermoFisher"), tags$a("ThermoFisher",href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
-                  tags$p(tags$strong("Abcam"), tags$a("Abcam", href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide")))),
+                  br()
+                  )),
       
   ###### search by markers -----    
       tabItem(tabName="marker_h", 
@@ -262,22 +248,8 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                   br(),
                   br(),
                   dataTableOutput('table1M'),
-                  br(),
-                  tags$p("resources",style = "font-size:25px;"),
-                  tags$p(tags$strong("CellMarker"), tags$a("CellMarker: a manually curated resource of cell markers in human and mouse, Nucleic Acids Research 2019",href="https://pubmed.ncbi.nlm.nih.gov/30289549/"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://bio-bigdata.hrbmu.edu.cn/CellMarker/")),
-                  tags$p(tags$strong("PanglaoDB"), tags$a("PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data, Database 2019",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://panglaodb.se/")),
-                  tags$p(tags$strong("GeneMarkeR"), tags$a("GeneMarkeR: A Database and User Interface for scRNA-seq Marker Genes, Front. Genet. 2021",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://shiny.ph.iu.edu/GeneMarkeR/")),
-                  tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
-                  tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human resource Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
-                  tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8" )),
-                  tags$p(tags$strong("ThermoFisher"), tags$a("ThermoFisher",href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
-                  tags$p(tags$strong("Abcam"), tags$a("Abcam",href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide")))),
+                  br()
+                  )),
       
       
 ##### SEMI-AUTOMATIC ANNOTATION -----
@@ -303,17 +275,19 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                                                              column(width=6,actionButton("addneg", HTML("Add value")))),
                                                     
                                                     style = "padding-bottom: 5px;")),
-                           column(width=6, wellPanel(id="sidebar",fluidRow(shiny::span(p(HTML("<h7>Filters</h7>"),actionButton('filterhelpA', 'Info',icon= icon("info"), align="center"))),
-                                                                           column(width=6,radioButtons('EC_scoreA','EC_score', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
-                                                                           column(width=6, radioButtons('specificityA','specificity_score', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0"))),
-                                                     
-                                                     style = "padding-bottom: 13px;")),
-                           br(),
-                           column(6,offset=0,div(img(src = "Logo.png",height="30%", width="30%"),style="text-align: center;"), 
-                                  br(),
-                                  actionButton("button", "Click to annotate!",icon= icon("rocket")), align="center")),
-                  
+                           column(6, offset=0, uiOutput("example_panel"))),
                   br(),
+                  
+                  fluidRow(column(width=6, wellPanel(id="sidebar",fluidRow(shiny::span(p(HTML("<h7>Filters</h7>"),actionButton('filterhelpA', 'Info',icon= icon("info"), align="center"))),
+                                                                  column(width=6,radioButtons('EC_scoreA','EC_score', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
+                                                                  column(width=6, radioButtons('specificityA','specificity_score', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
+                                                                                                                                    ),
+                                            style = "padding-bottom: 13px;")),
+                  
+                  column(6,div(img(src = "Logo.png",height="50%", width="50%"),style="text-align: center;"), 
+                         br(),
+                         actionButton("button", HTML("<strong>Click to annotate!"),style="font-size: 24px;",icon= icon("rocket")), align="center")),
+                  
                   conditionalPanel(
                     condition= "output.table1A", fluidRow(column(4,radioButtons("downloadTypeA", "Download Format", choices = c("CSV" = ".csv",
                                                                                                                                 "XLSX" = ".xlsx",
@@ -362,22 +336,8 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                   # bsTooltip("EC_score", "Evidence consensus score (number of databases)", placement = "top", trigger = "hover",
                   #           options = NULL),
                   br(),
-                  br(),
-                  tags$p("resources",style = "font-size:25px;"),
-                  tags$p(tags$strong("CellMarker"), tags$a("CellMarker: a manually curated resource of cell markers in human and mouse, Nucleic Acids Research 2019",href="https://pubmed.ncbi.nlm.nih.gov/30289549/"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://bio-bigdata.hrbmu.edu.cn/CellMarker/")),
-                  tags$p(tags$strong("PanglaoDB"), tags$a("PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data, Database 2019",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://panglaodb.se/")),
-                  tags$p(tags$strong("GeneMarkeR"), tags$a("GeneMarkeR: A Database and User Interface for scRNA-seq Marker Genes, Front. Genet. 2021",href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6450036/"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://shiny.ph.iu.edu/GeneMarkeR/")),
-                  tags$p(tags$strong("Azimuth"), tags$a("Integrated analysis of multimodal single-cell data, Cell 2021",href="https://www.sciencedirect.com/science/article/pii/S0092867421005833"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://azimuth.hubmapconsortium.org/")),
-                  tags$p(tags$strong("ASCTB"), tags$a("Anatomical structures, cell types and biomarkers of the Human resource Atlas, Nature Cell Biology 2021",href="https://www.nature.com/articles/s41556-021-00788-6"),
-                         tags$strong("-"),tags$a("Web Application",href = "https://hubmapconsortium.github.io/ccf/pages/ccf-anatomical-structures.html")),
-                  tags$p(tags$strong("MSigDB"), tags$a("The Molecular Signatures Database Hallmark Gene Set Collection, Cell Systems 2015",href="https://www.cell.com/cell-systems/fulltext/S2405-4712(15)00218-5?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS2405471215002185%3Fshowall%3Dtrue"),
-                         tags$strong("-"),tags$a("Web Application",href = "http://www.gsea-msigdb.org/gsea/msigdb/collections.jsp#C8" )),
-                  tags$p(tags$strong("ThermoFisher"), tags$a("ThermoFisher",href = "http://assets.thermofisher.com/TFS-Assets/LSG/brochures/immune-cell-guide.pdf")),
-                  tags$p(tags$strong("Abcam"), tags$a("Abcam",href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide"))))
+                  br()
+        ))
     )
   )
   
@@ -1119,14 +1079,11 @@ server <- function(input, output, session) {
     updateRadioButtons(session, "nmarkerneg", choices = updatedValues)
   })
   
-  
   inputTable <-reactive ({
     if(is.null(input$clusterfile)) {
       # Read the default example file
       table<-fread("./data/FindAllMarkers_out.tsv", verbose = F)
       table<-table[,-1]
-      verbatimTextOutput("A FindAllMarker output file is loaded as an example")
-      
       if(!is.na(as.numeric(input$nmarkerpos))){
         positive_marker<-table %>%
           group_by(cluster) %>%
@@ -1249,6 +1206,29 @@ server <- function(input, output, session) {
       }  
     }
   })  
+  
+  
+  output$table_example <- renderDataTable({
+    if(is.null(input$clusterfile)){
+      table<-fread("./data/FindAllMarkers_out.tsv", verbose = F)
+      table<-table[,-1]
+      }
+      
+  })
+  
+  output$example_panel <- renderUI({
+    if (is.null(input$clusterfile)) {
+      column(12,
+        HTML("<h5 style='color: black;'>An example file (output from FindAllMarkers function) has been automatically loaded.<br>You can proceed with the analysis or upload your own file.</h5>"),
+        dataTableOutput('table_example')
+      )
+    } else {
+      return(NULL)  # Ensures UI is removed when file is uploaded
+    }
+  })
+  
+  
+  
   
   
   markerTable<-reactive ({
