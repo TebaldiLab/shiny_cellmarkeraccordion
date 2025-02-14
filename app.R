@@ -199,7 +199,7 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                                                     fileInput("markerfile", "Load text file with marker genes ",buttonLabel=list(icon("upload")),
                                                               multiple = FALSE),
                                                     selectizeInput('diseaseM', 'Condition', selected = "healthy", choices= disease_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
+                                                    pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     checkboxInput("tissue_awareM","Tissue aware",value=TRUE),
                                                     
                                                     checkboxInput("cellidM","Plot celltype_ID",value=FALSE))),
@@ -793,6 +793,7 @@ server <- function(input, output, session) {
   
   
 
+
   #table based on selected genes-marker
   tableMarkerInput<-reactive ({
     if(length(input$marker)!=0){
@@ -820,7 +821,7 @@ server <- function(input, output, session) {
     marker_vec<-as.data.frame(unlist(strsplit(mark, "[\\|, \r\n+]+")))
     colnames(marker_vec)<-"marker_gene"
     table_marker_file<-accordion_complete[tolower(marker) %in% tolower(marker_vec$marker_gene)]
-    table_marker_file <- table_marker_file[species %in% input$speciesM & Uberon_tissue %in% input$tissue]
+    table_marker_file <- table_marker_file[species %in% input$speciesM]
     if(length(input$diseaseM>0)){
       table_marker_file<- table_marker_file[DO_diseasetype %in% input$diseaseM]
 
@@ -833,46 +834,47 @@ server <- function(input, output, session) {
   #2. Marker add through a marker file 
   #3. If both marker in the box and file marker are present add together 
   
-  tableInputComplete<-reactive({
+  tableInputComplete_notissue<-reactive({
     if(nchar(input$marker)>1 & (!is.null(input$markerfile))){
       table_tot<-rbind(tableMarkerInput(),tableFileMarker())
       if(length(input$diseaseM)>0){
       table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-      table_tot
+      
       }
       
     }else if(nchar(input$marker)>1  & is.null(input$markerfile)){
       table_tot<-tableMarkerInput()
       if(length(input$diseaseM)>0){
       table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-      table_tot
+    
       }
       
     }else if (nchar(input$marker)==0 & !is.null(input$markerfile)) {
       table_tot<-tableFileMarker()
       if(length(input$diseaseM)>0){
       table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-      table_tot
       }
-      
     }
+    table_tot
   })
   
 
-  
+
   toListen_tissueM <- reactive({
-    list(input$speciesM, input$diseaseM, tableInputComplete())
+    list(input$speciesM, input$diseaseM, tableInputComplete_notissue())
   })
-  
-  observeEvent(toListen_tissueM(),{
-    updatePickerInput(session,'tissueM',selected=unique(tableInputComplete()$Uberon_tissue),
-                      choices=unique(tableInputComplete()$Uberon_tissue),
-                      option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(tableInputComplete()$Uberon_tissue))))
-  })
-  
-  
 
+  observeEvent(toListen_tissueM(),{
+    updatePickerInput(session,'tissueM',selected=tableInputComplete_notissue()$Uberon_tissue,
+                      choices=unique(tableInputComplete_notissue()$Uberon_tissue),
+                      option=list(`actions-box` = TRUE,style="box-celltypes"),
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(tableInputComplete_notissue()$Uberon_tissue))))
+  })
+
+  
+  tableInputComplete <- reactive ({
+    tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
+  })
   
   PlotM <- reactive({
     healthy_ct<-tableInputComplete()[DO_diseasetype =="healthy"]$celltype_ID
@@ -942,7 +944,7 @@ server <- function(input, output, session) {
   
   markerTableOutputM <- reactive ({
     #keep tissue separated 
-    if(input$tissue_aware == TRUE){
+    if(input$tissue_awareM == TRUE){
       #compute EC and specificity condition&tissue specific
       
       #EC score
@@ -953,8 +955,9 @@ server <- function(input, output, session) {
       accordion_ec_table<-merge(tableInputComplete(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
       
       #specificity
-      st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
+      st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type")])
       st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
+      
       
       mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
       colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
@@ -974,7 +977,7 @@ server <- function(input, output, session) {
       accordion_ec_table<-merge(tableInputComplete(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
       
       #specificity
-      st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
+      st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type")])
       st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
       mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID, marker,marker_type),nrow)
       
@@ -984,17 +987,21 @@ server <- function(input, output, session) {
       final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
       final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
     }
+    final_table<-unique(final_table)
     final_table
   })
   
   
   FinalTableM<-reactive({
     if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Complete"){
-      markerTableOutputM()[EC_score >= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")]
-    }
-    else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple"){
-      markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
-      ][,c("DO_diseasetype","celltype","celltype_ID","marker","gene_description","species","EC_score","specificity_score")]
+      unique(markerTableOutputM()[EC_score >= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")])
+    } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == TRUE){
+      unique(markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
+      ][,c("DO_diseasetype","Uberon_tissue","celltype","celltype_ID","marker","gene_description","species","EC_score","specificity_score")])
+    } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == FALSE){
+      unique(markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
+      ][,c("DO_diseasetype","celltype","celltype_ID","marker","gene_description","species","EC_score","specificity_score")])
+      
     }
     
     
@@ -1012,13 +1019,13 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       if(input$downloadTypeM == ".csv"){
-        write.csv(outputTableM(), file, row.names = FALSE, quote=FALSE)
+        write.csv(FinalTableM(), file, row.names = FALSE, quote=FALSE)
       }
       else if(input$downloadTypeM == ".xlsx") {
-        write_xlsx(outputTableM(), file)
+        write_xlsx(FinalTableM(), file)
       }
       else if(input$downloadTypeM == ".tsv") {
-        write.table(outputTableM(), file, quote = FALSE, 
+        write.table(FinalTableM(), file, quote = FALSE, 
                     sep='\t', row.names = FALSE)
       }
       
