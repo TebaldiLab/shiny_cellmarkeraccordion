@@ -198,7 +198,7 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                                                     textInput("marker", "Insert marker genes", value = "CD34", width = NULL, placeholder = NULL),
                                                     fileInput("markerfile", "Load text file with marker genes ",buttonLabel=list(icon("upload")),
                                                               multiple = FALSE),
-                                                    selectizeInput('diseaseM', 'Condition', selected = "healthy", choices= disease_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
+                                                    pickerInput('diseaseM', 'Condition', selected = "healthy", choices= disease_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     checkboxInput("tissue_awareM","Tissue aware",value=TRUE),
                                                     
@@ -497,14 +497,14 @@ server <- function(input, output, session) {
 })
   
   toListen_tissue <- reactive({
-    list(input$species,input$usermarker, input$disease)
+    list(input$disease,input$species,input$usermarker, input$disease)
   })
   
   observeEvent(toListen_tissue(),{
     updatePickerInput(session,'tissue', selected=tissue_list,
-                      choices=unique(markerTableComplete()[DO_diseasetype %in% input$disease & species %in% input$species]$Uberon_tissue),
+                      choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]$Uberon_tissue),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTableComplete()$Uberon_tissue))))
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete$Uberon_tissue))))
   })
   
   toListen <- reactive({
@@ -513,9 +513,9 @@ server <- function(input, output, session) {
   
   observeEvent(toListen(),{
     updatePickerInput(session,'celltype', selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"),
-                      choices=unique(markerTableComplete()[DO_diseasetype %in% input$disease & species %in% input$species & Uberon_tissue %in% input$tissue]$celltype_species),
+                      choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species & Uberon_tissue %in% input$tissue]$celltype_species),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTableComplete()$celltype))))
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete$celltype))))
   })
 
   
@@ -573,98 +573,106 @@ server <- function(input, output, session) {
   })
   
   markerTableOutput <- reactive ({
-    #keep tissue separated 
-    if(input$tissue_aware == TRUE){
-      #compute EC and specificity condition&tissue specific
-      
-      #EC score
-      st_table_tissue_specific<-unique(markerTablePreOutput()[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
-      st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-      ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
-      colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
-      accordion_ec_table<-merge(markerTablePreOutput(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
-      
-      #specificity
-      st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
-      st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-      
-      mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
-      colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
-      
-      final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
-      final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-      
-      final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
-    } else{ #not consider tissue
-      #EC_score
-      st_table_tissue_specific<-unique(markerTablePreOutput()[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
-      st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-      
-      ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,celltype,celltype_ID,marker,marker_type),nrow)
-      
-      colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
-      accordion_ec_table<-merge(markerTablePreOutput(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
-      
-      #specificity
-      st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
-      st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-      mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID, marker,marker_type),nrow)
-      
-      colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","marker","marker_type", "specificity_score")
-      
-      final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","marker","marker_type"),all.x = TRUE)
-      final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-      final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+    if(!is.null(markerTablePreOutput())){
+        
+      #keep tissue separated 
+      if(input$tissue_aware == TRUE){
+        #compute EC and specificity condition&tissue specific
+        
+        #EC score
+        st_table_tissue_specific<-unique(markerTablePreOutput()[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
+        st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
+        ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
+        colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
+        accordion_ec_table<-merge(markerTablePreOutput(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
+        
+        #specificity
+        st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
+        st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
+        
+        mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
+        colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
+        
+        final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
+        final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
+        
+        final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+      } else{ #not consider tissue
+        #EC_score
+        st_table_tissue_specific<-unique(markerTablePreOutput()[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
+        st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
+        
+        ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,celltype,celltype_ID,marker,marker_type),nrow)
+        
+        colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
+        accordion_ec_table<-merge(markerTablePreOutput(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
+        
+        #specificity
+        st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
+        st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
+        mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID, marker,marker_type),nrow)
+        
+        colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","marker","marker_type", "specificity_score")
+        
+        final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","marker","marker_type"),all.x = TRUE)
+        final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
+        final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+      }
     }
   })
   
   markerTablePlot <- reactive ({
-    #plot with descendants
-    if (length(input$descendantsof)!=0){
-      table_desc_other(markerTableComplete(),input$celltype,descendantTable(),input$species,colnames(accordion_complete))
+    if(!is.null(markerTableComplete())){
+      #plot with descendants
+      if (length(input$descendantsof)!=0){
+        table_desc_other(markerTableComplete(),input$celltype,descendantTable(),input$species,colnames(accordion_complete))
+      }
+      else if(length(input$descendantsof)==0){
+        table_input_celltypes(markerTableComplete(),input$celltype,input$species,input$tissue, input$disease)
+      }
     }
-    else if(length(input$descendantsof)==0){
-      table_input_celltypes(markerTableComplete(),input$celltype,input$species,input$tissue, input$disease)
-    }
-
   })
 
   Plot <- reactive({
-     healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
-    if("healthy" %in% input$disease){
-    if (length(healthy_ct) > 1 | length(input$descendantsof)>=1){  
-      ontosubplot<-onto_plot2(cell_onto,markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID ,cex=0.8)
-      nodes<-as.data.table(ontosubplot@nodes)
-      nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
-      nodes<-nodes[,V1:=tstrsplit(nodes$V1,"DOID", fixed = TRUE, keep = 1)]
-      
-      nodes<-nodes[, V1:=str_replace_all(V1,"\n"," ")]
-      nodes<-nodes[, V1:=str_sub(V1,1,nchar(V1)-1)]
-      ontosubplot@nodes<-nodes$V1
-      ontosubplot   
-    } else if(length(healthy_ct) == 1 & length(input$tissue) > 0){
-      ontosubplot<-onto_plot(cell_onto,markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID ,cex=0.8)
-      ontosubplot2<-make_graphNEL_from_ontology_plot(ontosubplot)
-      dt_onto2<-as.data.table(ontosubplot2@nodes)
-      label<-merge(dt_onto2,ontology_celltype,by.x="V1",by.y="celltype_ID")
-      ontosubplot[["node_attributes"]][["label"]][[label$V1]]<-label$celltype
-      ontosubplot2@nodes<-ontosubplot[["node_attributes"]][["label"]]
-
-      ontosubplot2
-      
-    }
+    if(!is.null(markerTablePlot())){
+       healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
+      if("healthy" %in% input$disease){
+      if (length(healthy_ct) > 1 | length(input$descendantsof)>=1){  
+        ontosubplot<-onto_plot2(cell_onto,markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID ,cex=0.8)
+        nodes<-as.data.table(ontosubplot@nodes)
+        nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
+        nodes<-nodes[,V1:=tstrsplit(nodes$V1,"DOID", fixed = TRUE, keep = 1)]
+        
+        nodes<-nodes[, V1:=str_replace_all(V1,"\n"," ")]
+        nodes<-nodes[, V1:=str_sub(V1,1,nchar(V1)-1)]
+        ontosubplot@nodes<-nodes$V1
+        ontosubplot   
+      } else if(length(healthy_ct) == 1 & length(input$tissue) > 0){
+        ontosubplot<-onto_plot(cell_onto,markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID ,cex=0.8)
+        ontosubplot2<-make_graphNEL_from_ontology_plot(ontosubplot)
+        dt_onto2<-as.data.table(ontosubplot2@nodes)
+        label<-merge(dt_onto2,ontology_celltype,by.x="V1",by.y="celltype_ID")
+        ontosubplot[["node_attributes"]][["label"]][[label$V1]]<-label$celltype
+        ontosubplot2@nodes<-ontosubplot[["node_attributes"]][["label"]]
+  
+        ontosubplot2
+        
+      }
+      }
     }
   })
 
 
   output$plot1 <- renderGrViz({
-    healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
-    if(length(healthy_ct>=1)){
-      if(length(input$descendantsof)>=1){
-        hierac_plot1_desc(markerTableComplete(),Plot(),healthy_ct,descendantTable(),input$cellid, input$disease)
-      }else{
-        hierac_plot1(markerTableComplete(),Plot(),healthy_ct,input$cellid, input$disease)
-      }
+    if(!is.null(markerTablePlot())){
+      healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
+      if(length(healthy_ct>=1)){
+        if(length(input$descendantsof)>=1){
+          hierac_plot1_desc(markerTableComplete(),Plot(),healthy_ct,descendantTable(),input$cellid, input$disease)
+        }else{
+          hierac_plot1(markerTableComplete(),Plot(),healthy_ct,input$cellid, input$disease)
+        }
+      } 
     }
   })
 
@@ -694,6 +702,7 @@ server <- function(input, output, session) {
 
 
   outputTable<-reactive({
+    if(!is.null(markerTableOutput())){
     if(length(input$celltype)!=0 & input$tabletype=="Complete" & input$tissue_aware==TRUE){
       if(input$mergeDescendant=="Yes"){
         markerTableOutput()[EC_score>= str_replace_all(input$EC_score, ">=","") & specificity_score >= str_replace_all(input$specificity, ">=|=","")][,
@@ -743,12 +752,14 @@ server <- function(input, output, session) {
                                                                                                                                                       c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score","specificity_score")])
       }
     } 
-
+    }
 
   })
 
   output$table1 <- renderDataTable({
+    if(!is.null(outputTable())){
     outputTable()
+    }
   })
 
 
@@ -841,21 +852,21 @@ server <- function(input, output, session) {
       table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
       
       }
-      
+      table_tot
     }else if(nchar(input$marker)>1  & is.null(input$markerfile)){
       table_tot<-tableMarkerInput()
       if(length(input$diseaseM)>0){
       table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-    
       }
-      
+      table_tot
     }else if (nchar(input$marker)==0 & !is.null(input$markerfile)) {
       table_tot<-tableFileMarker()
       if(length(input$diseaseM)>0){
       table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
+      
       }
+      table_tot
     }
-    table_tot
   })
   
 
@@ -873,7 +884,9 @@ server <- function(input, output, session) {
 
   
   tableInputComplete <- reactive ({
-    tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
+    if(!is.null(tableInputComplete_notissue())){
+      tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
+    }
   })
   
   PlotM <- reactive({
@@ -908,9 +921,11 @@ server <- function(input, output, session) {
   
   
   output$plot1M <- renderGrViz({ 
-    healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
-    if(length(healthy_ct>=1)){
-      hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM) 
+    if(!is.null(tableInputComplete())){
+      healthy_ct<-tableInputComplete()[DO_diseasetype=="healthy"]$celltype_ID
+      if(length(healthy_ct>=1)){
+        hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM) 
+      }
     }
     
   })
@@ -943,6 +958,8 @@ server <- function(input, output, session) {
   
   
   markerTableOutputM <- reactive ({
+    if(!is.null(tableInputComplete())){
+      
     #keep tissue separated 
     if(input$tissue_awareM == TRUE){
       #compute EC and specificity condition&tissue specific
@@ -989,26 +1006,32 @@ server <- function(input, output, session) {
     }
     final_table<-unique(final_table)
     final_table
+    }
   })
   
   
   FinalTableM<-reactive({
-    if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Complete"){
-      unique(markerTableOutputM()[EC_score >= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")])
-    } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == TRUE){
-      unique(markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
-      ][,c("DO_diseasetype","Uberon_tissue","celltype","celltype_ID","marker","gene_description","species","EC_score","specificity_score")])
-    } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == FALSE){
-      unique(markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
-      ][,c("DO_diseasetype","celltype","celltype_ID","marker","gene_description","species","EC_score","specificity_score")])
+    if(!is.null(markerTableOutputM())){
       
+      if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Complete"){
+        unique(markerTableOutputM()[EC_score >= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")])
+      } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == TRUE){
+        unique(markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
+        ][,c("DO_diseasetype","Uberon_tissue","celltype","celltype_ID","marker","marker_type","species","EC_score","specificity_score")])
+      } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == FALSE){
+        unique(markerTableOutputM()[EC_score>= str_replace_all(input$EC_scoreM, ">=","") & specificity_score >= str_replace_all(input$specificityM, ">=|=","")
+        ][,c("DO_diseasetype","celltype","celltype_ID","marker","marker_type","species","EC_score","specificity_score")])
+        
+      }
     }
     
     
   })  
   
   output$table1M <- renderDataTable({
-    FinalTableM()
+    if(!is.null(FinalTableM())){
+      FinalTableM() 
+    }
   })
   
   # Downloadable csv of selected dataset 
