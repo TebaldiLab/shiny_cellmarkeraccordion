@@ -6,7 +6,7 @@ A critical step in single-cell and spatial data analysis is the accurate annotat
 To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets. 
 The Cell Marker Accordion database includes thousand of markers associated with both human and mouse cell types from different tissues, in physiological and pathological conditions.
 
-**In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script.** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
+**In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script (the necessary packages and their compatible versions are listed in the *Description.txt").** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
 
 The Cell Marker Accordion web interface allows to easily:  <br />
 
