@@ -1,0 +1,26 @@
+Depends:
+    R (>= 4.2.3)
+Imports:
+	rstudioapi (>= 1.16.0),
+	shinydashboard (>= 0.7.2),
+	shiny (>= 1.8.1.1),
+	stringr (>= 1.5.1),
+	DiagrammeR (>= 1.0.11),
+	igraph (>= 2.0.3),
+	ontologyIndex (>= 2.10),
+	igraph (>= 1.4.2),
+	shinyWidgets (>= 0.8.6),
+	ontologyIndex (>= 2.12),
+	data.table(>= 1.14.8),
+	plyr (>= 1.8.9),
+	ontologyPlot (>= 1.7),
+	writexl (>= 1.5.0),
+	dplyr (>= 1.1.4),
+	shinyBS (>= 0.61.1),
+	shinyhelper (>= 0.3.2),
+	shinydashboardPlus (>= 2.0.4),
+	readxl (>= 1.4.3),
+	rstatix (>= 0.7.2),
+	tidyverse (>= 2.0.0)
+Bioconductor packages:
+	ontoProc (1.20.0)
