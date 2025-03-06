@@ -8,6 +8,8 @@ The Cell Marker Accordion database includes thousand of markers associated with 
 
 **In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script (the necessary packages and their compatible versions are listed in the *Description.txt").** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
 
+To download the Accordion database as an excel file you can either click on the download button on the shiny app or downalod the "AccordionDB.xlsb" file in this repository.
+
 The Cell Marker Accordion web interface allows to easily:  <br />
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
