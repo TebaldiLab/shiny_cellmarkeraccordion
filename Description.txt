@@ -21,6 +21,8 @@ Imports:
 	shinydashboardPlus (>= 2.0.4),
 	readxl (>= 1.4.3),
 	rstatix (>= 0.7.2),
-	tidyverse (>= 2.0.0)
+	tidyverse (>= 2.0.0),
+	shinyjs (>= 2.1.0),
+	DT (>= 0.33)
 Bioconductor packages:
 	ontoProc (1.20.0)
