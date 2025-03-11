@@ -919,7 +919,10 @@ server <- function(input, output, session) {
   
   tableInputComplete <- reactive ({
     if(!is.null(tableInputComplete_notissue())){
+      if(nrow(tableInputComplete_notissue())){
+        
       tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
+      }
     }
   })
   
@@ -956,12 +959,14 @@ server <- function(input, output, session) {
   
   output$plot1M <- renderGrViz({
     if(!is.null(tableInputComplete())){
+      if(nrow(tableInputComplete())){
+        
       healthy_ct<-tableInputComplete()[DO_diseasetype=="healthy"]$celltype_ID
       if(length(healthy_ct>=1)){
         hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM)
       }
     }
-    
+    }
   })
   
   output$scalableplotM <- renderUI({
@@ -993,6 +998,8 @@ server <- function(input, output, session) {
   
   markerTableOutputM <- reactive ({
     if(!is.null(tableInputComplete())){
+      if(nrow(tableInputComplete())){
+        
       
       #keep tissue separated
       if(input$tissue_awareM == TRUE){
@@ -1010,9 +1017,9 @@ server <- function(input, output, session) {
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
         
         
-        mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
+        mark_spec<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
+
         colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
-        
         final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
         final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
         
@@ -1040,11 +1047,13 @@ server <- function(input, output, session) {
       }
       final_table<-unique(final_table)
       final_table
+      }
     }
   })
   
   FinalTableM<-reactive({
     if(!is.null(markerTableOutputM())){
+      if(nrow(markerTableOutputM())){
       if("celltype" %in% colnames(markerTableOutputM())){
         markerTableOutputM()[DO_diseasetype=="healthy",CL_celltype:=celltype][DO_diseasetype=="healthy",CL_ID:=celltype_ID][DO_diseasetype=="healthy",CL_cell_definition:=cell_definition]
         markerTableOutputM()[DO_diseasetype!="healthy",NCIT_celltype:=celltype][DO_diseasetype!="healthy",NCIT_ID:=celltype_ID][DO_diseasetype!="healthy",NCIT_cell_definition:=cell_definition]
@@ -1068,12 +1077,14 @@ server <- function(input, output, session) {
       
       
     }
-    
+    }
   })
   
   
   outputTable2M<-reactive({
     if(!is.null(FinalTableM())){
+      if(nrow(FinalTableM()>0)){
+        
       if(all(is.na(FinalTableM()$DO_ID))){
         suppressWarnings({
           FinalTableM()[,c("original_diseasetype","DO_diseasetype","DO_ID","DO_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition"):=NULL]
@@ -1086,6 +1097,10 @@ server <- function(input, output, session) {
       }
       
       FinalTableM()
+      }
+    } else{
+      showNotification("No genes were found with the selected filters", type = "warning", duration = 5)
+      
     }
     
   })
@@ -1093,7 +1108,6 @@ server <- function(input, output, session) {
   output$table1M <- renderDataTable({
     if(!is.null(outputTable2M())){
       datatable(outputTable2M(),rownames = FALSE)
-      
     }
   })
   # Downloadable csv of selected dataset
@@ -2217,20 +2231,6 @@ server <- function(input, output, session) {
     
   })
   
-  # output$example_panel <- renderUI({
-  #   if (is.null(input$clusterfile)) {
-  #     column(12,
-  #            HTML("<h5 style='color: black;'>An example file (output from FindAllMarkers function) has been automatically loaded.<br>You can proceed with the analysis or upload your own file.</h5>"),
-  #            dataTableOutput('table_example')
-  #     )
-  #   } else {
-  #     return(NULL)  # Ensures UI is removed when file is uploaded
-  #   }
-  # })
-  
-  
-  
-  
   
   markerTable<-reactive ({
     table<-accordion_complete[DO_diseasetype %in% input$diseaseA & species %in% input$speciesA]
@@ -2350,8 +2350,15 @@ server <- function(input, output, session) {
     
   })
   
-  observeEvent(input$button, {
+  toListen_anno <- reactive({
+    list(input$button, inputTable())
+  })
+  
+  observeEvent(toListen_anno, {
     annoResultsTable <- reactive({
+      if(!is.null(inputTable())){
+      if(nrow(inputTable())){
+      
       out_df<-tibble()
       inputseppos<-separate_rows(as.data.frame(inputTable()), pos_marker, sep=" ")
       inputsepneg<-separate_rows(as.data.frame(inputTable()), neg_marker, sep=" ")
@@ -2401,7 +2408,10 @@ server <- function(input, output, session) {
         out_dt_max[,overlap_anno_ratio:=round(overlap_anno_ratio, digits=2)]
         
         out_dt_max
+
       })
+    }
+  }
     })
     
     output$table1A <- renderDataTable({
@@ -2431,9 +2441,13 @@ server <- function(input, output, session) {
     
     
     tablePlotOntology <- reactive ({
+      if(!is.null(annoResultsTable())){
+        if(nrow(annoResultsTable())>0){
       dt_plot<-merge(annoResultsTable(),ontology_celltype, by="celltype")
       dt_plot<-dt_plot[,c("celltype","celltype_ID")]
       dt_plot
+        }
+      }
     })
     
     PlotA <- reactive({
@@ -2465,8 +2479,11 @@ server <- function(input, output, session) {
     
     
     output$plot1A <- renderGrViz({
+      if(!is.null(tablePlotOntology())){
+        if(nrow(tablePlotOntology())>0){
       hierac_plot2(accordion_complete, PlotA(), tablePlotOntology(),input$cellidA, input$diseaseA)
-      
+        }
+      }
     })
     
     output$scalableplotA <- renderUI({
