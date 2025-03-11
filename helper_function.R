@@ -665,7 +665,7 @@ select_descendant<-function(onto_plot, marker_table, input_descendant){
   return(table_descendant)
 }
 #merge descendats ----
-table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descendant,input_species,col_name){
+table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descendant,input_species,input_tissue, col_name){
   onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
   node<-as.data.table(unique(marker_table[celltype_species %in% (input_descendant)]$celltype))
   distan<-max(eccentricity(onto_igraph, vids = node$V1, mode = c("out")))
@@ -676,8 +676,9 @@ table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descen
   
   marker_table<-marker_table[celltype %in% dt_subnodes$V1]
   marker_table<-marker_table[,celltype_ancestor:= NA]
-  marker_table<-marker_table[,-c("EC_score")]
+  marker_table<-marker_table[,-c("EC_score_global")]
   marker_table<-marker_table[species %in% input_species]
+  marker_table<-marker_table[Uberon_tissue %in% input_tissue]
   
   for (i in 1:length(input_descendant)){
     onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
@@ -689,9 +690,9 @@ table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descen
     # re-count the EC_score a marker for a specific cell type appear 
   }
   
-  unite_table<- setDT(marker_table[,-c("DO_ID","celltype","celltype_species","celltype_ID","cell_definition","gene_description","specificity_score")])[, lapply(.SD, function(x) sum(!is.na(x))), c("celltype_ancestor","marker","species")]
+  unite_table<- setDT(marker_table[,-c("DO_ID","celltype","celltype_species","celltype_ID","cell_definition","gene_description","specificity_global")])[, lapply(.SD, function(x) sum(!is.na(x))), c("celltype_ancestor","marker","species")]
   unite_table[,EC_score:=rowSums(!(unite_table[,c(4:9)]==0))]
-  unite_table<-merge(unite_table[,c("celltype_ancestor","marker","species","EC_score")],marker_table,by=c("celltype_ancestor","marker","species"))
+  unite_table<-merge(unite_table[,c("celltype_ancestor","marker","species")],marker_table,by=c("celltype_ancestor","marker","species"))
   col_sel<-c("DO_diseasetype","celltype_ancestor",col_name[ !col_name =="DO_diseasetype"])  
   unite_table<- unite_table[, ..col_sel]
 
@@ -700,7 +701,7 @@ table_merge_descendant<-function(onto_plot,cell_onto, marker_table, input_descen
 }
 
 # create table with merged descendant + the other cell types ----
-table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_table,input_species,col_name){
+table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_table,input_species,input_tissue,col_name){
   
   table_not_desc<-marker_table[!(celltype %in% merged_descendant_table$celltype)]
   table_not_desc<-as.data.table(table_not_desc)
@@ -717,9 +718,9 @@ table_merged_desc_other<-function(marker_table,input_celltype,merged_descendant_
 }
 
 #table with descandant (not merged) and the other cell types ----
-table_desc_other<-function(marker_table,input_celltype,descendant_table,input_species,col_name){
+table_desc_other<-function(marker_table,input_celltype,descendant_table,input_species,input_tissue,col_name){
   all_types<-c(input_celltype,descendant_table$celltype_species)
-  table_all<-marker_table[celltype_species %in% all_types & species %in% input_species]
+  table_all<-marker_table[celltype_species %in% all_types & species %in% input_species & Uberon_tissue %in% input_tissue]
   table_all<- table_all[, ..col_name]
   
   return(table_all)
