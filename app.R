@@ -2057,8 +2057,8 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Filters Information",
       HTML("Marker genes employed to annotate your data can be filtered by: <br>
-      <ul><li> <strong> EC_score </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-       <li> <strong> database specificity </strong>: whether a gene is a marker for different cell types present in all the accordion database </li>")    ))
+      <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+       <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in the accordion database </li>")    ))
   })
   
   observeEvent(input$addpos, {
