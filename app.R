@@ -2093,9 +2093,11 @@ server <- function(input, output, session) {
         positive_marker <- positive_marker[avg_log2FC > 0]
       }
       
-      positive_marker[, gene := gene %in% accordion_complete[species %in% input$speciesA]$marker]
+      positive_marker<-positive_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
       positive_marker[, pos_marker := paste(gene, collapse = " "), by = cluster]
       positive_marker <- unique(positive_marker[, c("cluster", "pos_marker")])
+      print("pos")
+      print(head(positive_marker))
       
       if (!is.na(as.numeric(input$nmarkerneg))) { # Select number of markers
         negative_marker <- table %>%
@@ -2107,13 +2109,16 @@ server <- function(input, output, session) {
         negative_marker <- as.data.table(table)
         negative_marker <- negative_marker[avg_log2FC < 0]
       }
+      print("neg")
       
-      negative_marker[, gene := gene %in% accordion_complete[species %in% input$speciesA]$marker]
+      negative_marker<-negative_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
       negative_marker[, neg_marker := paste(gene, collapse = " "), by = cluster]
       negative_marker <- unique(negative_marker[, c("cluster", "neg_marker")])
+      print(head(negative_marker))
       
       input_marker <- merge(positive_marker, negative_marker, by = "cluster", all.x = TRUE, all.y = TRUE)
       return(input_marker)
+      
       
     } else if (!is.null(input$clusterfile)) {
       file_load_cluster <- input$clusterfile
@@ -2132,8 +2137,7 @@ server <- function(input, output, session) {
       user_inputfile <- as.data.table(user_inputfile)
       
       col_names_findmarkers <- c("p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj", "cluster", "gene") # Expected column names
-      
-      if (col_names_findmarkers %in% colnames(user_inputfile)) {  # If input matches FindMarker output
+      if (all(col_names_findmarkers %in% colnames(user_inputfile))) {  # If input matches FindMarker output
         user_inputfile<-user_inputfile[,c("p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj", "cluster", "gene")]
         
         if (!is.na(as.numeric(input$nmarkerpos))) {
@@ -2147,7 +2151,7 @@ server <- function(input, output, session) {
           positive_marker <- positive_marker[avg_log2FC > 0]
         }
         
-        positive_marker[, gene := gene %in% accordion_complete[species %in% input$speciesA]$marker]
+        positive_marker<-positive_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
         positive_marker[, pos_marker := paste(gene, collapse = " "), by = cluster]
         positive_marker <- unique(positive_marker[, c("cluster", "pos_marker")])
         
@@ -2162,7 +2166,7 @@ server <- function(input, output, session) {
           negative_marker <- negative_marker[avg_log2FC < 0]
         }
         
-        negative_marker[, gene := gene %in% accordion_complete[species %in% input$speciesA]$marker]
+        negative_marker<-negative_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
         negative_marker[, neg_marker := paste(gene, collapse = " "), by = cluster]
         negative_marker <- unique(negative_marker[, c("cluster", "neg_marker")])
         
@@ -2204,7 +2208,7 @@ server <- function(input, output, session) {
       table<-fread("data/FindAllMarkers_small_ex.tsv", verbose = F)
       datatable(table, options = list(
         dom = 't',      # Removes unnecessary UI elements
-        pageLength = 10 # Controls number of rows displayed
+        pageLength = 15 # Controls number of rows displayed
       ),rownames = FALSE) %>%
         formatStyle(columns = names(table), fontSize = '12px')%>%
         formatStyle(columns = names(table), target="row", fontSize = '12px')
