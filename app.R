@@ -104,21 +104,24 @@ ui <- dashboardPage(
       # First tab content
       tabItem(tabName = "dashboard",
               fluidRow(
-                HTML("<h3>The Cell Marker Accordion for Hematopoietic cell types </h3> "),
-                HTML("<h2> A Web tool for single-cell and spatial RNA-seq cell types annotation </h2> "),
+                HTML("<h3>The Cell Marker Accordion </h3> "),
+                HTML("<h2> A Web tool for single-cell and spatial omics annotation </h2> "),
                 div(img(src = "Logo.png"),style="text-align: center;"),
                 br(),
                 br(),
                 tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);"),
-                p(style="text-align: justify;", HTML("<h>A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
-To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets.
+                p(style="text-align: justify;", HTML("<h>A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. 
+                These discrepancies can hide biological insights and hinder reproducibility.
+To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework, to improve the interpretation of normal and aberrant cell types in single-cell and spatial data. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets.
                                                      <br> <strong> The Cell Marker Accordion </strong> web interface allows to easily: </h> "))),
               
-              titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes by cell types in different tissues. </h>")))),
+              titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes by cell types in different tissues in health and disease. </h>")))),
               titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types by marker genes. </h>")))),
               titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options. </h>")))),
-              titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency scores. </h>"))))),
-      
+              titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>"))))),
+              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the CellMarkerAccordion database</h>"))))),
+              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease</h>"))))),
+  
       
       # Second tab content: Search markers according to cell types
       tabItem(tabName = "celltype_h",
