@@ -21,7 +21,7 @@ The Cell Marker Accordion web interface allows to easily:  <br />
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
 
-<img src=https://github.com/user-attachments/assets/96363569-7b09-4eaf-b267-aea3558dea9a style="width:50%; height:50%;">
+<img src=https://github.com/user-attachments/assets/9e719956-ad4b-435f-b5db-609e4f186144 style="width:50%; height:50%;">
 
  <br />
 
