@@ -1921,19 +1921,20 @@ server <- function(input, output, session) {
     if(!is.null(outputTableInt())){
       if(all(is.na(outputTableInt()$DO_ID))){
         suppressWarnings({
-          outputTableInt()[,c("original_diseasetype","DO_diseasetype","DO_ID","DO_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition"):=NULL]
+          table<-outputTableInt()[,c("original_diseasetype","DO_diseasetype","DO_ID","DO_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition"):=NULL]
         })
       }
       if(all(is.na(outputTableInt()$CL_ID))){
         suppressWarnings({
-          outputTableInt()[,c("CL_celltype","CL_ID","CL_cell_definition"):=NULL]
+          table<-outputTableInt()[,c("CL_celltype","CL_ID","CL_cell_definition"):=NULL]
         })
       }
+      return(table)
     }
   })
 
   output$filteredInt <- renderDataTable({
-    if(!is.null(outputTableInt2())){
+    if(!is.null(outputTableInt())){
       datatable(outputTableInt2(),rownames = FALSE)
       
     }
@@ -2130,13 +2131,11 @@ server <- function(input, output, session) {
       
       user_inputfile <- as.data.table(user_inputfile)
       
-      if (ncol(user_inputfile) > 7) {
-        user_inputfile <- user_inputfile[, -1] # Remove first column (original row names)
-      }
-      
       col_names_findmarkers <- c("p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj", "cluster", "gene") # Expected column names
       
-      if (identical(colnames(user_inputfile), col_names_findmarkers)) {  # If input matches FindMarker output
+      if (col_names_findmarkers %in% colnames(user_inputfile)) {  # If input matches FindMarker output
+        user_inputfile<-user_inputfile[,c("p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj", "cluster", "gene")]
+        
         if (!is.na(as.numeric(input$nmarkerpos))) {
           positive_marker <- user_inputfile %>%
             group_by(cluster) %>%
