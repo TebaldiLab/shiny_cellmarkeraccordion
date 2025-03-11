@@ -1,6 +1,6 @@
 list.of.packages <- c("rstudioapi","shinydashboard","shiny","stringr","DiagrammeR","igraph",
                       "shinyWidgets","ontologyIndex","data.table","plyr","ontologyPlot",
-                      "writexl", "dplyr", "shinyBS","shinyhelper",
+                      "writexl", "dplyr", "shinyBS","shinyhelper","DT","shinyjs",
                       "shinydashboardPlus", "readxl","rstatix", "tidyverse")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) suppressMessages(suppressWarnings({install.packages(new.packages, dependencies = T)}))
