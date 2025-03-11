@@ -260,7 +260,7 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
       
       ##Custom markers integration ----
       tabItem(tabName="integration",
-              div(fluidRow(wellPanel(id="sidebar",fluidRow(column(7,splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom set to be integrated with the Accordion database",buttonLabel=list(icon("upload")),multiple = FALSE),
+              div(fluidRow(wellPanel(id="sidebar",fluidRow(column(8,splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom set to be integrated with the Accordion database",buttonLabel=list(icon("upload")),multiple = FALSE),
                                                                 actionButton('usermarkerinfo', 'InputFile',icon= icon("file-circle-question"), align="left",style='margin-top:30px'))),
                                                            column(3,radioButtons("databaseInt", "Select the Accordion database:",
                                                                                  choices = c("Healthy" = "Healthy", "Disease" = "Disease"), inline=TRUE))),
