@@ -10,7 +10,7 @@ The Cell Marker Accordion database includes thousand of markers associated with 
 **In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script (the necessary packages and their compatible versions are listed in the *Description.txt").** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
 
 ## Download the Accordion database
-To download the Accordion database as an excel file you can click on the download button on the shiny app or directly here: https://rdds.it/CellMarkerAccordion/session/d02bff5678393a96699abc3160dde89e/download/downloadAccordionDB?w=
+To download the Accordion database as an excel file you can click on the download button on the shiny app (https://rdds.it/CellMarkerAccordion/). 
 Otherwise downalod the "AccordionDB.xlsb" file sotred in this repository.
 
 ## The Cell Marker Accordion R package
