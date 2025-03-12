@@ -34,7 +34,7 @@ library(shinyjs)
 library(rstudioapi)
 
 source('helper_function.R')
-
+formals(renderDT)$server <- FALSE
 ### REMEMBER TO CHANGE WHEN LOAD ON GITHUB -----
 setwd(dirname(getActiveDocumentContext()$path)) #locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") #for github
