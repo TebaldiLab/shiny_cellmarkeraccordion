@@ -6,8 +6,13 @@ new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"
 if(length(new.packages)) suppressMessages(suppressWarnings({install.packages(new.packages, dependencies = T)}))
 
 list.of.packages.bio<-c("ontoProc")
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+list.of.packages.bio<-c("ontoProc")
 new.packages_bio <- list.of.packages.bio[!(list.of.packages.bio %in% installed.packages()[,"Package"])]
-if(length(new.packages_bio)) suppressMessages(suppressWarnings({install.packages(new.packages_bio, dependencies = T)}))
+if(length(new.packages_bio)) 
+  suppressMessages(suppressWarnings({BiocManager::install(new.packages_bio)}))
+
 
 library(shinydashboard)
 library(shiny)
@@ -34,7 +39,8 @@ library(shinyjs)
 library(rstudioapi)
 
 source('helper_function.R')
-formals(renderDT)$server <- FALSE
+
+
 ### REMEMBER TO CHANGE WHEN LOAD ON GITHUB -----
 setwd(dirname(getActiveDocumentContext()$path)) #locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") #for github
@@ -67,6 +73,14 @@ names(tissue_list)<-unique(accordion_complete$Uberon_tissue)
 
 celltype_list<-unique(accordion_complete$celltype)
 names(celltype_list)<-unique(accordion_complete$celltype)
+css <- HTML(
+  ".dataTables_scrollBody {
+    transform:rotateX(180deg);
+}
+.dataTables_scrollBody table {
+    transform:rotateX(180deg);
+}"
+)
 
 ui <- dashboardPage(
   dashboardHeader(titleWidth  = 500,title = tagList(
@@ -104,27 +118,69 @@ ui <- dashboardPage(
       # First tab content
       tabItem(tabName = "dashboard",
               fluidRow(
-                HTML("<h3>The Cell Marker Accordion </h3> "),
-                HTML("<h2> A Web tool for single-cell and spatial omics annotation </h2> "),
-                div(img(src = "Logo.png"),style="text-align: center;"),
+                HTML("<h3>The Cell Marker Accordion</h3>"),
+                HTML("<h2>A Web Tool for Single-Cell and Spatial Omics Annotation</h2>"),
+                titlePanel(
+                  div(
+                    style = "display: flex; align-items: center; gap: 5px; text-align: left;",  # Align left with small gap
+                    icon("github", class = "fa-lg", lib = "font-awesome", style = "color: black; font-size: 20px;"),
+                    shiny::span(
+                      HTML("<p style='margin: 0; font-size: 18px;'><h>Encountering issues? Check out our <a href='https://github.com/TebaldiLab/shiny_cellmarkeraccordion' target='_blank'>GitHub page</a>!</p></h>")
+                    )
+                  )
+                ),
+                div(img(src = "Logo.png"), style = "text-align: center;"),
                 br(),
                 br(),
-                tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);"),
-                p(style="text-align: justify;", HTML("<h>A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. 
-                These discrepancies can hide biological insights and hinder reproducibility.
-To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework, to improve the interpretation of normal and aberrant cell types in single-cell and spatial data. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets.
-                                                     <br> <strong> The Cell Marker Accordion </strong> web interface allows to easily: </h> "))),
-              
-              titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes by cell types in different tissues in health and disease. </h>")))),
-              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types by marker genes. </h>")))),
+                tags$style("@import url('https://use.fontawesome.com/releases/v6.1.1/css/all.css');"),
+                HTML("<p style='text-align: justify;'>
+            <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial data. 
+            Our framework includes both a <strong>Shiny app</strong> and an <strong>R package</strong>. 
+            (<a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'>cellmarkeraccordion</a>).
+            <br><br>
+            The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers. 
+            Specifically, it enables:
+        </p></h>")
+              ),
+
+              titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes associate with input cell types across different tissues in health and disease. </h>")))),
+              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types associate with input marker genes. </h>")))),
               titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options. </h>")))),
               titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>")))),
-              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the CellMarkerAccordion database</h>")))),
+              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database</h>")))),
               titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease</h>"))))),
-  
-      
+
+              
+#               
+#               fluidRow(
+#                 HTML("<h3>The Cell Marker Accordion </h3> "),
+#                 HTML("<h2> A Web tool for single-cell and spatial omics annotation </h2> "),
+#                 div(img(src = "Logo.png"),style="text-align: center;"),
+#                 br(),
+#                 br(),
+#                 tags$style("@import url(https://use.fontawesome.com/releases/v6.1.1/css/all.css);"),
+#                 p(style="text-align: justify;", HTML("<h>A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. 
+#                 These discrepancies can hide biological insights and hinder reproducibility.
+# To address this issue, the Cell Marker Accordion approach was developed as a harmonization framework, to improve the interpretation of normal and aberrant cell types in single-cell and spatial data. By leveraging filtering, standardization, and integration, it systematically refines and balances the contributions of multiple gene marker databases. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets.
+#                                                      <br> <strong> The Cell Marker Accordion </strong> web interface allows to easily: </h> "))),
+#               
+#               titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes by cell types in different tissues in health and disease. </h>")))),
+#               titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types by marker genes. </h>")))),
+#               titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options. </h>")))),
+#               titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>")))),
+#               titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the CellMarkerAccordion database</h>")))),
+#               titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease</h>"))))),
+#       
+              
+              
+              
       # Second tab content: Search markers according to cell types
       tabItem(tabName = "celltype_h",
+              tags$h2(
+                "Search and download lists of marker genes by cell types across different tissues in health and disease", 
+                style = "font-weight: bold; text-align: center;"
+              ),
+              tags$style(css),
               div(fluidRow(column(width=8,wellPanel(id="sidebar",
                                                     checkboxGroupInput("species", "Select species:",
                                                                        choiceNames =
@@ -191,12 +247,18 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                   #           options = NULL),
                   br(),
                   br(),
-                  dataTableOutput('table1'),
+
+                  DTOutput("table1", width = "100%"),
                   br()
               )),
       
       ###### search by markers -----
       tabItem(tabName="marker_h",
+              tags$style(css),
+              tags$h2(
+                "Search and download lists of cell types by marker genes across different tissues in health and disease", 
+                style = "font-weight: bold; text-align: center;"
+              ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",checkboxGroupInput("speciesM", "Select species:",
                                                                                     choiceNames =
                                                                                       list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
@@ -255,7 +317,7 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                   #           options = NULL),
                   br(),
                   br(),
-                  dataTableOutput('table1M'),
+                  dataTableOutput('table1M', width = "100%"),
                   br()
               )),
       
@@ -263,20 +325,91 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
       
       ##Custom markers integration ----
       tabItem(tabName="integration",
-              div(fluidRow(wellPanel(id="sidebar",fluidRow(column(8,splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom set to be integrated with the Accordion database",buttonLabel=list(icon("upload")),multiple = FALSE),
-                                                                actionButton('usermarkerinfo', 'InputFile',icon= icon("file-circle-question"), align="left",style='margin-top:30px'))),
-                                                           column(3,radioButtons("databaseInt", "Select the Accordion database:",
-                                                                                 choices = c("Healthy" = "Healthy", "Disease" = "Disease"), inline=TRUE))),
-                                     fluidRow(column(width = 2, actionButton("demo_ex", HTML("Load demo example"),style="font-size: 14px;",icon= icon("spinner")), align="left"))))),
-
-                                                    
+              tags$style(css),
+              tags$h2(
+                "Integrate custom set of marker genes with the Cell Marker Accordion database", 
+                style = "font-weight: bold; text-align: center;"
+              ),
               
+              # div(fluidRow(wellPanel(id="sidebar",fluidRow(column(8,splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom set to be integrated with the Accordion database",buttonLabel=list(icon("upload")),multiple = FALSE),
+              #                                                   actionButton('usermarkerinfo', 'InputFile',icon= icon("file-circle-question"), align="left",style='margin-top:30px'))),
+              #                                              column(3,radioButtons("databaseInt", "Select the Accordion database:",
+              #                                                                    choices = c("Healthy" = "Healthy", "Disease" = "Disease"), inline=TRUE))),
+              #                        fluidRow(column(width = 2, actionButton("demo_ex", HTML("Load demo example"),style="font-size: 14px;",icon= icon("cloud-arrow-up")),uiOutput("success_icon_int"), align="left"),
+              #                                 column(width = 2, actionButton("start_int", HTML("Start the integration!"),style="font-size: 14px;",icon= icon("gear")), align="left"))))),
+              div(
+                fluidRow(
+                  wellPanel(
+                    id = "sidebar",
+                    
+                    # File input and database selection
+                    fluidRow(
+                      column(
+                        8, 
+                        splitLayout(
+                          cellWidths = c("75%", "25%"),
+                          fileInput(
+                            "usermarker", 
+                            HTML("Upload custom marker genes"),
+                            buttonLabel = list(icon("upload")), 
+                            multiple = FALSE
+                          ),
+                          actionButton(
+                            'usermarkerinfo', 
+                            'InputFile',
+                            icon = icon("file-circle-question"), 
+                            align = "left",
+                            style = 'margin-top:30px'
+                          )
+                        )
+                      ),
+                      column(
+                        3, 
+                        radioButtons(
+                          "databaseInt", 
+                          "Select the Accordion database:",
+                          choices = c("Healthy" = "Healthy", "Disease" = "Disease"), 
+                          inline = TRUE
+                        )
+                      )
+                    ),
+                    
+                    # Buttons inside the same wellPanel
+                    fluidRow(
+                      column(
+                        width = 6, 
+                        div(
+                          style = "display: flex; align-items: center; gap: 10px;",
+                          actionButton(
+                            "demo_ex", 
+                            HTML("Load demo example"), 
+                            style = "font-size: 14px;", 
+                            icon = icon("cloud-arrow-up")
+                          ),
+                          uiOutput("success_icon_int")  # Checkmark icon appears here
+                        )
+                      ),
+                      column(
+                        width = 6, 
+                        actionButton(
+                          "start_int", 
+                          HTML("Start the integration!"), 
+                          style = "font-size: 14px;", 
+                          icon = icon("gear")
+                        )
+                      )
+                    )
+                  )
+                )
+              ),
+                                                    
+              conditionalPanel(condition = "input.start_int > 0",
               fluidRow(column(4,radioButtons("downloadTypeInt", "Download Format", choices = c("CSV" = ".csv",
                                                                                             "XLSX" = ".xlsx",
                                                                                             "TSV" = ".tsv"),inline = TRUE),
                               column(4,downloadButton("downloadDataInt", "Download")))),
                                                     br(),
-                                                      dataTableOutput('table1Int'),
+                                                      dataTableOutput('table1Int', width = "100%"),
               br(),
               br(),
                                                    
@@ -305,8 +438,8 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                                                     checkboxInput("cellidInt","Plot celltype_ID",value=FALSE))),
                            br(),
                            #change style sliderinput
-                           tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #990000}")),
-                           tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: #990000}")),
+                           tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #990000}")),
+                           tags$style(HTML(".js-irs-5 .irs-single, .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #990000}")),
                            titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
                            column(width=4,offset=0, sliderInput(inputId = "heightInt", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
                                   br(),
@@ -353,14 +486,18 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                   #           options = NULL),
                   br(),
                   br(),
-                  dataTableOutput('filteredInt'),
+                  dataTableOutput('filteredInt', width = "100%")),
                   br()
               )),
-      
-      
+
       ##### SEMI-AUTOMATIC ANNOTATION -----
       
       tabItem(tabName="anno",
+              tags$style(css),
+              tags$h2(
+                "Annotate cell populations in different tissues in health and disease", 
+                style = "font-weight: bold; text-align: center;"
+              ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",
                                                     #textInput("marker", "Insert marker genes", value = "CD34", width = NULL, placeholder = NULL),
                                                     splitLayout(cellWidths = c("75%", "25%"),fileInput("clusterfile", "Load file to annotate",buttonLabel=list(icon("upload")),multiple = FALSE),
@@ -381,46 +518,73 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                                                              column(width=6,actionButton("addneg", HTML("Add value")))),
                                                     
                                                     style = "padding-bottom: 5px;")),
-                           column(6, offset=0,actionButton("demo_ex_anno", HTML("Load demo example"),style="font-size: 14px;",icon= icon("spinner")), align="center"),
+                           column(6, offset=0,align="center",actionButton("demo_ex_anno", HTML("Load demo example"),style="font-size: 14px;",icon= icon("cloud-arrow-up")), uiOutput("success_icon_anno")),
                            br(),
                             column(6, HTML("Output table generated by the FindAllMarkers function in the Seurat package"), align="center"),
                            br(),
-                           column(6,  dataTableOutput('exampletable'))),
+                           column(6,  dataTableOutput('exampletable', width = "100%"))),
                   br(),
                   
-                  fluidRow(column(width=6, wellPanel(id="sidebar",fluidRow(shiny::span(p(HTML("<h7>Filters</h7>"),actionButton('filterhelpA', 'Info',icon= icon("info"), align="center"))),
-                                                                           column(width=4,radioButtons('EC_scoreA','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
-                                                                           column(width=4, radioButtons('specificityA','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                                            column(width=4, textInput("max_n_marker",value = 30, width = NULL, placeholder = NULL, HTML("Maximum number of markers to keep for each cell type")))),
-                  style = "padding-bottom: 13px;")),
+                  fluidRow(
+                    column(
+                      width = 6, 
+                      wellPanel(
+                        id = "sidebar",
+                        
+                        # Centered and larger "Filters" title
+                        div(style = "text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 10px;",
+                            HTML("Filters"),
+                            actionButton('filterhelpA', 'Info', icon = icon("info"))
+                        ),
+                        
+                        fluidRow(
+                          column(width = 4, 
+                                 radioButtons('EC_scoreA', 'ECs', 
+                                              choices = c(">=1", ">=2", ">=3", ">=4", ">=5", ">=6", ">=7"), 
+                                              selected = ">=1")
+                          ),
+                          column(width = 4, 
+                                 radioButtons('specificityA', 'SPs', 
+                                              choices = c(">=0", ">=0.25", ">=0.5", "=1"), 
+                                              selected = ">=0")
+                          ),
+                          column(width = 4, 
+                                 textInput("max_n_marker", 
+                                           value = 30, 
+                                           placeholder = NULL, 
+                                           label = HTML("Maximum number of markers to keep for each cell type"))
+                          )
+                        )
+                      )
+                    ),
+                  
+                  
+                  
                   
                   column(6,div(img(src = "Logo.png",height="40%", width="40%"),style="text-align: center;"),
                          br(),
                          actionButton("button", HTML("<strong>Click to annotate!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
                   
                   conditionalPanel(
-                    condition= "output.table1A", fluidRow(column(4,radioButtons("downloadTypeA", "Download Format", choices = c("CSV" = ".csv",
+                    condition= "input.button > 0", fluidRow(column(4,radioButtons("downloadTypeA", "Download Format", choices = c("CSV" = ".csv",
                                                                                                                                 "XLSX" = ".xlsx",
                                                                                                                                 "TSV" = ".tsv"),inline = TRUE),
-                                                                 column(4,downloadButton("downloadDataA", "Download"))))
-                  ),
+                                                                 column(4,downloadButton("downloadDataA", "Download")))),
                   br(),
-                  dataTableOutput('table1A'),
+                  dataTableOutput('table1A', width = "100%"),
                   br(),
                   br(),
                   
                   #change style sliderinput
-                  tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #990000}")),
-                  tags$style(HTML(".js-irs-5 .irs-single, .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #990000}")),
-                  conditionalPanel(
-                    condition= "output.table1A" ,titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
+                  tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #990000}")),
+                  tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: #990000}")),
+                  titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
                     fluidRow(column(width=6,sliderInput(inputId = "heightA", label = "Height", min = 200, max = 3500, value = 400, step = 200,width="80%")),
                              column(width=6,sliderInput(inputId = "widthA", label = "Width", min = 200, max = 3500, value = 400, step=200,width="80%"))),
                     checkboxInput("cellidA","Plot celltype_ID",value=FALSE),
                     #Ontology plot
                     titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
                     fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotA')))),
-                  ),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testA {
@@ -429,7 +593,6 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
                             }'),
                   conditionalPanel(id="testA",condition= "input.plot1A_click",wellPanel(textOutput("celltype_defA"))),
                   br(),
-                  tableOutput("checker"),
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -450,7 +613,7 @@ To address this issue, the Cell Marker Accordion approach was developed as a har
               ))
     )
   )
-  
+  )
 )
 server <- function(input, output, session) {
   
@@ -794,12 +957,14 @@ server <- function(input, output, session) {
   
   output$table1 <- renderDataTable({
     if(!is.null(outputTable2())){
-      datatable(outputTable2(),rownames = FALSE)
-      
+      datatable(outputTable2(),rownames = FALSE,options = list(
+        pageLength=5, scrollX='400px',autoWidth = TRUE,
+        columnDefs = list(
+          list(width = '130px', targets = "_all"))), filter = 'top')
   }
     })
-  
-  
+
+
   # Downloadable csv of selected dataset
   
   output$downloadData <- downloadHandler(
@@ -1110,7 +1275,10 @@ server <- function(input, output, session) {
   
   output$table1M <- renderDataTable({
     if(!is.null(outputTable2M())){
-      datatable(outputTable2M(),rownames = FALSE)
+      datatable(outputTable2M(),rownames = FALSE,options = list(
+        pageLength=5, scrollX='400px',columnDefs = list(
+          list(width = '130px', targets = "_all"))), filter = 'top')
+      
     }
   })
   # Downloadable csv of selected dataset
@@ -1144,59 +1312,143 @@ server <- function(input, output, session) {
       title = "Marker genes input file",
       HTML("Add a custom set of marker genes to be integrated with the Cell Marker Accordion database, either healthy or disease. <br>
       The file must contain at least two columns:
-      <ul><li> <strong> cell_type </strong>:  specifies the cell type. 
-      <br>To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus. <br>If non-standardized cell types are provided, they will be added as new cell types in the database. </li>
-      <li> <strong> marker </strong>: lists the marker genes </li>
+      <ul>
+        <li> <strong> cell_type </strong>:  specifies the cell type. 
+          <br>To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus. <br>
+          If non-standardized cell types are provided, they will be added as new cell types in the database. 
+        </li>
+        <li> <strong> marker </strong>: lists the marker genes </li>
+      </ul>
       Additional columns can also be included:
-      <ul><li> <strong>  species </strong> : Specifies the species (default: Human).
-      <li> <strong> tissue </strong>: Specifies the related tissue. Standardization with Uberon Ontology is recommended for effective integration.<br> Non-standardized tissues will be added as new tissues. If omitted, integration will ignore tissue specificity.
-      <li> <strong> marker_type </strong>: Defines marker type (positive or negative; default: positive).
-      <li> <strong> resource </strong>: Indicates the data source. If omitted, markers are labeled as custom_set.
-      <li> <strong> disease </strong>: Required if the integration is performed with the disease database. Standardization with Disease Ontology is recommended. <br>Non-standardized diseases will be added as new diseases. If omitted, disease specificity is ignored.</li>
-             <br>
-           <strong> Example </strong>"),
+      <ul>
+        <li> <strong> species </strong>: Specifies the species (default: Human).</li>
+        <li> <strong> tissue </strong>: Specifies the related tissue. Standardization with Uberon Ontology is recommended for effective integration.<br> 
+        Non-standardized tissues will be added as new tissues. If omitted, integration will ignore tissue specificity.
+        </li>
+        <li> <strong> marker_type </strong>: Defines marker type (positive or negative; default: positive).</li>
+        <li> <strong> resource </strong>: Indicates the data source. If omitted, markers are labeled as custom_set.</li>
+        <li> <strong> disease </strong>: Required if the integration is performed with the disease database. Standardization with Disease Ontology is recommended. <br>
+        Non-standardized diseases will be added as new diseases. If omitted, disease specificity is ignored.</li>
+      </ul>
+      <br><strong> Example </strong>"
+      ),
       #HTML("<img src=input_file_example.jpg>"),
+      downloadButton("download_ex_int", "Download Example"),
+      HTML("<br>"),
       HTML('
         <table style="border-collapse: collapse; width: 100%; text-align: center; background-color: white;">
           <thead>
-            <tr style="background-color: #f2f2f2;text-align: center;">
-              <th style="border: 1px solid black; padding: 8px;text-align: center">cell_type</th>
-              <th style="border: 1px solid black; padding: 8px;text-align: center">marker</th>
+            <tr style="background-color: #f2f2f2; text-align: center;">
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">species</th>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">tissue</th>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">cell_type</th>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">marker</th>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">marker_type</th>
+              <th style="border: 1px solid black; padding: 8px; text-align: center;">resource</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">Cones</td>
-              <td style="border: 1px solid black; padding: 8px;">ARR3</td>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">glutamatergic neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Satb2</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_1</td>
             </tr>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">Retinal ganglion cells</td>
-              <td style="border: 1px solid black; padding: 8px;">ATOH7</td>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">glutamatergic neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Satb2</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_2</td>
             </tr>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">Retinal ganglion cells</td>
-              <td style="border: 1px solid black; padding: 8px;">POU4F1</td>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">glutamatergic neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Slc17a6</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_1</td>
             </tr>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">Rods</td>
-              <td style="border: 1px solid black; padding: 8px;">C11orf96</td>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">glutamatergic neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Slc17a7</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_1</td>
             </tr>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">Bipolar cells</td>
-              <td style="border: 1px solid black; padding: 8px;">CA10</td>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">glutamatergic neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Slc17a7</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_2</td>
             </tr>
             <tr>
-              <td style="border: 1px solid black; padding: 8px;">Bipolar cells</td>
-              <td style="border: 1px solid black; padding: 8px;">CADPS</td>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">pyramidal neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Sv2b</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_1</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">pyramidal neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Calb1</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_1</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">pyramidal neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Pde1a</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_1</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">pyramidal neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Pde1a</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_2</td>
+            </tr>
+            <tr>
+              <td style="border: 1px solid black; padding: 8px;">Mouse</td>
+              <td style="border: 1px solid black; padding: 8px;">brain</td>
+              <td style="border: 1px solid black; padding: 8px;">pyramidal neuron</td>
+              <td style="border: 1px solid black; padding: 8px;">Pde1a</td>
+              <td style="border: 1px solid black; padding: 8px;">positive</td>
+              <td style="border: 1px solid black; padding: 8px;">custom_set_3</td>
             </tr>
           </tbody>
         </table>
       '),
-      
       easyClose = TRUE,
-      footer = NULL
+      footer = NULL,
+      size="l"
+
     ))
   })
+  
+  
+  # Server logic for download
+  output$download_ex_int <- downloadHandler(
+    filename = function() {
+      "Custom_set_integration_example.xlsx"
+    },
+    content = function(file) {
+      table<-read_excel("data/Demo_example_integration.xlsx")
+      write_xlsx(table, file)
+    }
+  )
   
   AccordionToIntegrate<-reactive({
     if("Healthy" %in% input$databaseInt){
@@ -1220,6 +1472,7 @@ server <- function(input, output, session) {
     accordion_to_int
   })
   
+
   
   integratedDB<-reactive({
     if(!is.null(input$usermarker)){
@@ -1237,7 +1490,6 @@ server <- function(input, output, session) {
       }
     } else if(input$demo_ex >0 & is.null(input$usermarker)){
       user_inputfile<-read_excel("data/Demo_example_integration.xlsx")
-        
     }
     if(!is.null(input$usermarker) | input$demo_ex >0){
       user_inputfile<-as.data.table(user_inputfile)
@@ -1411,10 +1663,25 @@ server <- function(input, output, session) {
     }
   })
   
+  demoLoaded_int <- reactiveVal(FALSE)  # Track if demo is loaded
   
-  #recalculate EC score and specificity
+  observeEvent(input$demo_ex, {
+    showNotification("Demo example loaded!", type = "message", duration = 5)
+    demoLoaded_int(TRUE)  # Mark demo as loaded
+  })
+  
+  output$success_icon_int <- renderUI({
+    if (demoLoaded_int()) {
+      tags$span(
+        icon("check-circle", class = "text-success", lib = "font-awesome"), 
+        style = "font-size: 20px; margin-left: 10px;"
+      )
+    }
+  })
+  #recalculate EC score and specificity-perform integration
   newTable<-reactive({
     if(!is.null(integratedDB())){
+      if(input$start_int){
       tissue<-unique(integratedDB()$Uberon_tissue)
       withProgress(message ="Integrating custom markers with The Cell Marker Accordion database...", value = 0,{
       if(!all(is.na(tissue))){ #tissue aware
@@ -1522,13 +1789,15 @@ server <- function(input, output, session) {
       final_table   
       })
       }
-
+    }
   })
   
   
   output$table1Int <- renderDataTable({
     if(!is.null(newTable())){
-      datatable(newTable(),rownames = FALSE)
+      datatable(newTable(),rownames = FALSE,options = list(
+        pageLength=5, scrollX='400px',columnDefs = list(
+          list(width = '130px', targets = "_all"))), filter = 'top')
     }
   })
   
@@ -1986,11 +2255,13 @@ server <- function(input, output, session) {
   
   observeEvent(input$userclusterfileinfo,{
     showModal(modalDialog(
-      title = "Annotation input file",
-      HTML("Upload your marker genes file for annotation. <br>
+      title = "Annotation input file format",
+      HTML("Load marker genes file for automatic annotation. <br>
     The file can be one of the following types:
     <ul><li> <strong> The Output table generated by the <em>FindAllMarkers </em> function in the Seurat package,</strong> as txt, xlsx, csv or tsv file</li>
            <strong> Example </strong>"),
+    downloadButton("download_ex_anno1", "Download Example"),
+    
      # HTML("<img src=findallmarker_ex.png>"),
      HTML("<table border='1' style='width:100%; border-collapse: collapse; text-align: center;'>
           <thead>
@@ -2035,16 +2306,18 @@ server <- function(input, output, session) {
       HTML("<li> Alternatively, you can provide a <strong>custom table</strong> with at least one column (<strong>gene</strong> column) containing the list of genes (one per row).  
       By default, all genes are considered positive (high expression) and associated with a single identity class (one cluster only). </li>
       \nYou may also include additional columns:
-             <ul><li> <strong> cluster </strong></li>: indicate the identity class of the markers
-              <li> <strong>  gene_type </strong> </li>: positive, whether the gene is positive (high expression) or negative, whether the gene is negative (low expression)</ul>"),
+             <ul><li> <strong> cluster </strong>: indicate the identity class of the markers
+              <li> <strong>  gene_type </strong>: positive, whether the gene is positive (high expression) or negative, whether the gene is negative (low expression)</ul>"),
       HTML("<br>"),
       HTML("<strong> Example </strong>"),
+      downloadButton("download_ex_anno2", "Download Example"),
+
     HTML("<table border='1' style='width:100%; border-collapse: collapse; text-align: center;'>
             <thead>
               <tr style='background-color: #f2f2f2;'>
-                <th style='text-align: center;'>cluster_id</th>
-                <th style='text-align: center;'>marker</th>
-                <th style='text-align: center;'>marker_type</th>
+                <th style='text-align: center;'>cluster</th>
+                <th style='text-align: center;'>gene</th>
+                <th style='text-align: center;'>gene_type</th>
               </tr>
             </thead>
             <tbody>
@@ -2065,9 +2338,32 @@ server <- function(input, output, session) {
         "),
 
       easyClose = TRUE,
-      footer = NULL
+      footer = NULL,
+      size="l"
     ))
   })
+  
+  # Server logic for download
+  output$download_ex_anno1 <- downloadHandler(
+    filename = function() {
+      "Custom_set_annotation_example1.xlsx"
+    },
+    content = function(file) {
+      table<-fread("data/FindAllMarkers_small_ex.tsv")
+      write_xlsx(table, file)
+    }
+  )
+  
+  # Server logic for download
+  output$download_ex_anno2 <- downloadHandler(
+    filename = function() {
+      "Custom_set_annotation_example2.xlsx"
+    },
+    content = function(file) {
+      table<-read_xlsx("data/Demo_example_annotation2.xlsx")
+      write_xlsx(table, file)
+    }
+  )
   
   
   observeEvent(input$filterhelpA,{
@@ -2095,6 +2391,7 @@ server <- function(input, output, session) {
   })
   
   inputTable <- reactive({
+    if(input$button){
     if (is.null(input$clusterfile) & input$demo_ex_anno > 0) {
       # Read the default example file
       table <- fread("data/FindAllMarkers_small_ex.tsv", verbose = FALSE)
@@ -2113,9 +2410,7 @@ server <- function(input, output, session) {
       positive_marker<-positive_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
       positive_marker[, pos_marker := paste(gene, collapse = " "), by = cluster]
       positive_marker <- unique(positive_marker[, c("cluster", "pos_marker")])
-      print("pos")
-      print(head(positive_marker))
-      
+
       if (!is.na(as.numeric(input$nmarkerneg))) { # Select number of markers
         negative_marker <- table %>%
           group_by(cluster) %>%
@@ -2126,13 +2421,11 @@ server <- function(input, output, session) {
         negative_marker <- as.data.table(table)
         negative_marker <- negative_marker[avg_log2FC < 0]
       }
-      print("neg")
-      
+
       negative_marker<-negative_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
       negative_marker[, neg_marker := paste(gene, collapse = " "), by = cluster]
       negative_marker <- unique(negative_marker[, c("cluster", "neg_marker")])
-      print(head(negative_marker))
-      
+
       input_marker <- merge(positive_marker, negative_marker, by = "cluster", all.x = TRUE, all.y = TRUE)
       return(input_marker)
       
@@ -2217,19 +2510,23 @@ server <- function(input, output, session) {
         return(user_inputfile)
       }
     }
+    }
   })
   
   
   output$exampletable <- renderDataTable({
     if(input$demo_ex_anno>0 & is.null(input$clusterfile)){
       table<-fread("data/FindAllMarkers_small_ex.tsv", verbose = F)
-      datatable(table, options = list(
+      table[,p_val:=format(p_val, digits=2)]
+      table[,avg_log2FC:=format(avg_log2FC, digits=2)]
+      
+      table<-datatable(table, options = list(scrollX='400px',
         dom = 't',      # Removes unnecessary UI elements
         pageLength = 15 # Controls number of rows displayed
       ),rownames = FALSE) %>%
         formatStyle(columns = names(table), fontSize = '12px')%>%
         formatStyle(columns = names(table), target="row", fontSize = '12px')
-
+      return(table)
     }
     
   })
@@ -2359,66 +2656,70 @@ server <- function(input, output, session) {
   
   observeEvent(toListen_anno, {
     annoResultsTable <- reactive({
-      if(!is.null(inputTable())){
-      if(nrow(inputTable())){
-      
-      out_df<-tibble()
-      inputseppos<-separate_rows(as.data.frame(inputTable()), pos_marker, sep=" ")
-      inputsepneg<-separate_rows(as.data.frame(inputTable()), neg_marker, sep=" ")
-      univ<- uniqueN(unique(c(accordion_complete$marker, inputseppos$pos_marker, inputsepneg$neg_marker)))
-      withProgress(message = 'Making cluster identification', value = 0, {
-        for (cl in 1:nrow(inputTable())-1){
-          sub_dt<-combineTable()[cluster==cl]
-          # Increment the progress bar, and update the detail text.
-          incProgress(1 / (nrow(inputTable())-1), detail = paste("Processing cluster", cl))
-          # Pause for 0.1 seconds to simulate a long computation.
-          Sys.sleep(0.1)
-          for (ct in (accMarkerAnnoTable()$celltype)){
-            #print(ct)
-            sub_ct_dt<-sub_dt[celltype==ct]
-            IY<- count.fields(textConnection(sub_ct_dt$tot_overlap), sep = " ") # in input, in anno (overlap)
-            IN<- count.fields(textConnection(sub_ct_dt$in_input_not_anno_tot), sep = " ") # in input, not in anno
-            BY<- count.fields(textConnection(sub_ct_dt$not_input_in_anno_tot), sep = " ") # not in input, in anno
-            BN<- univ - (IY+IN+BY) # not in input, not in anno
-            fisher_data <- fisher.test(matrix(c(IY, BY, IN, BN), 2, 2), alternative="greater")
-            # generation of the output (a tibble with 1 row)
-            out_df <- rbind(out_df, tibble("cluster"=cl, # name of the input
-                                           "celltype"=ct, # name of the annotation
-                                           #"anno_class"=anno_class,
-                                           "overlap_size"=IY, # size of the overlap
-                                           "p_value"=fisher_data$p.value, # p-value of the enrichment (Fisher test)
-                                           "odds_ratio"=fisher_data$estimate, # conditional MLE estimate from fisher.test function
-                                           #"combined_score"=0, # default combined score (to match enrichr enrichment results)
-                                           #"odds_ratio_sample"= (IY/IN)/(BY/BN), # sample odds ratio
-                                           #"fold_enrichment"= (IY/(IY+IN))/((IY+BY)/(BY+IY+BY+BN)), # fold enrichment formula
-                                           "input_size"=IY+IN, # size of processed input
-                                           "anno_size"=IY+BY, # size of processed annotation
-                                           "background_size"= IY+IN+BY+BN, # size of processed background
-                                           "overlap_input_ratio"= IY/(IY+IN), # overlap ratio with respect to input size
-                                           "overlap_anno_ratio"= IY/(IY+BY), # overlap ratio with respect to annotation size
-                                           "positive_overlap_ids"= sub_ct_dt$positive_intersect, # string with positive overlap markers ids
-                                           "negative_overlap_ids" = sub_ct_dt$negative_intersect, # string with negative overlap markers ids
-                                           #"overlap_ids"=  sub_ct_dt$tot_overlap # string with overlap ids
-            ))
-          }
-        }
-        out_dt<-as.data.table(out_df)
-        out_dt<-out_dt[order(cluster,p_value)]
-        out_dt_max<-out_dt[!duplicated(out_dt$cluster)]
-        out_dt_max[,odds_ratio:=round(odds_ratio, digits=2)]
-        #out_dt_max[,p_value:=round(p_value, digits=2)]
-        out_dt_max[,overlap_input_ratio:=round(overlap_input_ratio, digits=2)]
-        out_dt_max[,overlap_anno_ratio:=round(overlap_anno_ratio, digits=2)]
+      if(input$button >0){
+        if(!is.null(inputTable())){
+        if(nrow(inputTable())){
         
-        out_dt_max
-
-      })
-    }
-  }
+        out_df<-tibble()
+        inputseppos<-separate_rows(as.data.frame(inputTable()), pos_marker, sep=" ")
+        inputsepneg<-separate_rows(as.data.frame(inputTable()), neg_marker, sep=" ")
+        univ<- uniqueN(unique(c(accordion_complete$marker, inputseppos$pos_marker, inputsepneg$neg_marker)))
+        withProgress(message = 'Making cluster identification', value = 0, {
+          for (cl in unique(inputTable()$cluster)){
+            sub_dt<-combineTable()[cluster==cl]
+            # Increment the progress bar, and update the detail text.
+            incProgress(1 / (nrow(inputTable())-1), detail = paste("Processing cluster", cl))
+            # Pause for 0.1 seconds to simulate a long computation.
+            Sys.sleep(0.1)
+            for (ct in (accMarkerAnnoTable()$celltype)){
+              #print(ct)
+              sub_ct_dt<-sub_dt[celltype==ct]
+              IY<- count.fields(textConnection(sub_ct_dt$tot_overlap), sep = " ") # in input, in anno (overlap)
+              IN<- count.fields(textConnection(sub_ct_dt$in_input_not_anno_tot), sep = " ") # in input, not in anno
+              BY<- count.fields(textConnection(sub_ct_dt$not_input_in_anno_tot), sep = " ") # not in input, in anno
+              BN<- univ - (IY+IN+BY) # not in input, not in anno
+              fisher_data <- fisher.test(matrix(c(IY, BY, IN, BN), 2, 2), alternative="greater")
+              # generation of the output (a tibble with 1 row)
+              out_df <- rbind(out_df, tibble("cluster"=cl, # name of the input
+                                             "celltype"=ct, # name of the annotation
+                                             #"anno_class"=anno_class,
+                                             "overlap_size"=IY, # size of the overlap
+                                             "p_value"=fisher_data$p.value, # p-value of the enrichment (Fisher test)
+                                             "odds_ratio"=fisher_data$estimate, # conditional MLE estimate from fisher.test function
+                                             #"combined_score"=0, # default combined score (to match enrichr enrichment results)
+                                             #"odds_ratio_sample"= (IY/IN)/(BY/BN), # sample odds ratio
+                                             #"fold_enrichment"= (IY/(IY+IN))/((IY+BY)/(BY+IY+BY+BN)), # fold enrichment formula
+                                             "input_size"=IY+IN, # size of processed input
+                                             "anno_size"=IY+BY, # size of processed annotation
+                                             "background_size"= IY+IN+BY+BN, # size of processed background
+                                             "overlap_input_ratio"= IY/(IY+IN), # overlap ratio with respect to input size
+                                             "overlap_anno_ratio"= IY/(IY+BY), # overlap ratio with respect to annotation size
+                                             "positive_overlap_ids"= sub_ct_dt$positive_intersect, # string with positive overlap markers ids
+                                             "negative_overlap_ids" = sub_ct_dt$negative_intersect, # string with negative overlap markers ids
+                                             #"overlap_ids"=  sub_ct_dt$tot_overlap # string with overlap ids
+              ))
+            }
+          }
+          out_dt<-as.data.table(out_df)
+          out_dt<-out_dt[order(cluster,p_value)]
+          out_dt_max<-out_dt[!duplicated(out_dt$cluster)]
+          out_dt_max[,odds_ratio:=format(odds_ratio, digits=2)]
+          out_dt_max[,p_value:=format(p_value, digits=2)]
+          out_dt_max[,overlap_input_ratio:=format(overlap_input_ratio, digits=2)]
+          out_dt_max[,overlap_anno_ratio:=format(overlap_anno_ratio, digits=2)]
+          
+          out_dt_max
+  
+        })
+      }
+        }
+      } 
     })
     
     output$table1A <- renderDataTable({
-      datatable(annoResultsTable(),rownames = FALSE)
+      datatable(annoResultsTable(),rownames = FALSE,options = list(
+        pageLength=5, scrollX='400px',columnDefs = list(
+          list(width = '130px', targets = "_all"))), filter = 'top')
     })
     
     output$downloadDataA <- downloadHandler(
@@ -2522,5 +2823,4 @@ server <- function(input, output, session) {
 
 
 shinyApp(ui = ui, server = server, options=list(port=8200))
-
 
