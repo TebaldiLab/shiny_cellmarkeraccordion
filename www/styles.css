@@ -31,10 +31,11 @@ h4, .h4 {
         font-size: 20px;
 	text-align: center;
     padding: 15px;
-    color: #990000;
+    color: black;
     font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
     text-transform: uppercase;
     text-align: center;
+    font-weight: bold;
         }
 
 h, .h {
@@ -58,7 +59,7 @@ h6, .h6 {
    	  padding: 15px;
         font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;
 	  color: black;  
-        text-align: left; 
+        text-align: center; 
         font-weight: bold;
    
 }
@@ -75,6 +76,7 @@ h7, .h7 {
 	color: black;
         
 }
+
 
 /* style of entries box text of table */
 .dataTables_length select{
@@ -130,6 +132,7 @@ font-size: 18px;
                                 background-color: white;
                                 }
 
+                                /* style of entries box of cell types  */ 
 
 hr {border-top: 1px solid #000000;}
 .tab-content { padding-left: 20px; padding-right: 30px; }
