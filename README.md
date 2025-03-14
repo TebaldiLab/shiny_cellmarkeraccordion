@@ -37,6 +37,7 @@ Alternatively, download the ZIP file and extract it.
 ### 2. Run the Installation Script:
 Open R or RStudio, navigate to the cloned repository folder, and execute:
 ```bash
+setwd("path/to/shiny_cellmarkeraccordion")
 source("install_dependencies.R")
 ```
 This script will:
