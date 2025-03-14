@@ -55,6 +55,7 @@ runApp()
 The Cell Marker Accordion web interface allows to easily:  <br />
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. <br />
+
 Inputs: 
 - Select species: currently Human and/or Mouse.
 - Condition: healthy or multiple diseases.
