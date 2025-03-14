@@ -54,8 +54,14 @@ runApp("path/to/shiny_cellmarkeraccordion")
 The Cell Marker Accordion web interface allows to easily:  <br />
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. <br />
+Users can select: 
+- Species, currently Human and/or Mouse.
+- Condition: healthy or multiple diseases.
+- Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
+- Cell type: select one or multiple cell types from the list.
+- See subtypes of: displays the list of cell type descendants of the previously selected cell types. Users can select one or more subtypes to visualize in the Ontology tree and the output table.
 
-<img src=https://github.com/user-attachments/assets/9e719956-ad4b-435f-b5db-609e4f186144 style="width:50%; height:50%;"> <br />
+<img src=https://github.com/user-attachments/assets/7021b223-2de7-4dd2-adc2-5184556053db style="width:50%; height:50%;"> <br />
 
  <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> Search and download lists of cell types by marker genes.  <br />
 
