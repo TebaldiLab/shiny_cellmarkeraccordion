@@ -53,7 +53,7 @@ runApp("path/to/shiny_cellmarkeraccordion")
 ## Usage
 The Cell Marker Accordion web interface allows to easily:  <br />
 
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. <br />
 
 <img src=https://github.com/user-attachments/assets/9e719956-ad4b-435f-b5db-609e4f186144 style="width:50%; height:50%;"> <br />
 
@@ -70,6 +70,9 @@ database specificity and by their evidence consistency scores.  <br />
  <img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
 
  <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database
+
+ ![immagine](https://github.com/user-attachments/assets/c3542e15-598d-45d3-ab0c-36eacf00b67f)
+
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"> User can upload a file containing markers for every cluster, or just related to one entity, and the tool retrieves the respective cell type with the highest correlation.  <br />
 
