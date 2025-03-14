@@ -55,8 +55,8 @@ runApp()
 The Cell Marker Accordion web interface allows to easily:  <br />
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. <br />
-Users can select: 
-- Species, currently Human and/or Mouse.
+Inputs: 
+- Select species: currently Human and/or Mouse.
 - Condition: healthy or multiple diseases.
 - Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
 - Cell type: select one or multiple cell types from the list.
@@ -64,7 +64,14 @@ Users can select:
 
 <img src=https://github.com/user-attachments/assets/7021b223-2de7-4dd2-adc2-5184556053db style="width:50%; height:50%;"> <br />
 
- <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> Search and download lists of cell types by marker genes.  <br />
+ <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> Search and download lists of cell types associate with input marker genes across different tissues in health and disease. <br />
+
+Inputs: 
+- Select species: currently Human and/or Mouse.
+- Inser marker genes: enter a list of marker genes, using | , : ; ! ? as delimiters to separate them.
+- Upload file with marker genes: provide a .txt, .csv, .xlsx, or .tsv file containing a list of marker genes. Use |, ,, :, ;, !, or ? as delimiters to separate them. Both the markers entered in the "Insert marker genes" box and those in the uploaded file will be considered. 
+- Condition: healthy or multiple diseases.
+- Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
 
 <img src=https://github.com/user-attachments/assets/23399d3f-8a45-41ed-ba81-8890abe51aa9 style="width:50%; height:50%;"> <br />
 
