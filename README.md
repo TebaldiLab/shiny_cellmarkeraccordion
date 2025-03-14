@@ -69,7 +69,7 @@ database specificity and by their evidence consistency scores.  <br />
 
  <img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
 
- <img src= "![gear-solid](https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf)" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database
+ <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"> User can upload a file containing markers for every cluster, or just related to one entity, and the tool retrieves the respective cell type with the highest correlation.  <br />
 
