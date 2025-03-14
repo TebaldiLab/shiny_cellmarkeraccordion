@@ -1,19 +1,3 @@
-list.of.packages <- c("rstudioapi","shinydashboard","shiny","stringr","DiagrammeR","igraph",
-                      "shinyWidgets","ontologyIndex","data.table","plyr","ontologyPlot",
-                      "writexl", "dplyr", "shinyBS","shinyhelper","DT","shinyjs",
-                      "shinydashboardPlus", "readxl","rstatix", "tidyverse")
-new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
-if(length(new.packages)) suppressMessages(suppressWarnings({install.packages(new.packages, dependencies = T)}))
-
-list.of.packages.bio<-c("ontoProc")
-if (!require("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-list.of.packages.bio<-c("ontoProc")
-new.packages_bio <- list.of.packages.bio[!(list.of.packages.bio %in% installed.packages()[,"Package"])]
-if(length(new.packages_bio)) 
-  suppressMessages(suppressWarnings({BiocManager::install(new.packages_bio)}))
-
-
 library(shinydashboard)
 library(shiny)
 library(stringr)
@@ -39,11 +23,11 @@ library(shinyjs)
 library(rstudioapi)
 
 source('helper_function.R')
-
+source("install_dependencies.R")
 
 ### REMEMBER TO CHANGE WHEN LOAD ON GITHUB -----
-setwd(dirname(getActiveDocumentContext()$path)) #locally
-#setwd("/home/rdds/www/apps/CellMarkerAccordion/") #for github
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+#setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 
 load("data/accordion_complete.rda")
@@ -103,9 +87,9 @@ ui <- dashboardPage(
 
                                # Centered Download Button
                                div(style = "display: flex; justify-content: center; margin-top: 20px;",
-                                   downloadButton("downloadAccordionDB", "Download Accordion database", style = "background-color: transparent;
+                                   downloadButton("downloadAccordionDB", HTML("Download the <br>Cell Marker Accordion database"), style = "background-color: transparent;
                             color: white; border: 1px solid white; padding: 10px 15px;
-                            text-align: center; width: 80%; font-size: 14px;")
+                            text-align: center; width: 80%; font-size: 16px;")
                                )
                    )
   ),
@@ -134,11 +118,11 @@ ui <- dashboardPage(
                 br(),
                 tags$style("@import url('https://use.fontawesome.com/releases/v6.1.1/css/all.css');"),
                 HTML("<p style='text-align: justify;'>
-            <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial data. 
-            Our framework includes both a <strong>Shiny app</strong> and an <strong>R package</strong>. 
+            <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial data.
+            Our framework includes both a <strong>Shiny app</strong> and an <strong>R package</strong>.
             (<a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'>cellmarkeraccordion</a>).
             <br><br>
-            The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers. 
+            The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers.
             Specifically, it enables:
         </p></h>")
               ),
@@ -150,13 +134,13 @@ ui <- dashboardPage(
               titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database</h>")))),
               titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease</h>"))))),
 
-              
-      
-              
+
+
+
       # Second tab content: Search markers according to cell types
       tabItem(tabName = "celltype_h",
               tags$h2(
-                "Search and download lists of marker genes by cell types across different tissues in health and disease", 
+                "Search and download lists of marker genes by cell types across different tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
               tags$style(css),
@@ -201,22 +185,22 @@ ui <- dashboardPage(
                   conditionalPanel(id="test",condition= "input.plot1_click",wellPanel(textOutput("celltype_def"))),
                   br(),
                   br(),
-                  
+
                   conditionalPanel(condition= "input.descendantsof != ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help', 'Info',icon= icon("info"), align="left"))))),
                   conditionalPanel(condition= "input.descendantsof == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty', 'Info',icon= icon("info"), align="left"))))),
-                  
+
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
                                                      fluidRow(column(2,radioButtons('EC_score','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
                                                               column(3,radioButtons('specificity','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                               column(2,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),
                                                               conditionalPanel(condition= "input.descendantsof != ''", column(2,radioButtons("mergeDescendant","Merge subtypes", c("Yes","No"),selected="No"))))))),
-                  
-                  
+
+
                   fluidRow(column(4,radioButtons("downloadType", "Download Format", choices = c("CSV" = ".csv",
                                                                                                 "XLSX" = ".xlsx",
                                                                                                 "TSV" = ".tsv"),inline = TRUE),
                                   column(4,downloadButton("downloadData", "Download")))),
-                  
+
                   tags$head(tags$style(HTML('
          #sidebar2 {
             background-color: #ad000019;
@@ -230,12 +214,12 @@ ui <- dashboardPage(
                   DTOutput("table1", width = "100%"),
                   br()
               )),
-      
+
       ###### search by markers -----
       tabItem(tabName="marker_h",
               tags$style(css),
               tags$h2(
-                "Search and download lists of cell types by marker genes across different tissues in health and disease", 
+                "Search and download lists of cell types by marker genes across different tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",checkboxGroupInput("speciesM", "Select species:",
@@ -250,7 +234,7 @@ ui <- dashboardPage(
                                                     pickerInput('diseaseM', 'Condition', selected = "healthy", choices= disease_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     checkboxInput("tissue_awareM","Tissue aware",value=TRUE),
-                                                    
+
                                                     checkboxInput("cellidM","Plot celltype_ID",value=FALSE))),
                            br(),
                            #change style sliderinput
@@ -286,7 +270,7 @@ ui <- dashboardPage(
                                                                                                  "XLSX" = ".xlsx",
                                                                                                  "TSV" = ".tsv"),inline = TRUE),
                                   column(4,downloadButton("downloadDataM", "Download")))),
-                  
+
                   tags$head(tags$style(HTML('
          #sidebar2M {
             background-color: #ad000019;
@@ -299,17 +283,17 @@ ui <- dashboardPage(
                   dataTableOutput('table1M', width = "100%"),
                   br()
               )),
-      
-      
-      
+
+
+
       ##Custom markers integration ----
       tabItem(tabName="integration",
               tags$style(css),
               tags$h2(
-                "Integrate custom set of marker genes with the Cell Marker Accordion database", 
+                "Integrate custom set of marker genes with the Cell Marker Accordion database",
                 style = "font-weight: bold; text-align: center;"
               ),
-              
+
               # div(fluidRow(wellPanel(id="sidebar",fluidRow(column(8,splitLayout(cellWidths = c("75%", "25%"),fileInput("usermarker", "Load your custom set to be integrated with the Accordion database",buttonLabel=list(icon("upload")),multiple = FALSE),
               #                                                   actionButton('usermarkerinfo', 'InputFile',icon= icon("file-circle-question"), align="left",style='margin-top:30px'))),
               #                                              column(3,radioButtons("databaseInt", "Select the Accordion database:",
@@ -320,60 +304,60 @@ ui <- dashboardPage(
                 fluidRow(
                   wellPanel(
                     id = "sidebar",
-                    
+
                     # File input and database selection
                     fluidRow(
                       column(
-                        8, 
+                        8,
                         splitLayout(
                           cellWidths = c("75%", "25%"),
                           fileInput(
-                            "usermarker", 
+                            "usermarker",
                             HTML("Upload custom marker genes"),
-                            buttonLabel = list(icon("upload")), 
+                            buttonLabel = list(icon("upload")),
                             multiple = FALSE
                           ),
                           actionButton(
-                            'usermarkerinfo', 
+                            'usermarkerinfo',
                             'InputFile',
-                            icon = icon("file-circle-question"), 
+                            icon = icon("file-circle-question"),
                             align = "left",
                             style = 'margin-top:30px'
                           )
                         )
                       ),
                       column(
-                        3, 
+                        3,
                         radioButtons(
-                          "databaseInt", 
+                          "databaseInt",
                           "Select the Accordion database:",
-                          choices = c("Healthy" = "Healthy", "Disease" = "Disease"), 
+                          choices = c("Healthy" = "Healthy", "Disease" = "Disease"),
                           inline = TRUE
                         )
                       )
                     ),
-                    
+
                     # Buttons inside the same wellPanel
                     fluidRow(
                       column(
-                        width = 6, 
+                        width = 6,
                         div(
                           style = "display: flex; align-items: center; gap: 10px;",
                           actionButton(
-                            "demo_ex", 
-                            HTML("Load demo example"), 
-                            style = "font-size: 14px;", 
+                            "demo_ex",
+                            HTML("Load demo example"),
+                            style = "font-size: 14px;",
                             icon = icon("cloud-arrow-up")
                           ),
                           uiOutput("success_icon_int")  # Checkmark icon appears here
                         )
                       ),
                       column(
-                        width = 6, 
+                        width = 6,
                         actionButton(
-                          "start_int", 
-                          HTML("Start the integration!"), 
-                          style = "font-size: 14px;", 
+                          "start_int",
+                          HTML("Start the integration!"),
+                          style = "font-size: 14px;",
                           icon = icon("gear")
                         )
                       )
@@ -381,7 +365,7 @@ ui <- dashboardPage(
                   )
                 )
               ),
-                                                    
+
               conditionalPanel(condition = "input.start_int > 0",
               fluidRow(column(4,radioButtons("downloadTypeInt", "Download Format", choices = c("CSV" = ".csv",
                                                                                             "XLSX" = ".xlsx",
@@ -391,10 +375,10 @@ ui <- dashboardPage(
                                                       dataTableOutput('table1Int', width = "100%"),
               br(),
               br(),
-                                                   
+
 
               useShinyjs(),
-              h2("Filter the integrated database"),    
+              h2("Filter the integrated database"),
               div(fluidRow(column(width=8,wellPanel(id="sidebar",
                                                     checkboxGroupInput("speciesInt", "Select species:",
                                                                        choiceNames =
@@ -405,12 +389,12 @@ ui <- dashboardPage(
                                                     #pickerInput('disease', 'Hematologic disorder', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
                                                     pickerInput('diseaseInt', 'Condition',  choices= NULL, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     conditionalPanel(condition = "output.showTissuePanel == true",
-                                                    
+
                                                     pickerInput('tissueInt', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     #checkboxInput("collapse_tissue","",value=FALSE))),
                                                     checkboxInput("tissue_awareInt","Tissue aware",value=TRUE)),
-                                                    
-                                                    
+
+
                                                     pickerInput('celltypeInt', 'Cell type', choices= NULL ,multiple=TRUE,selected=celltype_list, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     br(),
                                                     pickerInput('descendantsofInt', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
@@ -440,22 +424,22 @@ ui <- dashboardPage(
                   conditionalPanel(id="testInt",condition= "input.plot1Int_click",wellPanel(textOutput("celltype_defInt"))),
                   br(),
                   br(),
-                  
+
                   conditionalPanel(condition= "input.descendantsofInt != ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpInt', 'Info',icon= icon("info"), align="left"))))),
                   conditionalPanel(condition= "input.descendantsofInt == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_emptyInt', 'Info',icon= icon("info"), align="left"))))),
-                  
+
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
                                                      fluidRow(column(2,radioButtons('EC_scoreInt','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
                                                               column(3,radioButtons('specificityInt','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                               column(2,radioButtons("tabletypeInt","Table type",c("Simple","Complete"),selected="Simple")),
                                                               conditionalPanel(condition= "input.descendantsofInt != ''", column(2,radioButtons("mergeDescendantInt","Merge subtypes", c("Yes","No"),selected="No"))))))),
-                  
-                  
+
+
                   fluidRow(column(4,radioButtons("downloadTypeInt2", "Download Format", choices = c("CSV" = ".csv",
                                                                                                 "XLSX" = ".xlsx",
                                                                                                 "TSV" = ".tsv"),inline = TRUE),
                                   column(4,downloadButton("downloadDataInt2", "Download")))),
-                  
+
                   tags$head(tags$style(HTML('
          #sidebar2 {
             background-color: #ad000019;
@@ -470,11 +454,11 @@ ui <- dashboardPage(
               )),
 
       ##### SEMI-AUTOMATIC ANNOTATION -----
-      
+
       tabItem(tabName="anno",
               tags$style(css),
               tags$h2(
-                "Annotate cell populations in different tissues in health and disease", 
+                "Annotate cell populations in different tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",
@@ -495,7 +479,7 @@ ui <- dashboardPage(
                                                              column(width=6,textInput("nmarkerotherneg", HTML("Type in number of <em>negative</em> markers")))),
                                                     fluidRow(column(width=6,actionButton("addpos", HTML("Add value"))),
                                                              column(width=6,actionButton("addneg", HTML("Add value")))),
-                                                    
+
                                                     style = "padding-bottom: 5px;")),
                            column(6, offset=0,align="center",actionButton("demo_ex_anno", HTML("Load demo example"),style="font-size: 14px;",icon= icon("cloud-arrow-up")), uiOutput("success_icon_anno")),
                            br(),
@@ -503,47 +487,47 @@ ui <- dashboardPage(
                            br(),
                            column(6,  dataTableOutput('exampletable', width = "100%"))),
                   br(),
-                  
+
                   fluidRow(
                     column(
-                      width = 6, 
+                      width = 6,
                       wellPanel(
                         id = "sidebar",
-                        
+
                         # Centered and larger "Filters" title
                         div(style = "text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 10px;",
                             HTML("Filters"),
                             actionButton('filterhelpA', 'Info', icon = icon("info"))
                         ),
-                        
+
                         fluidRow(
-                          column(width = 4, 
-                                 radioButtons('EC_scoreA', 'ECs', 
-                                              choices = c(">=1", ">=2", ">=3", ">=4", ">=5", ">=6", ">=7"), 
+                          column(width = 4,
+                                 radioButtons('EC_scoreA', 'ECs',
+                                              choices = c(">=1", ">=2", ">=3", ">=4", ">=5", ">=6", ">=7"),
                                               selected = ">=1")
                           ),
-                          column(width = 4, 
-                                 radioButtons('specificityA', 'SPs', 
-                                              choices = c(">=0", ">=0.25", ">=0.5", "=1"), 
+                          column(width = 4,
+                                 radioButtons('specificityA', 'SPs',
+                                              choices = c(">=0", ">=0.25", ">=0.5", "=1"),
                                               selected = ">=0")
                           ),
-                          column(width = 4, 
-                                 textInput("max_n_marker", 
-                                           value = 30, 
-                                           placeholder = NULL, 
+                          column(width = 4,
+                                 textInput("max_n_marker",
+                                           value = 30,
+                                           placeholder = NULL,
                                            label = HTML("Maximum number of markers to keep for each cell type"))
                           )
                         )
                       )
                     ),
-                  
-                  
-                  
-                  
+
+
+
+
                   column(6,div(img(src = "Logo.png",height="40%", width="40%"),style="text-align: center;"),
                          br(),
                          actionButton("button", HTML("<strong>Click to annotate!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
-                  
+
                   conditionalPanel(
                     condition= "input.button > 0", fluidRow(column(4,radioButtons("downloadTypeA", "Download Format", choices = c("CSV" = ".csv",
                                                                                                                                 "XLSX" = ".xlsx",
@@ -553,7 +537,7 @@ ui <- dashboardPage(
                   dataTableOutput('table1A', width = "100%"),
                   br(),
                   br(),
-                  
+
                   #change style sliderinput
                   tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #990000}")),
                   tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: #990000}")),
@@ -577,9 +561,9 @@ ui <- dashboardPage(
             background-color: #ad000019;
             font-size: 16px;
         }'))),
-                  
-                  
-                  
+
+
+
                   tags$head(tags$style(HTML('
          #sidebar2A {
             background-color: #ad000019;
@@ -595,37 +579,37 @@ ui <- dashboardPage(
   )
 )
 server <- function(input, output, session) {
-  
+
   ###### server for cell type search ----
   # Download handler
   output$downloadAccordionDB <- downloadHandler(
     filename = function() {
       "TheCellMarkerAccordion_database_v0.9.5.xlsx"  # Name of the downloaded file
     },
-    
+
     content = function(file) {
       withProgress(message = "Preparing file...", value = 0, {
       # Simulate preparation (e.g., loading, processing)
       incProgress(0.1, detail = "Downloading The Cell Marker Accordion database...")  # Initial step (10%)
       Sys.sleep(1)  # Simulate processing time
-      
+
       # Load data
       load("./data/AccordionDB_list.rda")
       incProgress(0.2, detail = "Downloading The Cell Marker Accordion database...")  # Update progress (20%)
       Sys.sleep(1)  # Simulate some more processing time
-      
+
       # Write the file
       write_xlsx(data_list, file)
       incProgress(0.5, detail = "Downloading The Cell Marker Accordion database...")  # Another update (50%)
       Sys.sleep(1)  # Simulate the writing process
-      
+
       # Finish the progress (total progress = 1)
       incProgress(0.2, detail = "Downloading The Cell Marker Accordion database...")  # Final step (20%)
       })
     }
   )
-  
-  
+
+
   observeEvent(input$help,{
     showModal(modalDialog(
       title = "Table Option Information",
@@ -640,8 +624,8 @@ server <- function(input, output, session) {
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
-  
-  
+
+
   observeEvent(input$help_empty,{
     showModal(modalDialog(
       title = "Table Option Information",
@@ -653,37 +637,37 @@ server <- function(input, output, session) {
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
-  
+
   markerTableComplete <- reactive({
     validate(need(length(input$disease) >=1, "Please select at least one condition"))
     accordion_complete<-accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]
     accordion_complete
-    
+
   })
-  
+
   toListen_tissue <- reactive({
     list(input$disease,input$species, input$disease)
   })
-  
+
   observeEvent(toListen_tissue(),{
     updatePickerInput(session,'tissue', selected=tissue_list,
                       choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]$Uberon_tissue),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete$Uberon_tissue))))
   })
-  
+
   toListen <- reactive({
     list(input$species, input$disease, input$tissue)
   })
-  
+
   observeEvent(toListen(),{
     updatePickerInput(session,'celltype', selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"),
                       choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species & Uberon_tissue %in% input$tissue]$celltype_species),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete$celltype))))
   })
-  
-  
+
+
   controlDescendant<-reactive({
     if("healthy" %in% input$disease){
       onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
@@ -700,30 +684,30 @@ server <- function(input, output, session) {
       data.table(celltype="", distance =0)
     }
   })
-  
-  
+
+
   observeEvent(input$celltype,{
     updatePickerInput(session,'descendantsof',
                       choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species & Uberon_tissue %in% input$tissue & celltype %in% controlDescendant()[distance!=0]$celltype]$celltype_species),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 105)))
   })
-  
+
   descendantTable<-reactive ({
     if(length(input$descendantsof)>0){
       select_descendant(onto_plot, markerTableComplete(), input$descendantsof)
     }
-    
+
   })
-  
+
   mergeDescendantTable<-reactive ({
     if(length(input$descendantsof)>0 & input$mergeDescendant=="Yes"){
       table_merge_descendant(onto_plot, cell_onto, markerTableComplete(), input$descendantsof, input$species, input$tissue, colnames(accordion_complete))
     }
   })
-  
+
   markerTablePreOutput <- reactive ({
-    
+
     #table with descandants merged
     if(length(input$descendantsof)!=0 & input$mergeDescendant=="Yes"){
       table_merged_desc_other(markerTableComplete(),input$celltype,mergeDescendantTable(),input$species,input$tissue,colnames(accordion_complete))
@@ -735,58 +719,58 @@ server <- function(input, output, session) {
     else if(length(input$descendantsof)==0){
       table_input_celltypes(markerTableComplete(),input$celltype,input$species,input$tissue, input$disease)
     }
-    
+
   })
-  
+
   markerTableOutput <- reactive ({
     if(nrow(markerTablePreOutput() > 0)){
-      
+
       #keep tissue separated
       if(input$tissue_aware == TRUE){
         #compute EC and specificity condition&tissue specific
-        
+
         #EC score
         st_table_tissue_specific<-unique(markerTablePreOutput()[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
         ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
         colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
         accordion_ec_table<-merge(markerTablePreOutput(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
-        
+
         #specificity
         st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-        
+
         mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
         colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
-        
+
         final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
         final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-        
+
         final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
       } else{ #not consider tissue
         #EC_score
         st_table_tissue_specific<-unique(markerTablePreOutput()[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-        
+
         ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,celltype,celltype_ID,marker,marker_type),nrow)
-        
+
         colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
         accordion_ec_table<-merge(markerTablePreOutput(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
-        
+
         #specificity
         st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","marker","marker_type")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
         mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID, marker,marker_type),nrow)
-        
+
         colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","marker","marker_type", "specificity_score")
-        
+
         final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","marker","marker_type"),all.x = TRUE)
         final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
         final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
       }
     }
   })
-  
+
   markerTablePlot <- reactive ({
     if(nrow(markerTableComplete()>0)){
       #plot with descendants
@@ -798,7 +782,7 @@ server <- function(input, output, session) {
       }
     }
   })
-  
+
   Plot <- reactive({
     if(!is.null(markerTablePlot())){
       healthy_ct<-unique(markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID)
@@ -808,7 +792,7 @@ server <- function(input, output, session) {
           nodes<-as.data.table(ontosubplot@nodes)
           nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
           nodes<-nodes[,V1:=tstrsplit(nodes$V1,"DOID", fixed = TRUE, keep = 1)]
-          
+
           nodes<-nodes[, V1:=str_replace_all(V1,"\n"," ")]
           nodes<-nodes[, V1:=str_sub(V1,1,nchar(V1)-1)]
           ontosubplot@nodes<-nodes$V1
@@ -820,15 +804,15 @@ server <- function(input, output, session) {
           label<-merge(dt_onto2,ontology_celltype,by.x="V1",by.y="celltype_ID")
           ontosubplot[["node_attributes"]][["label"]][[label$V1]]<-label$celltype
           ontosubplot2@nodes<-ontosubplot[["node_attributes"]][["label"]]
-          
+
           ontosubplot2
-          
+
         }
       }
     }
   })
-  
-  
+
+
   output$plot1 <- renderGrViz({
     if(!is.null(markerTablePlot())){
       healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
@@ -841,32 +825,32 @@ server <- function(input, output, session) {
       }
     }
   })
-  
+
   output$scalableplot <- renderUI({
     tagList(
       div(grVizOutput('plot1',height = input$height, width = input$width)))
   })
-  
-  
-  
+
+
+
   click_plot<-reactive ({
     click_node(accordion_complete,ontology_celltype,Plot(),markerTableComplete(),input$cellid, ontology_def, input$disease)
   })
-  
-  
+
+
   txt <- reactive({
     req(input$plot1_click)
     nodeval <- input$plot1_click$nodeValues[1:length(input$plot1_click$nodeValues)]
     nodeval<-as.data.table(paste(nodeval,sep="", collapse=" "))
     return(click_plot()[label %in% nodeval$V1]$cell_definition)
-    
+
   })
   output$celltype_def <- renderText({
     req(txt())
     txt()
   })
-  
-  
+
+
   outputTable<-reactive({
     if(!is.null(markerTableOutput())){
       if("celltype" %in% colnames(markerTableOutput())){
@@ -877,8 +861,8 @@ server <- function(input, output, session) {
       if("EC_score" %in% colnames(markerTableOutput())){
         setnames(markerTableOutput(), "EC_score", "ECs")
         setnames(markerTableOutput(), "specificity_score", "SPs")
-      } 
-      
+      }
+
       if(length(input$celltype)!=0 & input$tabletype=="Complete" & input$tissue_aware==TRUE){
         if(input$mergeDescendant=="Yes"){
           markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
@@ -913,9 +897,9 @@ server <- function(input, output, session) {
         }
       }
     }
-    
+
   })
-  
+
   outputTable2<-reactive({
     if(!is.null(outputTable())){
       if(all(is.na(outputTable()$DO_ID))){
@@ -928,12 +912,12 @@ server <- function(input, output, session) {
           outputTable()[,c("CL_celltype","CL_ID","CL_cell_definition"):=NULL]
         })
       }
-      
+
       outputTable()
     }
-    
+
   })
-  
+
   output$table1 <- renderDataTable({
     if(!is.null(outputTable2())){
       datatable(outputTable2(),rownames = FALSE,options = list(
@@ -945,7 +929,7 @@ server <- function(input, output, session) {
 
 
   # Downloadable csv of selected dataset
-  
+
   output$downloadData <- downloadHandler(
     filename = function() {
       paste0("TheCellMarkerAccordion_database_v0.9.5", input$downloadType)
@@ -961,16 +945,16 @@ server <- function(input, output, session) {
         write.table(outputTable(), file, quote = FALSE,
                     sep='\t', row.names = FALSE)
       }
-      
+
     }
-    
-    
+
+
   )
-  
-  
-  
-  
-  
+
+
+
+
+
   #### server for marker search ----
   observeEvent(input$helpM,{
     showModal(modalDialog(
@@ -982,10 +966,10 @@ server <- function(input, output, session) {
              <strong> Table type </strong> <br> <ul><li>simple: provides a compact table with fewer columns for easier viewing </li><li> complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.</li></ul>")
     ))
   })
-  
-  
-  
-  
+
+
+
+
   #table based on selected genes-marker
   tableMarkerInput<-reactive ({
     if(length(input$marker)!=0){
@@ -1001,10 +985,10 @@ server <- function(input, output, session) {
         gene_marker<- gene_marker[DO_diseasetype %in% input$diseaseM]
         gene_marker
       }
-      
+
     }
   })
-  
+
   #table base on input file genes marker
   tableFileMarker<-reactive ({
     file_load<-input$markerfile
@@ -1016,22 +1000,22 @@ server <- function(input, output, session) {
     table_marker_file <- table_marker_file[species %in% input$speciesM]
     if(length(input$diseaseM>0)){
       table_marker_file<- table_marker_file[DO_diseasetype %in% input$diseaseM]
-      
+
     }
     table_marker_file
   })
-  
+
   # Final table output:
   #1. Marker insert by the user in the box
   #2. Marker add through a marker file
   #3. If both marker in the box and file marker are present add together
-  
+
   tableInputComplete_notissue<-reactive({
     if(nchar(input$marker)>1 & (!is.null(input$markerfile))){
       table_tot<-rbind(tableMarkerInput(),tableFileMarker())
       if(length(input$diseaseM)>0){
         table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-        
+
       }
       table_tot
     }else if(nchar(input$marker)>1  & is.null(input$markerfile)){
@@ -1044,35 +1028,35 @@ server <- function(input, output, session) {
       table_tot<-tableFileMarker()
       if(length(input$diseaseM)>0){
         table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-        
+
       }
       table_tot
     }
   })
-  
-  
-  
+
+
+
   toListen_tissueM <- reactive({
     list(input$speciesM, input$diseaseM, tableInputComplete_notissue())
   })
-  
+
   observeEvent(toListen_tissueM(),{
     updatePickerInput(session,'tissueM',selected=tableInputComplete_notissue()$Uberon_tissue,
                       choices=unique(tableInputComplete_notissue()$Uberon_tissue),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(tableInputComplete_notissue()$Uberon_tissue))))
   })
-  
-  
+
+
   tableInputComplete <- reactive ({
     if(!is.null(tableInputComplete_notissue())){
       if(nrow(tableInputComplete_notissue())){
-        
+
       tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
       }
     }
   })
-  
+
   PlotM <- reactive({
     healthy_ct<-tableInputComplete()[DO_diseasetype =="healthy"]$celltype_ID
     if (length(healthy_ct)>=1 & "healthy" %in% input$diseaseM) {
@@ -1094,20 +1078,20 @@ server <- function(input, output, session) {
         ontosubplot[["node_attributes"]][["label"]][[label$V1]]<-label$celltype
         ontosubplot2@nodes<-ontosubplot[["node_attributes"]][["label"]]
         ontosubplot2
-        
+
       }
-      
+
     }
-    
+
   })
-  
-  
-  
-  
+
+
+
+
   output$plot1M <- renderGrViz({
     if(!is.null(tableInputComplete())){
       if(nrow(tableInputComplete())){
-        
+
       healthy_ct<-tableInputComplete()[DO_diseasetype=="healthy"]$celltype_ID
       if(length(healthy_ct>=1)){
         hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM)
@@ -1115,79 +1099,79 @@ server <- function(input, output, session) {
     }
     }
   })
-  
+
   output$scalableplotM <- renderUI({
     tagList(
       div(grVizOutput('plot1M',height = input$heightM, width = input$widthM)))
   })
-  
-  
-  
+
+
+
   click_plotM<-reactive ({
     click_node(accordion_complete, ontology_celltype, PlotM(), tableInputComplete(),input$cellidM, ontology_def, input$diseaseM)
   })
-  
-  
+
+
   txtM <- reactive({
     req(input$plot1M_click)
     nodeval <- input$plot1M_click$nodeValues[1:length(input$plot1M_click$nodeValues)]
     nodeval<-as.data.table(paste(nodeval,sep="", collapse=" "))
     return(  click_plotM()[label %in% nodeval$V1]$cell_definition)
-    
+
   })
   output$celltype_defM <- renderText({
     req(txtM())
     txtM()
   })
-  
-  
-  
-  
+
+
+
+
   markerTableOutputM <- reactive ({
     if(!is.null(tableInputComplete())){
       if(nrow(tableInputComplete())){
-        
-      
+
+
       #keep tissue separated
       if(input$tissue_awareM == TRUE){
         #compute EC and specificity condition&tissue specific
-        
+
         #EC score
         st_table_tissue_specific<-unique(tableInputComplete()[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
         ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
         colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
         accordion_ec_table<-merge(tableInputComplete(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
-        
+
         #specificity
         st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","celltype","celltype_ID","marker","marker_type")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-        
-        
+
+
         mark_spec<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
 
         colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
         final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
         final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-        
+
         final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
       } else{ #not consider tissue
         #EC_score
         st_table_tissue_specific<-unique(tableInputComplete()[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type","resource")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
-        
+
         ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,celltype,celltype_ID,marker,marker_type),nrow)
-        
+
         colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type","EC_score")
         accordion_ec_table<-merge(tableInputComplete(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","celltype","celltype_ID","marker", "marker_type"), all.x = TRUE)
-        
+
         #specificity
         st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","celltype","celltype_ID","marker","marker_type")])
         st_table_tissue_specific<-st_table_tissue_specific[!is.na(celltype)]
         mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID, marker,marker_type),nrow)
-        
+
         colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","marker","marker_type", "specificity_score")
-        
+
         final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","marker","marker_type"),all.x = TRUE)
         final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
         final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
@@ -1197,7 +1181,7 @@ server <- function(input, output, session) {
       }
     }
   })
-  
+
   FinalTableM<-reactive({
     if(!is.null(markerTableOutputM())){
       if(nrow(markerTableOutputM())){
@@ -1209,8 +1193,8 @@ server <- function(input, output, session) {
       if("EC_score" %in% colnames(markerTableOutputM())){
         setnames(markerTableOutputM(), "EC_score", "ECs")
         setnames(markerTableOutputM(), "specificity_score", "SPs")
-      } 
-      
+      }
+
       if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Complete"){
         unique(markerTableOutputM()[ECs >= str_replace_all(input$EC_scoreM, ">=","") & SPs >= str_replace_all(input$specificityM, ">=|=","")])
       } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == TRUE){
@@ -1219,19 +1203,19 @@ server <- function(input, output, session) {
       } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == FALSE){
         unique(markerTableOutputM()[ECs>= str_replace_all(input$EC_scoreM, ">=","") & SPs >= str_replace_all(input$specificityM, ">=|=","")
         ][,c("species","DO_diseasetype","DO_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
-        
+
       }
-      
-      
+
+
     }
     }
   })
-  
-  
+
+
   outputTable2M<-reactive({
     if(!is.null(FinalTableM())){
       if(nrow(FinalTableM()>0)){
-        
+
       if(all(is.na(FinalTableM()$DO_ID))){
         suppressWarnings({
           FinalTableM()[,c("original_diseasetype","DO_diseasetype","DO_ID","DO_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition"):=NULL]
@@ -1242,26 +1226,26 @@ server <- function(input, output, session) {
           FinalTableM()[,c("CL_celltype","CL_ID","CL_cell_definition"):=NULL]
         })
       }
-      
+
       FinalTableM()
       }
     } else{
       showNotification("No genes were found with the selected filters", type = "warning", duration = 5)
-      
+
     }
-    
+
   })
-  
+
   output$table1M <- renderDataTable({
     if(!is.null(outputTable2M())){
       datatable(outputTable2M(),rownames = FALSE,options = list(
         pageLength=5, scrollX='400px',columnDefs = list(
           list(width = '130px', targets = "_all"))), filter = 'top')
-      
+
     }
   })
   # Downloadable csv of selected dataset
-  
+
   output$downloadDataM <- downloadHandler(
     filename = function() {
       paste0("TheCellMarkerAccordion_database_v0.9.5", input$downloadTypeM)
@@ -1277,31 +1261,31 @@ server <- function(input, output, session) {
         write.table(FinalTableM(), file, quote = FALSE,
                     sep='\t', row.names = FALSE)
       }
-      
+
     }
-    
+
   )
-  
-  
-  
+
+
+
   #### server for custom markers integration with the accordion database -----
-  
+
   observeEvent(input$usermarkerinfo,{
     showModal(modalDialog(
       title = "Marker genes input file",
       HTML("Add a custom set of marker genes to be integrated with the Cell Marker Accordion database, either healthy or disease. <br>
       The file must contain at least two columns:
       <ul>
-        <li> <strong> cell_type </strong>:  specifies the cell type. 
+        <li> <strong> cell_type </strong>:  specifies the cell type.
           <br>To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus. <br>
-          If non-standardized cell types are provided, they will be added as new cell types in the database. 
+          If non-standardized cell types are provided, they will be added as new cell types in the database.
         </li>
         <li> <strong> marker </strong>: lists the marker genes </li>
       </ul>
       Additional columns can also be included:
       <ul>
         <li> <strong> species </strong>: Specifies the species (default: Human).</li>
-        <li> <strong> tissue </strong>: Specifies the related tissue. Standardization with Uberon Ontology is recommended for effective integration.<br> 
+        <li> <strong> tissue </strong>: Specifies the related tissue. Standardization with Uberon Ontology is recommended for effective integration.<br>
         Non-standardized tissues will be added as new tissues. If omitted, integration will ignore tissue specificity.
         </li>
         <li> <strong> marker_type </strong>: Defines marker type (positive or negative; default: positive).</li>
@@ -1416,8 +1400,8 @@ server <- function(input, output, session) {
 
     ))
   })
-  
-  
+
+
   # Server logic for download
   output$download_ex_int <- downloadHandler(
     filename = function() {
@@ -1428,7 +1412,7 @@ server <- function(input, output, session) {
       write_xlsx(table, file)
     }
   )
-  
+
   AccordionToIntegrate<-reactive({
     if("Healthy" %in% input$databaseInt){
       load("data/accordion_marker.rda")
@@ -1437,7 +1421,7 @@ server <- function(input, output, session) {
       accordion_to_int$SPs_global<-NULL
       accordion_to_int$ECs_tissue_specific<-NULL
       accordion_to_int$ECs_global<-NULL
-      
+
     } else{
       load("data/disease_accordion_marker.rda")
       accordion_to_int<-disease_accordion_marker
@@ -1450,9 +1434,9 @@ server <- function(input, output, session) {
     }
     accordion_to_int
   })
-  
 
-  
+
+
   integratedDB<-reactive({
     if(!is.null(input$usermarker)){
       file_load_marker<-input$usermarker
@@ -1465,7 +1449,7 @@ server <- function(input, output, session) {
       }
       if(ext=="csv" | ext == "txt" | ext == "tsv"){
         user_inputfile<-fread(fileName_marker)
-        
+
       }
     } else if(input$demo_ex >0 & is.null(input$usermarker)){
       user_inputfile<-read_excel("data/Demo_example_integration.xlsx")
@@ -1487,7 +1471,7 @@ server <- function(input, output, session) {
           showNotification("\"species\" column not found. By default Human will be considered.", type = "warning", duration = 5)
           user_inputfile[,species:="Human"]
         }
-        
+
         if(!"tissue" %in% colnames(user_inputfile)){
           showNotification("\"tissue\" column not found. The integration will not consider the tissues.", type = "warning", duration = 5)
           user_inputfile[,Uberon_tissue:=NA][,original_tissue:=NA]
@@ -1495,7 +1479,7 @@ server <- function(input, output, session) {
         } else{
           setnames(user_inputfile, "tissue", "Uberon_tissue")
           user_inputfile[,original_tissue:=Uberon_tissue]
-          
+
         }
         if(!"marker_type" %in% colnames(user_inputfile)){
           showNotification("\"marker_type\" column not found. By default genes will be considered as positive markers.", type = "warning", duration = 5)
@@ -1512,18 +1496,18 @@ server <- function(input, output, session) {
         user_inputfile[,pct1:=NA]
         #AccordionToIntegrate()[,c("SPs_tissue_specific","SPs_global","ECs_tissue_specific","ECs_global"):=NULL]
         user_inputfile<-unique(user_inputfile)
-        
+
         #add cell_ID
-        
-  
+
+
         ontology_celltype<-as.data.frame(cell_onto[["name"]])
         colnames(ontology_celltype)<-"CL_celltype"
         ontology_celltype$CL_ID<-rownames(ontology_celltype)
         ontology_celltype$CL_cell_definition<-cell_onto[["def"]]
         ontology_celltype<-as.data.table(ontology_celltype)
-        
+
         user_inputfile<-merge(user_inputfile, ontology_celltype, by="CL_celltype", all.x=TRUE)
-        
+
         #add Uberon_ID
         load("data/uberon_onto.rda")
         ontology_tissue<-as.data.frame(uberon_onto[["name"]])
@@ -1549,11 +1533,11 @@ server <- function(input, output, session) {
         user_inputfile[,tissue_definition:=str_remove_all(tissue_definition, r"(\\)")]
         user_inputfile[,tissue_definition:=tstrsplit(tissue_definition, "[", fixed = TRUE, keep = 1)]
         marker_database<-rbind(AccordionToIntegrate(), user_inputfile)
-        
-        
+
+
       }
       if("Disease" %in% input$databaseInt){
-        
+
         if(!"cell_type" %in% colnames(user_inputfile)){
           validate(need("cell_type" %in% colnames(user_inputfile),"\"cell_type\" column not found. Please specificy the \"cell_type\" columns contaning the list of cell types to integrate."))
         } else{
@@ -1574,7 +1558,7 @@ server <- function(input, output, session) {
           showNotification("\"species\" column not found. By default Human will be considered.", type = "warning", duration = 5)
           user_inputfile[,species:="Human"]
         }
-        
+
         if(!"tissue" %in% colnames(user_inputfile)){
           showNotification("\"tissue\" column not found. The integration will not consider the tissues.", type = "warning", duration = 5)
           user_inputfile[,Uberon_tissue:=NA][,original_tissue:=NA]
@@ -1582,7 +1566,7 @@ server <- function(input, output, session) {
         } else{
           setnames(user_inputfile, "tissue", "Uberon_tissue")
           user_inputfile[,original_tissue:=Uberon_tissue]
-          
+
         }
         if(!"marker_type" %in% colnames(user_inputfile)){
           showNotification("\"marker_type\" column not found. By default genes will be considered as positive markers.", type = "warning", duration = 5)
@@ -1592,7 +1576,7 @@ server <- function(input, output, session) {
           showNotification("\"resource\" column not found. By default a unique resource will be associated to possible recurrence markers.", type = "warning", duration = 5)
           user_inputfile[,resource:="custom_set"]
         }
-        
+
         user_inputfile[,NCIT_cell_definition:=NA]
         user_inputfile[,NCIT_ID:=NA]
         user_inputfile[,original_celltype:=NCIT_celltype]
@@ -1600,11 +1584,11 @@ server <- function(input, output, session) {
         user_inputfile[,p.value:=NA]
         user_inputfile[,adjusted_p.value:=NA]
         user_inputfile[,pct1:=NA]
-        
+
         #AccordionToIntegrate()[,c("SPs_disease_tissue_specific","SPs_disease_specific","SPs_global","ECs_disease_tissue_specific","ECs_disease_specific","ECs_global"):=NULL]
-        
+
         user_inputfile<-unique(user_inputfile)
-        
+
         #Add Uberon_ID
         load("data/uberon_onto.rda")
         ontology_tissue<-as.data.frame(uberon_onto[["name"]])
@@ -1613,10 +1597,10 @@ server <- function(input, output, session) {
         ontology_tissue$tissue_definition<-uberon_onto[["def"]]
         ontology_tissue<-as.data.table(ontology_tissue)
         user_inputfile<-merge(user_inputfile, ontology_tissue, by="Uberon_tissue", all.x=TRUE)
-        
-        
+
+
         load("data/gene_description.rda")
-        
+
         user_inputfile<-merge(user_inputfile, gene_description, by.x="marker",by.y="gene_symbol", all.x=TRUE)
         user_inputfile<-unique(user_inputfile)
         user_inputfile[,NCIT_cell_definition:=str_remove_all(NCIT_cell_definition, '"')]
@@ -1628,31 +1612,31 @@ server <- function(input, output, session) {
         user_inputfile[,tissue_definition:=str_remove_all(tissue_definition, "\\$")]
         user_inputfile[,tissue_definition:=str_remove_all(tissue_definition, r"(\\)")]
         user_inputfile[,tissue_definition:=tstrsplit(tissue_definition, "[", fixed = TRUE, keep = 1)]
-        
+
         user_inputfile<-user_inputfile[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1")]
         user_inputfile<-unique(user_inputfile)
-        
+
         marker_database<-rbind(AccordionToIntegrate(), user_inputfile)
-        
-        
+
+
       }
       marker_database<-unique(marker_database)
       marker_database
 
     }
   })
-  
+
   demoLoaded_int <- reactiveVal(FALSE)  # Track if demo is loaded
-  
+
   observeEvent(input$demo_ex, {
     showNotification("Demo example loaded!", type = "message", duration = 5)
     demoLoaded_int(TRUE)  # Mark demo as loaded
   })
-  
+
   output$success_icon_int <- renderUI({
     if (demoLoaded_int()) {
       tags$span(
-        icon("check-circle", class = "text-success", lib = "font-awesome"), 
+        icon("check-circle", class = "text-success", lib = "font-awesome"),
         style = "font-size: 20px; margin-left: 10px;"
       )
     }
@@ -1673,105 +1657,105 @@ server <- function(input, output, session) {
             ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,Uberon_tissue,Uberon_ID,CL_celltype,CL_ID,marker,marker_type),nrow)
             colnames(ec_score_tissue_specific)<-c("species","Uberon_tissue","Uberon_ID","CL_celltype","CL_ID","marker", "marker_type","EC_score")
             accordion_ec_table<-merge(integratedDB(),ec_score_tissue_specific,by=c("species","Uberon_tissue","Uberon_ID","CL_celltype","CL_ID","marker", "marker_type"), all.x = TRUE)
-            
+
             #specificity
             incProgress(0.3, detail = "Calculating SPs...")
             st_table_tissue_specific<-unique(accordion_ec_table[,c("Uberon_tissue","Uberon_ID","species","CL_celltype","CL_ID","marker","marker_type","marker","marker_type")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(CL_celltype)]
             mark_spec<-ddply(st_table_tissue_specific,.(species,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
             colnames(mark_spec)<-c("species","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
-            
+
             final_table<-merge(accordion_ec_table,mark_spec,by=c("species","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
             final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-            
+
             final_table<-final_table[,c("species","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
           } else{
             #compute EC and specificity condition&tissue specific
-            
+
             #EC score
             st_table_tissue_specific<-unique(integratedDB()[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","NCIT_celltype","NCIT_ID","marker","marker_type","resource")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(NCIT_celltype)]
             incProgress(0.2, detail = "Calculating ECs...")
-  
+
             ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID,NCIT_celltype,NCIT_ID,marker,marker_type),nrow)
             colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","EC_score")
             accordion_ec_table<-merge(integratedDB(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","NCIT_celltype","NCIT_ID","marker", "marker_type"), all.x = TRUE)
-            
+
             #specificity
             incProgress(0.3, detail = "Calculating SPs...")
-            
+
             st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","species","NCIT_celltype","NCIT_ID","marker","marker_type","marker","marker_type")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(NCIT_celltype)]
-            
+
             mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID,Uberon_tissue,Uberon_ID, marker,marker_type),nrow)
             colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type", "specificity_score")
-            
+
             final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","marker","marker_type"),all.x = TRUE)
             final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-            
+
             final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
           }
         } else{
           if(input$databaseInt == "Healthy"){
             #compute EC and specificity condition&tissue specific
-            
+
             #EC score
             st_table_tissue_specific<-unique(integratedDB()[,c("species","CL_celltype","CL_ID","marker","marker_type","resource")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(CL_celltype)]
             incProgress(0.2, detail = "Calculating ECs...")
-            
+
             ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,CL_celltype,CL_ID,marker,marker_type),nrow)
             colnames(ec_score_tissue_specific)<-c("species","CL_celltype","CL_ID","marker", "marker_type","EC_score")
             accordion_ec_table<-merge(integratedDB(),ec_score_tissue_specific,by=c("species","CL_celltype","CL_ID","marker", "marker_type"), all.x = TRUE)
-            
+
             #specificity
             incProgress(0.3, detail = "Calculating SPs...")
-            
+
             st_table_tissue_specific<-unique(accordion_ec_table[,c("species","CL_celltype","CL_ID","marker","marker_type","marker","marker_type")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(CL_celltype)]
-            
+
             mark_spec<-ddply(st_table_tissue_specific,.(species, marker,marker_type),nrow)
             colnames(mark_spec)<-c("species","marker","marker_type", "specificity_score")
-            
+
             final_table<-merge(accordion_ec_table,mark_spec,by=c("species","marker","marker_type"),all.x = TRUE)
             final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-            
+
             final_table<-final_table[,c("species","original_celltype","CL_celltype","CL_ID","CL_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
           } else{
             #compute EC and specificity condition&tissue specific
-            
+
             #EC score
             st_table_tissue_specific<-unique(integratedDB()[,c("DO_diseasetype","DO_ID","species","NCIT_celltype","NCIT_ID","marker","marker_type","resource")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(NCIT_celltype)]
             incProgress(0.2, detail = "Calculating ECs...")
-            
+
             ec_score_tissue_specific<-ddply(st_table_tissue_specific,.(species,DO_diseasetype,DO_ID,NCIT_celltype,NCIT_ID,marker,marker_type),nrow)
             colnames(ec_score_tissue_specific)<-c("species","DO_diseasetype","DO_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","EC_score")
             accordion_ec_table<-merge(integratedDB(),ec_score_tissue_specific,by=c("species","DO_diseasetype","DO_ID","NCIT_celltype","NCIT_ID","marker", "marker_type"), all.x = TRUE)
-            
+
             #specificity
             incProgress(0.3, detail = "Calculating SPs...")
-            
+
             st_table_tissue_specific<-unique(accordion_ec_table[,c("DO_diseasetype","DO_ID","species","NCIT_celltype","NCIT_ID","marker","marker_type","marker","marker_type")])
             st_table_tissue_specific<-st_table_tissue_specific[!is.na(NCIT_celltype)]
-            
+
             mark_spec<-ddply(st_table_tissue_specific,.(species, DO_diseasetype,DO_ID, marker,marker_type),nrow)
             colnames(mark_spec)<-c("species","DO_diseasetype","DO_ID","marker","marker_type", "specificity_score")
-            
+
             final_table<-merge(accordion_ec_table,mark_spec,by=c("species","DO_diseasetype","DO_ID","marker","marker_type"),all.x = TRUE)
             final_table[,specificity_score:=format(round(1/specificity_score,2), nsmall=2)]
-            
+
             final_table<-final_table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
           }
         }
       incProgress(0.2, detail = "Integration completed!")
-      final_table   
+      final_table
       })
       }
     }
   })
-  
-  
+
+
   output$table1Int <- renderDataTable({
     if(!is.null(newTable())){
       datatable(newTable(),rownames = FALSE,options = list(
@@ -1779,8 +1763,8 @@ server <- function(input, output, session) {
           list(width = '130px', targets = "_all"))), filter = 'top')
     }
   })
-  
-  
+
+
   # Downloadable csv of selected dataset
 
   output$downloadDataInt <- downloadHandler(
@@ -2094,7 +2078,7 @@ server <- function(input, output, session) {
     }
   })
 
-  
+
   output$plot1Int <- renderGrViz({
     if(!is.null(markerTablePlotInt())){
       healthy_ct<-markerTablePlotInt()[DO_diseasetype=="healthy"]$celltype_ID
@@ -2118,7 +2102,7 @@ server <- function(input, output, session) {
   click_plotInt<-reactive ({
     click_node(integratedDBmod(),ontology_celltype,PlotInt(),markerTableCompleteInt(),input$cellidInt, ontology_def, input$diseaseInt)
   })
-  
+
   txtInt <- reactive({
     req(input$plot1Int_click)
     nodeval <- input$plot1Int_click$nodeValues[1:length(input$plot1Int_click$nodeValues)]
@@ -2201,7 +2185,7 @@ server <- function(input, output, session) {
   output$filteredInt <- renderDataTable({
     if(!is.null(outputTableInt())){
       datatable(outputTableInt2(),rownames = FALSE)
-      
+
     }
   })
 
@@ -2231,7 +2215,7 @@ server <- function(input, output, session) {
 
 
   ###### server for annotation -----
-  
+
   observeEvent(input$userclusterfileinfo,{
     showModal(modalDialog(
       title = "Annotation input file format",
@@ -2240,7 +2224,7 @@ server <- function(input, output, session) {
     <ul><li> <strong> The Output table generated by the <em>FindAllMarkers </em> function in the Seurat package,</strong> as txt, xlsx, csv or tsv file</li>
            <strong> Example </strong>"),
     downloadButton("download_ex_anno1", "Download Example"),
-    
+
      # HTML("<img src=findallmarker_ex.png>"),
      HTML("<table border='1' style='width:100%; border-collapse: collapse; text-align: center;'>
           <thead>
@@ -2280,9 +2264,9 @@ server <- function(input, output, session) {
           </tbody>
         </table>"),
 
-      
+
       HTML("<br>"),
-      HTML("<li> Alternatively, you can provide a <strong>custom table</strong> with at least one column (<strong>gene</strong> column) containing the list of genes (one per row).  
+      HTML("<li> Alternatively, you can provide a <strong>custom table</strong> with at least one column (<strong>gene</strong> column) containing the list of genes (one per row).
       By default, all genes are considered positive (high expression) and associated with a single identity class (one cluster only). </li>
       \nYou may also include additional columns:
              <ul><li> <strong> cluster </strong>: indicate the identity class of the markers
@@ -2321,7 +2305,7 @@ server <- function(input, output, session) {
       size="l"
     ))
   })
-  
+
   # Server logic for download
   output$download_ex_anno1 <- downloadHandler(
     filename = function() {
@@ -2332,7 +2316,7 @@ server <- function(input, output, session) {
       write_xlsx(table, file)
     }
   )
-  
+
   # Server logic for download
   output$download_ex_anno2 <- downloadHandler(
     filename = function() {
@@ -2343,8 +2327,8 @@ server <- function(input, output, session) {
       write_xlsx(table, file)
     }
   )
-  
-  
+
+
   observeEvent(input$filterhelpA,{
     showModal(modalDialog(
       title = "Filters Information",
@@ -2352,7 +2336,7 @@ server <- function(input, output, session) {
       <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
        <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in the accordion database </li>")    ))
   })
-  
+
   observeEvent(input$addpos, {
     req(input$nmarkerotherpos)
     otherVal <- "nmarkerotherpos"
@@ -2360,7 +2344,7 @@ server <- function(input, output, session) {
     updatedValues <- c(nmarker_values, otherVal)
     updateRadioButtons(session, "nmarkerpos", choices = updatedValues)
   })
-  
+
   observeEvent(input$addneg, {
     req(input$nmarkerotherneg)
     otherVal <- "nmarkerotherneg"
@@ -2368,13 +2352,13 @@ server <- function(input, output, session) {
     updatedValues <- c(nmarker_values, otherVal)
     updateRadioButtons(session, "nmarkerneg", choices = updatedValues)
   })
-  
+
   inputTable <- reactive({
     if(input$button){
     if (is.null(input$clusterfile) & input$demo_ex_anno > 0) {
       # Read the default example file
       table <- fread("data/FindAllMarkers_small_ex.tsv", verbose = FALSE)
-      
+
       if (!is.na(as.numeric(input$nmarkerpos))) {
         positive_marker <- table %>%
           group_by(cluster) %>%
@@ -2385,7 +2369,7 @@ server <- function(input, output, session) {
         positive_marker <- as.data.table(table)
         positive_marker <- positive_marker[avg_log2FC > 0]
       }
-      
+
       positive_marker<-positive_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
       positive_marker[, pos_marker := paste(gene, collapse = " "), by = cluster]
       positive_marker <- unique(positive_marker[, c("cluster", "pos_marker")])
@@ -2407,28 +2391,28 @@ server <- function(input, output, session) {
 
       input_marker <- merge(positive_marker, negative_marker, by = "cluster", all.x = TRUE, all.y = TRUE)
       return(input_marker)
-      
-      
+
+
     } else if (!is.null(input$clusterfile)) {
       file_load_cluster <- input$clusterfile
       fileName_cluster <- file_load_cluster$datapath
       ext <- tools::file_ext(fileName_cluster)
-      
+
       req(file_load_cluster)
       validate(need(ext %in% c("csv", "xlsx", "txt", "tsv"), "Please upload a csv, txt, tsv or xlsx file"))
-      
+
       if (ext == "xlsx") {
         user_inputfile <- read_excel(fileName_cluster)
       } else if (ext %in% c("csv", "txt", "tsv")) {
         user_inputfile <- fread(fileName_cluster)
       }
-      
+
       user_inputfile <- as.data.table(user_inputfile)
-      
+
       col_names_findmarkers <- c("p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj", "cluster", "gene") # Expected column names
       if (all(col_names_findmarkers %in% colnames(user_inputfile))) {  # If input matches FindMarker output
         user_inputfile<-user_inputfile[,c("p_val", "avg_log2FC", "pct.1", "pct.2", "p_val_adj", "cluster", "gene")]
-        
+
         if (!is.na(as.numeric(input$nmarkerpos))) {
           positive_marker <- user_inputfile %>%
             group_by(cluster) %>%
@@ -2439,11 +2423,11 @@ server <- function(input, output, session) {
           positive_marker <- as.data.table(user_inputfile)
           positive_marker <- positive_marker[avg_log2FC > 0]
         }
-        
+
         positive_marker<-positive_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
         positive_marker[, pos_marker := paste(gene, collapse = " "), by = cluster]
         positive_marker <- unique(positive_marker[, c("cluster", "pos_marker")])
-        
+
         if (!is.na(as.numeric(input$nmarkerneg))) { # Select number of markers
           negative_marker <- user_inputfile %>%
             group_by(cluster) %>%
@@ -2454,51 +2438,51 @@ server <- function(input, output, session) {
           negative_marker <- as.data.table(user_inputfile)
           negative_marker <- negative_marker[avg_log2FC < 0]
         }
-        
+
         negative_marker<-negative_marker[gene %in% (accordion_complete[species %in% input$speciesA]$marker)]
         negative_marker[, neg_marker := paste(gene, collapse = " "), by = cluster]
         negative_marker <- unique(negative_marker[, c("cluster", "neg_marker")])
-        
+
         input_marker <- merge(positive_marker, negative_marker, by = "cluster", all.x = TRUE, all.y = TRUE)
         return(input_marker)
-        
+
       } else { # Input different from FindMarkers output
         user_inputfile <- as.data.table(user_inputfile)
-        
+
         if (!"gene" %in% colnames(user_inputfile)) {
           validate(need("gene" %in% colnames(user_inputfile), "\"gene\" column not found. Please specify the \"gene\" column containing the list of genes for annotation."))
         }
-        
+
         if (!"gene_type" %in% colnames(user_inputfile)) {  # Corrected 'colnmames' typo
           user_inputfile[, gene_type := "positive"]
           showNotification("\"gene_type\" column not found. Genes will be considered as positive", type = "warning", duration = 5)
         }
-        
+
         if (!"cluster" %in% colnames(user_inputfile)) {
           user_inputfile[, cluster := "custom_cluster"]
           showNotification("\"cluster\" column not found. Genes will be associated with a single identity class", type = "warning", duration = 5)
         }
-        
+
         pos_marker <- user_inputfile[gene_type == "positive"][, pos_marker := paste(gene, collapse = " "), by = cluster]
         pos_marker <- unique(pos_marker[, c("cluster", "pos_marker")])
-        
+
         neg_marker <- user_inputfile[gene_type == "negative"][, neg_marker := paste(gene, collapse = " "), by = cluster]
         neg_marker <- unique(neg_marker[, c("cluster", "neg_marker")])
-        
+
         user_inputfile <- merge(pos_marker, neg_marker, by = "cluster", all.x = TRUE, all.y = TRUE)
         return(user_inputfile)
       }
     }
     }
   })
-  
-  
+
+
   output$exampletable <- renderDataTable({
     if(input$demo_ex_anno>0 & is.null(input$clusterfile)){
       table<-fread("data/FindAllMarkers_small_ex.tsv", verbose = F)
       table[,p_val:=format(p_val, digits=2)]
       table[,avg_log2FC:=format(avg_log2FC, digits=2)]
-      
+
       table<-datatable(table, options = list(scrollX='400px',
         dom = 't',      # Removes unnecessary UI elements
         pageLength = 15 # Controls number of rows displayed
@@ -2507,28 +2491,28 @@ server <- function(input, output, session) {
         formatStyle(columns = names(table), target="row", fontSize = '12px')
       return(table)
     }
-    
+
   })
-  
-  
+
+
   markerTable<-reactive ({
     table<-accordion_complete[DO_diseasetype %in% input$diseaseA & species %in% input$speciesA]
     table
   })
-  
-  
+
+
   toListen_tissueA <- reactive({
     list(input$speciesA, input$diseaseA)
   })
-  
+
   observeEvent(toListen_tissueA(),{
     updatePickerInput(session,'tissueA', selected = "blood",
                       choices=unique(markerTable()$Uberon_tissue),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTable()$Uberon_tissue))))
   })
-  
-  
+
+
   markerTableTissue <- reactive ({
     if(is.null(input$tissueA)){ #if no tissues are selected perform annotation with all aggregated tissues
       markerTable()[, Uberon_ID:="ALL"]
@@ -2537,63 +2521,63 @@ server <- function(input, output, session) {
     } else{
       table<-markerTable()[Uberon_tissue %in% input$tissueA]
     }
-    
+
       #calculate EC score based on filtered tissue
       accordion_marker<-unique(table[,c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker","marker_type","resource")])
       ECs<-ddply(accordion_marker,.(species,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
       colnames(ECs)<-c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker", "marker_type","ECs")
       accordion_marker<-merge(accordion_marker,ECs,by=c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker","marker_type"), all.x = TRUE)
       accordion_marker[,ECs_reg := log10(ECs)+1]
-      
+
       #compute SPs for positive and negative markers
       mark_spec<-ddply(table,.(marker,marker_type),nrow)
       colnames(mark_spec)<-c("marker","marker_type","SPs")
       accordion_marker<-merge(accordion_marker,mark_spec,by=c("marker","marker_type"),all.x = TRUE)
-      
+
       length_ct_pos<-uniqueN(accordion_marker[marker_type=="positive"]$celltype)
       length_ct_neg<-uniqueN(accordion_marker[marker_type=="negative"]$celltype)
-      
+
       #scale and log transforme SPs
       accordion_marker<-accordion_marker[marker_type=="positive",SPs_reg := scales::rescale(as.numeric(SPs), to = c(1,length_ct_pos),from = c(length_ct_pos,1))
       ][marker_type=="negative",SPs_reg := scales::rescale(as.numeric(SPs), to = c(1,length_ct_neg),from = c(length_ct_neg,1))
       ][,c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker","marker_type","SPs","SPs_reg","ECs_reg","ECs")]
-      
+
       accordion_marker<-accordion_marker[marker_type=="positive",SPs_reg := scales::rescale(as.numeric(SPs_reg), to = c(min(accordion_marker[marker_type=="positive"]$ECs),max(accordion_marker[marker_type=="positive"]$ECs)))
       ][marker_type=="negative",SPs_reg := scales::rescale(as.numeric(SPs_reg), to = c(min(accordion_marker[marker_type=="negative"]$ECs),max(accordion_marker[marker_type=="negative"]$ECs)))
       ][,c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker","marker_type","SPs","SPs_reg","ECs_reg","ECs")]
-      
+
       accordion_marker[,SPs:=as.numeric(format(round(1/SPs,2), nsmall=2))]
       accordion_marker[,SPs_reg:=log10(SPs_reg)+1]
 
       accordion_marker[,combined_score := SPs_reg * ECs_reg]
       accordion_marker<-unique(accordion_marker)
       accordion_marker
-      
+
   })
-  
-  
+
+
   accMarkerAnnoTable <- reactive ({
     accordion_complete_filt<-markerTableTissue()[ECs >= str_replace_all(input$EC_scoreA, ">=","") & SPs >= str_replace_all(input$specificityA, ">=|=","")]
-    
+
     if(as.numeric(input$max_n_marker)){
       accordion_complete_filt<-accordion_complete_filt[order(-combined_score)]
       accordion_complete_filt<-accordion_complete_filt[,.SD[1:input$max_n_marker], by=c("celltype")]
     }
-    
+
     positive_marker_acc<-accordion_complete_filt[marker_type=="positive" & species %in% input$speciesA][,pos_marker_acc:= paste(marker, collapse=" "), by= celltype]
     positive_marker_acc<-unique(positive_marker_acc[,c("celltype","pos_marker_acc")])
     negative_marker_acc<-accordion_complete_filt[marker_type=="negative" & species %in% input$speciesA][,neg_marker_acc:= paste(marker, collapse=" "), by= celltype]
     negative_marker_acc<-unique(negative_marker_acc[,c("celltype","neg_marker_acc")])
-    
+
     table<-merge(positive_marker_acc,negative_marker_acc, by="celltype",all.x=TRUE, all.y=TRUE)
     as.data.table(table)
 
   })
-  
+
 
   inputTableLong <- reactive ({
     suppressWarnings({
-      
+
     input_marker_long<-do.call("rbind", replicate(nrow(accMarkerAnnoTable()), inputTable(), simplify = FALSE))
     input_marker_long<-input_marker_long[order(cluster)]
     input_marker_long
@@ -2603,42 +2587,42 @@ server <- function(input, output, session) {
     suppressWarnings({
     do.call("rbind", replicate(nrow(inputTable()), accMarkerAnnoTable(), simplify = FALSE))
     })
-  })  
+  })
   combineTable <- reactive({ #create table to perform Fisher Test
     dt_combine<-cbind(inputTableLong(),accMarkerAnnoTableLong())
     dt_combine<-as.data.table(dt_combine)
     #IY overlap between input and anno
     dt_combine[,positive_intersect:= mapply(function(x, y) paste0(str_sort(intersect(x, y)), collapse = " "), strsplit(dt_combine$pos_marker, ' '), strsplit(dt_combine$pos_marker_acc, ' '))]
     dt_combine[,negative_intersect:= mapply(function(x, y) paste0(str_sort(intersect(x, y)), collapse = " "), strsplit(dt_combine$neg_marker, ' '), strsplit(dt_combine$neg_marker_acc, ' '))]
-    
+
     dt_combine[,tot_overlap:= paste0(positive_intersect, " ", negative_intersect)]
     dt_combine[,tot_overlap := str_trim(tot_overlap)]
-    
+
     #IN  in input, not in anno
     dt_combine[,in_input_not_anno_pos := mapply(function(x, y) paste0(setdiff(x, y), collapse = " "), strsplit(dt_combine$pos_marker, ' '), strsplit(dt_combine$pos_marker_acc, ' '))]
     dt_combine[,in_input_not_anno_neg:= mapply(function(x, y) paste0(setdiff(x, y), collapse = " "), strsplit(dt_combine$neg_marker, ' '), strsplit(dt_combine$neg_marker_acc, ' '))]
     dt_combine[,in_input_not_anno_tot:= paste0(in_input_not_anno_pos, " ", in_input_not_anno_neg)]
     dt_combine[,in_input_not_anno_tot := str_trim(in_input_not_anno_tot)]
-    
+
     # BY not in input, in anno
     dt_combine[,not_input_in_anno_pos := mapply(function(x, y) paste0(setdiff(x, y), collapse = " "), strsplit(dt_combine$pos_marker_acc, ' '), strsplit(dt_combine$pos_marker, ' '))]
     dt_combine[,not_input_in_anno_neg:= mapply(function(x, y) paste0(setdiff(x, y), collapse = " "), strsplit(dt_combine$neg_marker_acc, ' '), strsplit(dt_combine$neg_marker, ' '))]
     dt_combine[,not_input_in_anno_tot:= paste0(not_input_in_anno_pos, " ", not_input_in_anno_neg)]
     dt_combine[,not_input_in_anno_tot := str_trim(not_input_in_anno_tot)]
     dt_combine
-    
+
   })
-  
+
   toListen_anno <- reactive({
     list(input$button, inputTable())
   })
-  
+
   observeEvent(toListen_anno, {
     annoResultsTable <- reactive({
       if(input$button >0){
         if(!is.null(inputTable())){
         if(nrow(inputTable())){
-        
+
         out_df<-tibble()
         inputseppos<-separate_rows(as.data.frame(inputTable()), pos_marker, sep=" ")
         inputsepneg<-separate_rows(as.data.frame(inputTable()), neg_marker, sep=" ")
@@ -2686,21 +2670,21 @@ server <- function(input, output, session) {
           out_dt_max[,p_value:=format(p_value, digits=2)]
           out_dt_max[,overlap_input_ratio:=format(overlap_input_ratio, digits=2)]
           out_dt_max[,overlap_anno_ratio:=format(overlap_anno_ratio, digits=2)]
-          
+
           out_dt_max
-  
+
         })
       }
         }
-      } 
+      }
     })
-    
+
     output$table1A <- renderDataTable({
       datatable(annoResultsTable(),rownames = FALSE,options = list(
         pageLength=5, scrollX='400px',columnDefs = list(
           list(width = '130px', targets = "_all"))), filter = 'top')
     })
-    
+
     output$downloadDataA <- downloadHandler(
       filename = function() {
         paste0("TheCellMarkerAccordion_annotation", input$downloadTypeA)
@@ -2716,13 +2700,13 @@ server <- function(input, output, session) {
           write.table(annoResultsTable(), file, quote = FALSE,
                       sep='\t', row.names = FALSE)
         }
-        
+
       }
-      
-      
+
+
     )
-    
-    
+
+
     tablePlotOntology <- reactive ({
       if(!is.null(annoResultsTable())){
         if(nrow(annoResultsTable())>0){
@@ -2732,7 +2716,7 @@ server <- function(input, output, session) {
         }
       }
     })
-    
+
     PlotA <- reactive({
       if (nrow(tableInputComplete())>=1) {
         cell_matching<-unique(tablePlotOntology()$celltype_ID)
@@ -2753,14 +2737,14 @@ server <- function(input, output, session) {
           ontosubplot[["node_attributes"]][["label"]][[label$V1]]<-label$celltype
           ontosubplot2@nodes<-ontosubplot[["node_attributes"]][["label"]]
           ontosubplot2
-          
+
         }
-        
+
       }
-      
+
     })
-    
-    
+
+
     output$plot1A <- renderGrViz({
       if(!is.null(tablePlotOntology())){
         if(nrow(tablePlotOntology())>0){
@@ -2768,35 +2752,35 @@ server <- function(input, output, session) {
         }
       }
     })
-    
+
     output$scalableplotA <- renderUI({
       tagList(
         div(grVizOutput('plot1A',height = input$heightA, width = input$widthA)))
     })
-    
-    
-    
+
+
+
     click_plotA<-reactive ({
       click_node(accordion_complete, ontology_celltype, PlotA(), tablePlotOntology(),input$cellidA, ontology_def, input$diseaseA)
     })
-    
-    
+
+
     txtA <- reactive({
       req(input$plot1A_click)
       nodeval <- input$plot1A_click$nodeValues[1:length(input$plot1A_click$nodeValues)]
       nodeval<-as.data.table(paste(nodeval,sep="", collapse=" "))
       return(  click_plotA()[label %in% nodeval$V1]$cell_definition)
-      
+
     })
     output$celltype_defA <- renderText({
       req(txtA())
       txtA()
     })
-    
+
   })
-  
-  
-  
+
+
+
 }
 
 
