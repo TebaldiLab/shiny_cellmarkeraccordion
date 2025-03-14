@@ -48,7 +48,7 @@ This script will:
 ### 3. Run the Shiny application
 ```
 library(shiny)
-runApp("path/to/shiny_cellmarkeraccordion")
+runApp()
 ```
 
 ## Usage
