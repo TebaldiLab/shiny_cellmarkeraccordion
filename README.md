@@ -24,15 +24,33 @@ Otherwise downalod the "AccordionDB.xlsb" file sotred in this repository.
 ### Prerequisites
 
 Before installing the Cell Marker Accordion shiny web app, ensure you have the following:
+- R (Version 4.0 or higher) – Download from CRAN (https://cran.r-project.org/).
+- RStudio (Recommended) – Download from RStudio (https://posit.co/downloads/).
+- Python (Version 3.6 or higher) – Download from Python.org (https://www.python.org/).
 
-    R (Version 4.0 or higher) – Download from CRAN.
-    RStudio (Recommended) – Download from RStudio.
-    Python (Version 3.6 or higher) – Download from Python.org.
-    Required R Packages – Installed automatically via the setup script.
+ ### 1. Clone the Repository:   
+```bash
+git clone https://github.com/TebaldiLab/shiny_cellmarkeraccordion.git
+```
+Alternatively, download the ZIP file and extract it.
 
-    
+### 2. Run the Installation Script:
+Open R or RStudio, navigate to the cloned repository folder, and execute:
+```bash
+source("install_dependencies.R")
+```
+This script will:
+- Install required R packages
+- Set up the necessary Python environment
+- Install Python dependencies
 
-## Shiny app
+### 3. Run the Shiny application
+```
+library(shiny)
+runApp("path/to/shiny_cellmarkeraccordion")
+```
+
+## Usage
 The Cell Marker Accordion web interface allows to easily:  <br />
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. The app allows the user to upload its custom sets of positive and/or negative set marker genes to be integrated into the Accordion repository.  <br />
@@ -50,6 +68,8 @@ The Cell Marker Accordion web interface allows to easily:  <br />
 database specificity and by their evidence consistency scores.  <br />
 
  <img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
+
+ <img src= "![gear-solid](https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf)" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"> User can upload a file containing markers for every cluster, or just related to one entity, and the tool retrieves the respective cell type with the highest correlation.  <br />
 
