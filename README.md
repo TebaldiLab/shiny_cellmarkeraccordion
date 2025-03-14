@@ -1,9 +1,9 @@
 # The Cell Marker Accordion 
-A Web tool for single-cell and spatial RNA-seq cell types annotation
+A Web tool for single-cell and spatial RNA-seq cell types annotation: https://rdds.it/CellMarkerAccordion/
 ![Logo](https://user-images.githubusercontent.com/68125242/161058801-e3a83d1b-f12f-4cde-89e7-2a1207e99149.png)
 
 A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
-To address this issue, we developed Cell Marker Accordion, a user-friendly platform that includes both an R package (available at https://github.com/TebaldiLab/cellmarkeraccordion) and a Shiny app, designed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines the contributions of multiple gene marker databases and cell sorting marker sources, distinguishing positive from negative markers. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets. 
+To address this issue, we developed Cell Marker Accordion, a user-friendly platform that includes both an R package (available at https://github.com/TebaldiLab/cellmarkeraccordion) and a Shiny app (online version available at: https://rdds.it/CellMarkerAccordion/), designed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines the contributions of multiple gene marker databases and cell sorting marker sources, distinguishing positive from negative markers. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets. 
 The Cell Marker Accordion database includes thousand of markers associated with both human and mouse cell types from different tissues, in physiological and pathological conditions. 
 The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers. 
 
@@ -16,16 +16,21 @@ Emma Busarello, Giulia Biancon, Ilaria Cimignolo, Fabio Lauria, Zuhairia Ibnat, 
 
 bioRxiv 2024.03.08.584053; doi: https://doi.org/10.1101/2024.03.08.584053 
 
-
-## Running the app
-**In order to run the App you have to download the entire repository "shiny_cellmarkeraccordion" e run the "app.R" script (the necessary packages and their compatible versions are listed in the *Description.txt").** Otherwise you can use the online platform at: https://rdds.it/CellMarkerAccordion/
-
 ## Download the Accordion database
 To download the Accordion database as an excel file you can click on the download button on the shiny app (https://rdds.it/CellMarkerAccordion/). 
 Otherwise downalod the "AccordionDB.xlsb" file sotred in this repository.
 
-## The Cell Marker Accordion R package
-The R package of the Cell Marker Accordion is available at: https://github.com/TebaldiLab/cellmarkeraccordion
+## Local installation 
+### Prerequisites
+
+Before installing the Cell Marker Accordion shiny web app, ensure you have the following:
+
+    R (Version 4.0 or higher) – Download from CRAN.
+    RStudio (Recommended) – Download from RStudio.
+    Python (Version 3.6 or higher) – Download from Python.org.
+    Required R Packages – Installed automatically via the setup script.
+
+    
 
 ## Shiny app
 The Cell Marker Accordion web interface allows to easily:  <br />
