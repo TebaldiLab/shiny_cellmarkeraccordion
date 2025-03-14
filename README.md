@@ -1,4 +1,4 @@
-# TheCellMarkerAccordion 
+# The Cell Marker Accordion 
 A Web tool for single-cell and spatial RNA-seq cell types annotation
 ![Logo](https://user-images.githubusercontent.com/68125242/161058801-e3a83d1b-f12f-4cde-89e7-2a1207e99149.png)
 
