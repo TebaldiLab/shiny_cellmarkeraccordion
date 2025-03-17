@@ -29,10 +29,13 @@ Before installing the Cell Marker Accordion shiny web app, ensure you have the f
 - Python (Version 3.6 or higher) – Download from Python.org (https://www.python.org/).
 
  ### 1. Clone the Repository:   
+
 ```bash
 git clone https://github.com/TebaldiLab/shiny_cellmarkeraccordion.git
 ```
-Alternatively, download the ZIP file and extract it.
+If Git is not installed, you can:
+- Download and install Git from https://git-scm.com/.
+- Alternatively, download the ZIP file and extract it.
 
 ### 2. Run the Installation Script:
 Open R or RStudio, navigate to the cloned repository folder, and execute:
