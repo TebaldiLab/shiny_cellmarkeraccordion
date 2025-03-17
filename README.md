@@ -120,8 +120,8 @@ Inputs:
   - 
  <img src= https://github.com/user-attachments/assets/f9cad287-a438-4c49-8c20-42df010add85 style="width:80%; height:80%;">  <br />
 
-
 <br>
+
    ### Example of FindAllMarkers output table:
     <table>
       <tr>
