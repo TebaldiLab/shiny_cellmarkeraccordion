@@ -198,51 +198,51 @@ User may also include additional columns:
   - <strong>cluster</strong>: indicate the identity class of the markers
   - <strong>gene_type</strong>: positive, whether the gene is positive (high expression) or negative, whether the gene is negative (low expression)
 
-### Example of custom table:  
+  ### Example of custom table:  
 
-<table>
-  <tr>
-    <th>Cluster</th>
-    <th>Gene</th>
-    <th>Gene Type</th>
-  </tr>
-  <tr>
-    <td>0</td> <td>CCR7</td> <td>Positive</td>
-  </tr>
-  <tr>
-    <td>0</td> <td>TMEM66</td> <td>Positive</td>
-  </tr>
-  <tr>
-    <td>0</td> <td>HLA-DRA</td> <td>Negative</td>
-  </tr>
-  <tr>
-    <td>0</td> <td>CD74</td> <td>Negative</td>
-  </tr>
-  <tr>
-    <td>1</td> <td>S100B</td> <td>Positive</td>
-  </tr>
-  <tr>
-    <td>1</td> <td>RGS10</td> <td>Positive</td>
-  </tr>
-  <tr>
-    <td>1</td> <td>KLF6</td> <td>Negative</td>
-  </tr>
-  <tr>
-    <td>1</td> <td>CLIC1</td> <td>Negative</td>
-  </tr>
-  <tr>
-    <td>2</td> <td>VIM</td> <td>Positive</td>
-  </tr>
-  <tr>
-    <td>2</td> <td>GSTK1</td> <td>Positive</td>
-  </tr>
-  <tr>
-    <td>2</td> <td>CTSW</td> <td>Negative</td>
-  </tr>
-  <tr>
-    <td>2</td> <td>ZFA51</td> <td>Negative</td>
-  </tr>
-</table>
+   <table>
+     <tr>
+       <th>Cluster</th>
+       <th>Gene</th>
+       <th>Gene Type</th>
+     </tr>
+     <tr>
+       <td>0</td> <td>CCR7</td> <td>Positive</td>
+     </tr>
+     <tr>
+       <td>0</td> <td>TMEM66</td> <td>Positive</td>
+     </tr>
+     <tr>
+       <td>0</td> <td>HLA-DRA</td> <td>Negative</td>
+     </tr>
+     <tr>
+       <td>0</td> <td>CD74</td> <td>Negative</td>
+     </tr>
+     <tr>
+       <td>1</td> <td>S100B</td> <td>Positive</td>
+     </tr>
+     <tr>
+       <td>1</td> <td>RGS10</td> <td>Positive</td>
+     </tr>
+     <tr>
+       <td>1</td> <td>KLF6</td> <td>Negative</td>
+     </tr>
+     <tr>
+       <td>1</td> <td>CLIC1</td> <td>Negative</td>
+     </tr>
+     <tr>
+       <td>2</td> <td>VIM</td> <td>Positive</td>
+     </tr>
+     <tr>
+       <td>2</td> <td>GSTK1</td> <td>Positive</td>
+     </tr>
+     <tr>
+       <td>2</td> <td>CTSW</td> <td>Negative</td>
+     </tr>
+     <tr>
+       <td>2</td> <td>ZFA51</td> <td>Negative</td>
+     </tr>
+   </table>
 
 
 
