@@ -66,7 +66,7 @@ Inputs:
 - Cell type: select one or multiple cell types from the list.
 - See subtypes of: displays the list of cell type descendants of the previously selected cell types. Users can select one or more subtypes to visualize in the Ontology tree and the output table.
 
-<img src= https://github.com/user-attachments/assets/e63315f0-7711-4cc5-b774-e0cfb619e7db style="width:50%; height:50%;"> <br />
+<img src= https://github.com/user-attachments/assets/e63315f0-7711-4cc5-b774-e0cfb619e7db style="width:80%; height:80%;"> <br />
 
 Outputs:
 - Hierarchies of input cell types following the Cell Ontology structure
