@@ -112,8 +112,8 @@ Inputs:
 
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong> Annotate cell populations in health and disease.</strong>  <br />
-User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieves the respective cell type with the highest correlation.
-IMPORTANT! Annotation is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
+User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieves the respective cell type with the highest correlation. <br>
+<strong> IMPORTANT!</strong> Annotation is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
 For full access to the Cell Marker Accordion algorithm, we recommend using our R package.
 
 Inputs:
@@ -266,6 +266,6 @@ In particular:
 
 
 
- <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:30%; height:30%;">  <br />
+ <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:40%; height:40%;">  <br />
 
 
