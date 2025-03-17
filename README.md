@@ -293,9 +293,9 @@ In particular:
 - SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes from the Accordion database with a specificity score >= the selected value.
 - Maximum number of markers to keep for each cell type: indicate the top N marker genes to keep for each cell type to perform automatic annotation. Markers are ordered according to their ECs and SPs. Default is 50. 
 
- <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:100%; height:100%;">  <br />
+ <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:40%; height:40%;">  <br />
 
 <strong>Outputs:</strong>
 - Interactive and downloadable Annotation table: for each cluster identity the cell type with the highest association is reported. The table also includes significance information and overlapping genes.
 
- <img src= https://github.com/user-attachments/assets/2cb1fa00-fc5a-46ff-8883-deb7827b1ad3   style="width:40%; height:40%;">  <br />
+ <img src= https://github.com/user-attachments/assets/2cb1fa00-fc5a-46ff-8883-deb7827b1ad3   style="width:100%; height:100%;">  <br />
