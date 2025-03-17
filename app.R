@@ -26,7 +26,7 @@ source('helper_function.R')
 source("install_dependencies.R")
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -2470,7 +2470,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
 </p>
 
 <p>
-  In the <strong>FindAllMarkers</strong> output, genes are classified as positive if <code>log2FC > 0</code> and negative if <code>log2FC < 0</code>.
+  In the <strong>FindAllMarkers</strong> output, genes are classified as positive if <code>avg_log2FC > 0</code> and negative if <code>avg_log2FC < 0</code>.  Genes will be ranked based on their <code>avg_log2FC < 0</code> values and then only the top N for each cluster will be used. <br>
   In a custom table, this classification can be defined in the <code>'gene_type'</code> column.
 </p>
 
