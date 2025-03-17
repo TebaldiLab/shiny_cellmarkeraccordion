@@ -95,8 +95,8 @@ Users can also explore the subtypes of a selected cell type.
 For example, to view all subtypes of the monocyte population:
 
 <ol>
-  <li>Select <strong>"Monocyte"</strong> in the <strong>Cell Type</strong> box.</li>
-  <li>Select <strong>"Monocyte"</strong> in the <strong>See Subtypes Of</strong> box.</li>
+  <li>Select <strong>"monocyte"</strong> in the <strong>Cell type</strong> box.</li>
+  <li>Select <strong>"monocyte"</strong> in the <strong>See subtypes of</strong> box.</li>
   <li>The <strong>Ontology Tree</strong> will display all monocyte subtypes.</li>
   <li>Click on any node to explore detailed definitions of cell types based on the <strong>Cell Ontology Tree</strong>.</li>
 </ol>
