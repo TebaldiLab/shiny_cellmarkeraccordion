@@ -25,15 +25,15 @@ library(rstudioapi)
 source('helper_function.R')
 source("install_dependencies.R")
 
-### REMEMBER TO CHANGE WHEN LOAD ON GITHUB -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+# REMEMBER TO CHANGE WHEN  -----
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
-
+#load data
 load("data/accordion_complete.rda")
-
-#load ontology
 load("data/cell_onto.rda")
+
+
 onto_plot<-onto_plot2(cell_onto, unique(accordion_complete$celltype_ID))
 nodes<-as.data.table(onto_plot@nodes)
 nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
@@ -76,7 +76,8 @@ ui <- dashboardPage(
     )
   )
   ),
-  ## Sidebar content
+
+    ## Sidebar content
   dashboardSidebar(width=300,
                    sidebarMenu(style = "position: relative; overflow: visible;",
                                menuItem("Homepage", tabName = "dashboard", icon = icon("home")),
@@ -119,8 +120,8 @@ ui <- dashboardPage(
                 tags$style("@import url('https://use.fontawesome.com/releases/v6.1.1/css/all.css');"),
                 HTML("<p style='text-align: justify;'>
             <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial data.
-            Our framework includes both a <strong>Shiny app</strong> and an <strong>R package</strong>.
-            (<a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'>cellmarkeraccordion</a>).
+            Our framework includes both a <strong>Shiny app</strong> and an
+            <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.
             <br><br>
             The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers.
             Specifically, it enables:
@@ -128,24 +129,34 @@ ui <- dashboardPage(
               ),
 
               titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes associate with input cell types across different tissues in health and disease. </h>")))),
-              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types associate with input marker genes. </h>")))),
+              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types associate with input marker genes across different tissues in health and disease. </h>")))),
               titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options. </h>")))),
               titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>")))),
-              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database</h>")))),
-              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease</h>"))))),
+              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database. </h>")))),
+              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease. </h>"))))),
 
 
 
 
-      # Second tab content: Search markers according to cell types
+      # Second tab content: 
+      # Search markers according to cell types ----
       tabItem(tabName = "celltype_h",
               tags$h2(
                 "Search and download lists of marker genes by cell types across different tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
               tags$style(css),
-              div(fluidRow(column(width=8,wellPanel(id="sidebar",
-                                                    checkboxGroupInput("species", "Select species:",
+              div(fluidRow(column(width=8,wellPanel(id="sidebar",                                                                
+                                                    div(
+                                                      style = "display: flex; justify-content: center; align-items: center;",
+                                                      actionButton(
+                                                        'celltypeInfo', 'Info',
+                                                        icon = icon("info"),
+                                                        style = 'margin-top: 5px; margin-bottom: 5px;'
+                                                      )
+                                                    ),
+                                                    
+                                                     checkboxGroupInput("species", "Select species:",
                                                                        choiceNames =
                                                                          list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
                                                                        choiceValues =
@@ -162,8 +173,11 @@ ui <- dashboardPage(
                                                     checkboxInput("cellid","Plot celltype_ID",value=FALSE))),
                            br(),
                            #change style sliderinput
-                           tags$style(HTML(".js-irs-0 .irs-single, .js-irs-0 .irs-bar-edge, .js-irs-0 .irs-bar {background: #990000}")),
-                           tags$style(HTML(".js-irs-1 .irs-single, .js-irs-1 .irs-bar-edge, .js-irs-1 .irs-bar {background: #990000}")),
+                           tags$style(HTML("
+  .irs-single, .irs-bar-edge, .irs-bar {
+    background: #990000 !important;
+  }
+")),
                            titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
                            column(width=4,offset=0, sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
                                   br(),
@@ -190,16 +204,34 @@ ui <- dashboardPage(
                   conditionalPanel(condition= "input.descendantsof == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty', 'Info',icon= icon("info"), align="left"))))),
 
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
-                                                     fluidRow(column(2,radioButtons('EC_score','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
-                                                              column(3,radioButtons('specificity','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                              column(2,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),
+                                                              
+                                                              fluidRow(column(3,sliderInput('EC_score','ECs',min = 1, max = 17, value = 1, step=1)),
+                                                                       column(3,sliderInput('specificity','SPs', min = 0, max = 1, value = 0, step=0.1)),
+                                                                       column(3,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),          
+                                                              
                                                               conditionalPanel(condition= "input.descendantsof != ''", column(2,radioButtons("mergeDescendant","Merge subtypes", c("Yes","No"),selected="No"))))))),
-
-
-                  fluidRow(column(4,radioButtons("downloadType", "Download Format", choices = c("CSV" = ".csv",
-                                                                                                "XLSX" = ".xlsx",
-                                                                                                "TSV" = ".tsv"),inline = TRUE),
-                                  column(4,downloadButton("downloadData", "Download")))),
+                  
+                  fluidRow(
+                    column(12, 
+                           downloadButton("downloadData", "Download", 
+                                          style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
+                    column(12, 
+                           radioButtons("downloadType", "",  # No title
+                                        choices = c("CSV" = ".csv",
+                                                    "XLSX" = ".xlsx",
+                                                    "TSV" = ".tsv"), 
+                                        inline = TRUE),
+                           tags$style(HTML("
+                #downloadType .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #downloadType {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         "))) # CSS to make choices smaller
+                  ),
+                  
+                  
 
                   tags$head(tags$style(HTML('
          #sidebar2 {
@@ -215,21 +247,32 @@ ui <- dashboardPage(
                   br()
               )),
 
-      ###### search by markers -----
+      # search by markers -----
       tabItem(tabName="marker_h",
               tags$style(css),
               tags$h2(
                 "Search and download lists of cell types by marker genes across different tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
-              div(fluidRow(column(width=6,wellPanel(id="sidebar",checkboxGroupInput("speciesM", "Select species:",
+              div(fluidRow(column(width=8,wellPanel(id="sidebar",
+                                                    
+                                                    div(
+                                                      style = "display: flex; justify-content: center; align-items: center;",
+                                                      actionButton(
+                                                        'markerInfo', 'Info',
+                                                        icon = icon("info"),
+                                                        style = 'margin-top: 5px; margin-bottom: 5px;'
+                                                      )
+                                                    ),
+                                                    
+                                                    checkboxGroupInput("speciesM", "Select species:",
                                                                                     choiceNames =
                                                                                       list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
                                                                                     choiceValues =
                                                                                       list("Human","Mouse"),selected = c("Human"),inline=TRUE),
                                                     br(),
                                                     textInput("marker", "Insert marker genes", value = "OLIG2", width = NULL, placeholder = NULL),
-                                                    fileInput("markerfile", "Load text file with marker genes ",buttonLabel=list(icon("upload")),
+                                                    fileInput("markerfile", "Upload file with marker genes ",buttonLabel=list(icon("upload")),
                                                               multiple = FALSE),
                                                     pickerInput('diseaseM', 'Condition', selected = "healthy", choices= disease_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
@@ -241,7 +284,7 @@ ui <- dashboardPage(
                            tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: #990000}")),
                            tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #990000}")),
                            titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,offset=0, sliderInput(inputId = "heightM", label = "Height", min = 200, max = 3500, value = 600, step = 200,width="80%"),
+                           column(width=4,offset=0, sliderInput(inputId = "heightM", label = "Height", min = 200, max = 3500, value = 600, step = 200,width="80%"),
                                   br(),
                                   sliderInput(inputId = "widthM", label = "Width", min = 200, max = 3500, value = 600, step=200,width="80%"))),
                   tags$head(tags$style(HTML('
@@ -263,14 +306,36 @@ ui <- dashboardPage(
                   br(),
                   titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('helpM', 'Info',icon= icon("info"), align="left")))),
                   fluidRow(column(width=12,wellPanel(id="sidebar2M",
-                                                     fluidRow(column(3,radioButtons('EC_scoreM','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"), selected = ">=1")),
-                                                              column(3,radioButtons('specificityM','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                              column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
-                  fluidRow(column(4,radioButtons("downloadTypeM", "Download Format", choices = c("CSV" = ".csv",
-                                                                                                 "XLSX" = ".xlsx",
-                                                                                                 "TSV" = ".tsv"),inline = TRUE),
-                                  column(4,downloadButton("downloadDataM", "Download")))),
-
+                                                     # fluidRow(column(3,radioButtons('EC_scoreM','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"), selected = ">=1")),
+                                                     #          column(3,radioButtons('specificityM','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
+                                                     #          column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
+                  
+                                                     
+                                                      fluidRow(column(3,sliderInput('EC_scoreM','ECs',min = 1, max = 17, value = 1, step=1)),
+                                                               column(3,sliderInput('specificityM','SPs', min = 0, max = 1, value = 0, step=0.1)),
+                                                               column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),                                  
+                                                                                        
+                  
+                  fluidRow(
+                    column(12, 
+                           downloadButton("downloadDataM", "Download", 
+                                          style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
+                    column(12, 
+                           radioButtons("downloadTypeM", "",  # No title
+                                        choices = c("CSV" = ".csv",
+                                                    "XLSX" = ".xlsx",
+                                                    "TSV" = ".tsv"), 
+                                        inline = TRUE),
+                           tags$style(HTML("
+                #downloadTypeM .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #downloadTypeM {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         "))) # CSS to make choices smaller
+                  ),
+                  
                   tags$head(tags$style(HTML('
          #sidebar2M {
             background-color: #ad000019;
@@ -286,7 +351,7 @@ ui <- dashboardPage(
 
 
 
-      ##Custom markers integration ----
+      # Custom markers integration ----
       tabItem(tabName="integration",
               tags$style(css),
               tags$h2(
@@ -337,10 +402,9 @@ ui <- dashboardPage(
                       )
                     ),
 
-                    # Buttons inside the same wellPanel
                     fluidRow(
                       column(
-                        width = 6,
+                        width = 4,
                         div(
                           style = "display: flex; align-items: center; gap: 10px;",
                           actionButton(
@@ -352,26 +416,55 @@ ui <- dashboardPage(
                           uiOutput("success_icon_int")  # Checkmark icon appears here
                         )
                       ),
+                      
                       column(
-                        width = 6,
-                        actionButton(
-                          "start_int",
-                          HTML("Start the integration!"),
-                          style = "font-size: 14px;",
-                          icon = icon("gear")
+                        width = 8,
+                        div(
+                          style = "display: flex; align-items: center; height: 100%;",  # Ensures vertical alignment
+                          conditionalPanel(
+                            condition = "input.usermarker > 0 | input.demo_ex > 0",
+                            div(
+                              style = "display: flex; align-items: center; margin-top: -5px;",  # Adjust this value if needed
+                              actionButton(
+                                "start_int",
+                                HTML("Start the integration!"),
+                                style = "font-size: 18px;",
+                                icon = icon("gear")
+                              )
+                            )
+                          )
                         )
                       )
                     )
+                
                   )
                 )
               ),
 
               conditionalPanel(condition = "input.start_int > 0",
-              fluidRow(column(4,radioButtons("downloadTypeInt", "Download Format", choices = c("CSV" = ".csv",
-                                                                                            "XLSX" = ".xlsx",
-                                                                                            "TSV" = ".tsv"),inline = TRUE),
-                              column(4,downloadButton("downloadDataInt", "Download")))),
-                                                    br(),
+              
+                        fluidRow(column(12,radioButtons("tabletypeInt0","Table type",c("Simple","Complete"),selected="Simple",inline = TRUE))),
+              
+                       
+                       fluidRow(
+                         column(12, 
+                                downloadButton("downloadDataInt", "Download", 
+                                               style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
+                         column(12, 
+                                radioButtons("downloadTypeInt", "",  # No title
+                                             choices = c("CSV" = ".csv",
+                                                         "XLSX" = ".xlsx",
+                                                         "TSV" = ".tsv"), 
+                                             inline = TRUE),
+                                tags$style(HTML("
+                #downloadTypeInt .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #downloadTypeInt {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         ")))), # CSS to make choices smaller
+                                                                      br(),
                                                       dataTableOutput('table1Int', width = "100%"),
               br(),
               br(),
@@ -429,16 +522,33 @@ ui <- dashboardPage(
                   conditionalPanel(condition= "input.descendantsofInt == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_emptyInt', 'Info',icon= icon("info"), align="left"))))),
 
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
-                                                     fluidRow(column(2,radioButtons('EC_scoreInt','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"),selected = ">=1")),
-                                                              column(3,radioButtons('specificityInt','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
-                                                              column(2,radioButtons("tabletypeInt","Table type",c("Simple","Complete"),selected="Simple")),
+                                                    
+                                                              fluidRow(column(3,sliderInput('EC_scoreInt','ECs',min = 1, max = 17, value = 1, step=1)),
+                                                                       column(3,sliderInput('specificityInt','SPs', min = 0, max = 1, value = 0, step=0.1)),
+                                                                       column(3,radioButtons("tabletypeInt","Table type",c("Simple","Complete"),selected="Simple")),          
+                                                                       
                                                               conditionalPanel(condition= "input.descendantsofInt != ''", column(2,radioButtons("mergeDescendantInt","Merge subtypes", c("Yes","No"),selected="No"))))))),
 
 
-                  fluidRow(column(4,radioButtons("downloadTypeInt2", "Download Format", choices = c("CSV" = ".csv",
-                                                                                                "XLSX" = ".xlsx",
-                                                                                                "TSV" = ".tsv"),inline = TRUE),
-                                  column(4,downloadButton("downloadDataInt2", "Download")))),
+                  fluidRow(
+                    column(12, 
+                           downloadButton("downloadDataInt2", "Download", 
+                                          style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
+                    column(12, 
+                           radioButtons("downloadTypeInt2", "",  # No title
+                                        choices = c("CSV" = ".csv",
+                                                    "XLSX" = ".xlsx",
+                                                    "TSV" = ".tsv"), 
+                                        inline = TRUE),
+                           tags$style(HTML("
+                #downloadTypeInt2 .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #downloadTypeInt2 {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         "))) # CSS to make choices smaller
+                  ),
 
                   tags$head(tags$style(HTML('
          #sidebar2 {
@@ -453,7 +563,7 @@ ui <- dashboardPage(
                   br()
               )),
 
-      ##### SEMI-AUTOMATIC ANNOTATION -----
+      # Automatic annotation with Fisher test-----
 
       tabItem(tabName="anno",
               tags$style(css),
@@ -462,27 +572,45 @@ ui <- dashboardPage(
                 style = "font-weight: bold; text-align: center;"
               ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",
-                                                    #textInput("marker", "Insert marker genes", value = "CD34", width = NULL, placeholder = NULL),
+                                                    
+                                                    div(
+                                                      style = "display: flex; justify-content: center; align-items: center;",
+                                                      actionButton(
+                                                        'annoInfo', 'Info',
+                                                        icon = icon("info"),
+                                                        style = 'margin-top: 5px; margin-bottom: 5px;'
+                                                      )
+                                                    ),
                                                     splitLayout(cellWidths = c("75%", "25%"),fileInput("clusterfile", "Load file to annotate",buttonLabel=list(icon("upload")),multiple = FALSE),
                                                                 actionButton('userclusterfileinfo', 'InputFile',icon= icon("file-circle-question"), align="left", style='margin-top:30px; margin-bottom:0px')),
-                                                    checkboxGroupInput("speciesA", "Select species:",
-                                                                       choiceNames =
-                                                                         list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                                                       choiceValues =
-                                                                         list("Human","Mouse"),selected = c("Human"),inline=TRUE),
-                                                    pickerInput('diseaseA', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
-                                                    pickerInput('tissueA', 'Tissue',  choices= tissue_list,selected="blood", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
-                                                    #checkboxInput("collapse_tissue","",value=FALSE))),
-                                                    fluidRow(column(width=6,radioButtons("nmarkerpos", HTML("How many <em>positive</em> markers you want for each cluster?"), choices = nmarker_values)),
-                                                             column(width=6, radioButtons("nmarkerneg", HTML("How many <em>negative</em> markers you want for each cluster?"), choices = nmarker_values))),
-                                                    fluidRow(column(width=6,textInput("nmarkerotherpos", HTML("Type in number of <em>positive</em> markers"))),
-                                                             column(width=6,textInput("nmarkerotherneg", HTML("Type in number of <em>negative</em> markers")))),
+                                                    
+                                                    fluidRow(column(width=6,radioButtons("nmarkerpos", HTML("Specificy the number of <em>positive</em> genes to keep for each cluster"), choices = nmarker_values)),
+                                                             column(width=6, radioButtons("nmarkerneg", HTML("Specificy the number of <em>negative</em> genes to keep for each cluster"), choices = nmarker_values))),
+                                                    fluidRow(column(width=6,textInput("nmarkerotherpos", HTML("Type in number of <em>positive</em> genes"))),
+                                                             column(width=6,textInput("nmarkerotherneg", HTML("Type in number of <em>negative</em> genes")))),
                                                     fluidRow(column(width=6,actionButton("addpos", HTML("Add value"))),
                                                              column(width=6,actionButton("addneg", HTML("Add value")))),
+                                                    #checkboxInput("collapse_tissue","",value=FALSE))),
+                                                    
 
                                                     style = "padding-bottom: 5px;")),
-                           column(6, offset=0,align="center",actionButton("demo_ex_anno", HTML("Load demo example"),style="font-size: 14px;",icon= icon("cloud-arrow-up")), uiOutput("success_icon_anno")),
-                           br(),
+                           column(
+                             6, offset = 0,  # Centers the column in a 12-grid layout
+                             div(
+                               style = "display: flex; align-items: center; justify-content: center; gap: 10px; height: 100%;",
+                               actionButton(
+                                 "demo_ex_anno",
+                                 HTML("Load demo example"),
+                                 style = "font-size: 14px;",
+                                 icon = icon("cloud-arrow-up")
+                               ),
+                               div(style = "display: flex; align-items: center;", uiOutput("success_icon_anno"))  # Keeps icon aligned
+                             )
+                           ),
+                           
+                           
+                           
+                            br(),
                             column(6, HTML("Output table generated by the FindAllMarkers function in the Seurat package"), align="center"),
                            br(),
                            column(6,  dataTableOutput('exampletable', width = "100%"))),
@@ -500,20 +628,24 @@ ui <- dashboardPage(
                             actionButton('filterhelpA', 'Info', icon = icon("info"))
                         ),
 
-                        fluidRow(
-                          column(width = 4,
-                                 radioButtons('EC_scoreA', 'ECs',
-                                              choices = c(">=1", ">=2", ">=3", ">=4", ">=5", ">=6", ">=7"),
-                                              selected = ">=1")
-                          ),
-                          column(width = 4,
-                                 radioButtons('specificityA', 'SPs',
-                                              choices = c(">=0", ">=0.25", ">=0.5", "=1"),
-                                              selected = ">=0")
-                          ),
+                        checkboxGroupInput("speciesA", "Select species:",
+                                           choiceNames =
+                                             list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
+                                           choiceValues =
+                                             list("Human","Mouse"),selected = c("Human"),inline=TRUE),
+                        pickerInput('diseaseA', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                        pickerInput('tissueA', 'Tissue',  choices= unique(accordion_complete[DO_diseasetype == "healthy"]$Uberon_tissue),selected="blood", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                        pickerInput('celltypeA', 'Cell type', choices= unique(accordion_complete[DO_diseasetype == "healthy" & Uberon_tissue=="blood"]$celltype) ,multiple=TRUE,selected=unique(accordion_complete[DO_diseasetype == "healthy" & Uberon_tissue=="blood"]$celltype), options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                        
+                          br(),
+                          fluidRow(column(4,sliderInput('EC_scoreA','ECs',min = 1, max = 17, value = 1, step=1)),
+                                   column(4,sliderInput('specificityA','SPs', min = 0, max = 1, value = 0, step=0.1)),
+                        
+                          
+                          
                           column(width = 4,
                                  textInput("max_n_marker",
-                                           value = 30,
+                                           value = 50,
                                            placeholder = NULL,
                                            label = HTML("Maximum number of markers to keep for each cell type"))
                           )
@@ -529,18 +661,35 @@ ui <- dashboardPage(
                          actionButton("button", HTML("<strong>Click to annotate!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
 
                   conditionalPanel(
-                    condition= "input.button > 0", fluidRow(column(4,radioButtons("downloadTypeA", "Download Format", choices = c("CSV" = ".csv",
-                                                                                                                                "XLSX" = ".xlsx",
-                                                                                                                                "TSV" = ".tsv"),inline = TRUE),
-                                                                 column(4,downloadButton("downloadDataA", "Download")))),
+                    condition= "input.button > 0",           
+  
+                  fluidRow(
+                    column(12, 
+                           downloadButton("downloadDataA", "Download", 
+                                          style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
+                    column(12, 
+                           radioButtons("downloadTypeA", "",  # No title
+                                        choices = c("CSV" = ".csv",
+                                                    "XLSX" = ".xlsx",
+                                                    "TSV" = ".tsv"), 
+                                        inline = TRUE),
+                           tags$style(HTML("
+                #downloadTypeA .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #downloadTypeA {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         "))) # CSS to make choices smaller
+                  ),
                   br(),
                   dataTableOutput('table1A', width = "100%"),
                   br(),
                   br(),
 
                   #change style sliderinput
-                  tags$style(HTML(".js-irs-6 .irs-single, .js-irs-6 .irs-bar-edge, .js-irs-6 .irs-bar {background: #990000}")),
-                  tags$style(HTML(".js-irs-7 .irs-single, .js-irs-7 .irs-bar-edge, .js-irs-7 .irs-bar {background: #990000}")),
+                  tags$style(HTML(".js-irs-8 .irs-single, .js-irs-8 .irs-bar-edge, .js-irs-8 .irs-bar {background: #990000}")),
+                  tags$style(HTML(".js-irs-9 .irs-single, .js-irs-9 .irs-bar-edge, .js-irs-9 .irs-bar {background: #990000}")),
                   titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
                     fluidRow(column(width=6,sliderInput(inputId = "heightA", label = "Height", min = 200, max = 3500, value = 400, step = 200,width="80%")),
                              column(width=6,sliderInput(inputId = "widthA", label = "Width", min = 200, max = 3500, value = 400, step=200,width="80%"))),
@@ -580,7 +729,7 @@ ui <- dashboardPage(
 )
 server <- function(input, output, session) {
 
-  ###### server for cell type search ----
+  # server for cell type search ----
   # Download handler
   output$downloadAccordionDB <- downloadHandler(
     filename = function() {
@@ -610,6 +759,23 @@ server <- function(input, output, session) {
   )
 
 
+  observeEvent(input$celltypeInfo,{
+    showModal(modalDialog(
+      title = "Inputs information",
+      HTML(
+      "
+<ul>
+  <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
+  <li><strong>Condition:</strong> healthy or multiple diseases.</li>
+  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <code>tissue_aware</code> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
+  <li><strong>Cell type:</strong> select one or multiple cell types from the list.</li>
+  <li><strong>See subtypes of:</strong> displays the list of cell type descendants of the previously selected cell types. Users can select one or more subtypes to visualize in the Ontology tree and the output table.</li>
+</ul>
+"
+        )
+        ))
+  })
+  
   observeEvent(input$help,{
     showModal(modalDialog(
       title = "Table Option Information",
@@ -865,34 +1031,34 @@ server <- function(input, output, session) {
 
       if(length(input$celltype)!=0 & input$tabletype=="Complete" & input$tissue_aware==TRUE){
         if(input$mergeDescendant=="Yes"){
-          markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          markerTableOutput()[ECs>= input$EC_score& SPs >= input$specificity][,
                                                                                                                                      c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","celltype_ancestor","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }else{
-          markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          markerTableOutput()[ECs>= input$EC_score & SPs >= input$specificity][,
                                                                                                                                      c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }
       } else if(length(input$celltype)!=0 & input$tabletype=="Complete" & input$tissue_aware==FALSE){
         if(input$mergeDescendant=="Yes"){
-          markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          markerTableOutput()[ECs>= input$EC_score & SPs >= input$specificity][,
                                                                                                                                      c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype_ancestor","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }else{
-          markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          markerTableOutput()[ECs>= input$EC_score & SPs >= input$specificity][,
                                                                                                                                      c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }
       }  else if(length(input$celltype)!=0 & input$tabletype=="Simple" & input$tissue_aware==TRUE){
         if(input$mergeDescendant=="Yes"){
-          unique(markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          unique(markerTableOutput()[ECs>= input$EC_score & SPs >= input$specificity][,
                                                                                                                                             c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype_ancestor","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }else{
-          unique(markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          unique(markerTableOutput()[ECs>=input$EC_score & SPs >= input$specificity][,
                                                                                                                                             c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }
       } else if(length(input$celltype)!=0 & input$tabletype=="Simple" & input$tissue_aware==FALSE){
         if(input$mergeDescendant=="Yes"){
-          unique(markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          unique(markerTableOutput()[ECs>= input$EC_score & SPs >=input$specificity][,
                                                                                                                                             c("species","DO_diseasetype","DO_ID","celltype_ancestor","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }else{
-          unique(markerTableOutput()[ECs>= str_replace_all(input$EC_score, ">=","") & SPs >= str_replace_all(input$specificity, ">=|=","")][,
+          unique(markerTableOutput()[ECs>= input$EC_score & SPs >= input$specificity][,
                                                                                                                                             c("species","DO_diseasetype","DO_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }
       }
@@ -955,7 +1121,25 @@ server <- function(input, output, session) {
 
 
 
-  #### server for marker search ----
+  # server for marker search ----
+  
+  observeEvent(input$markerInfo,{
+    showModal(modalDialog(
+      title = "Inputs information",
+      HTML("
+<ul>
+  <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
+  <li><strong>Insert marker genes:</strong> enter a list of marker genes, using <code>| , : ; ! ?</code> as delimiters to separate them.</li>
+  <li><strong>Upload file with marker genes:</strong> provide a <code>.txt</code>, <code>.csv</code>, <code>.xlsx</code>, or <code>.tsv</code> file containing a list of marker genes. Use <code>| , : ; ! ?</code> as delimiters to separate them. Both the markers entered in the \"Insert marker genes\" box and those in the uploaded file will be considered.</li>
+  <li><strong>Condition:</strong> healthy or multiple diseases.</li>
+  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <code>tissue_aware</code> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
+</ul>
+"
+
+      )
+    ))
+  })
+  
   observeEvent(input$helpM,{
     showModal(modalDialog(
       title = "Table Option Information",
@@ -973,7 +1157,7 @@ server <- function(input, output, session) {
   #table based on selected genes-marker
   tableMarkerInput<-reactive ({
     if(length(input$marker)!=0){
-      marker_vec<-as.data.frame(unlist(strsplit(input$marker, "[\\|, +]+")))
+      marker_vec<-as.data.frame(unlist(strsplit(input$marker, "[\\|, +:;!?]+")))
       colnames(marker_vec)<-"marker_gene"
       marker_input<-tolower(marker_vec$marker_gene)
       marker_dt<-tolower(accordion_complete$marker)
@@ -994,7 +1178,7 @@ server <- function(input, output, session) {
     file_load<-input$markerfile
     fileName <- file_load$datapath
     mark<-readChar(fileName, file.info(fileName)$size)
-    marker_vec<-as.data.frame(unlist(strsplit(mark, "[\\|, \r\n+]+")))
+    marker_vec<-as.data.frame(unlist(strsplit(mark, "[\\|, \t\n\r;:]+")))
     colnames(marker_vec)<-"marker_gene"
     table_marker_file<-accordion_complete[tolower(marker) %in% tolower(marker_vec$marker_gene)]
     table_marker_file <- table_marker_file[species %in% input$speciesM]
@@ -1196,12 +1380,12 @@ server <- function(input, output, session) {
       }
 
       if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Complete"){
-        unique(markerTableOutputM()[ECs >= str_replace_all(input$EC_scoreM, ">=","") & SPs >= str_replace_all(input$specificityM, ">=|=","")])
+        unique(markerTableOutputM()[ECs >= input$EC_scoreM & SPs >= input$specificityM])
       } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == TRUE){
-        unique(markerTableOutputM()[ECs>= str_replace_all(input$EC_scoreM, ">=","") & SPs >= str_replace_all(input$specificityM, ">=|=","")
+        unique(markerTableOutputM()[ECs>= input$EC_scoreM & SPs >= input$specificityM
         ][,c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
       } else if(nrow(markerTableOutputM())!=0 & input$tabletypeM=="Simple" & input$tissue_awareM == FALSE){
-        unique(markerTableOutputM()[ECs>= str_replace_all(input$EC_scoreM, ">=","") & SPs >= str_replace_all(input$specificityM, ">=|=","")
+        unique(markerTableOutputM()[ECs>= input$EC_scoreM & SPs >= input$specificityM
         ][,c("species","DO_diseasetype","DO_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
 
       }
@@ -1268,7 +1452,7 @@ server <- function(input, output, session) {
 
 
 
-  #### server for custom markers integration with the accordion database -----
+  # server for custom markers integration with the accordion database -----
 
   observeEvent(input$usermarkerinfo,{
     showModal(modalDialog(
@@ -1756,9 +1940,64 @@ server <- function(input, output, session) {
   })
 
 
-  output$table1Int <- renderDataTable({
+  tableType<-reactive({
     if(!is.null(newTable())){
-      datatable(newTable(),rownames = FALSE,options = list(
+      tissue<-unique(integratedDB()$Uberon_tissue)
+      if(input$databaseInt == "Healthy"){
+          if("celltype" %in% colnames(newTable())){
+          setnames(newTable(), "celltype","CL_celltype")
+          setnames(newTable(), "celltype_ID","CL_ID")
+          setnames(newTable(), "cell_definition","CL_cell_definition")
+          }
+        if(input$tabletypeInt0 == "Simple"){
+          if(!all(is.na(tissue))){ #tissue aware
+            table<-newTable()[,c("species","Uberon_tissue","Uberon_ID","CL_celltype","CL_ID","marker","marker_type","EC_score","specificity_score")]
+
+          }else {
+            table<-newTable()[,c("species","CL_celltype","CL_ID", "marker","marker_type","EC_score","specificity_score")]
+          }
+        } else {
+          if(!all(is.na(tissue))){ #tissue aware
+            table<-newTable()[,c("species","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+            
+          }else {
+            table<-newTable()[,c("species","original_celltype","CL_celltype","CL_ID","CL_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+          }
+        }
+      } else if (input$databaseInt == "Disease"){
+        if("celltype" %in% colnames(newTable())){
+          setnames(newTable(), "celltype","NCIT_celltype")
+          setnames(newTable(), "celltype_ID","NCIT_ID")
+          setnames(newTable(), "cell_definition","NCIT_cell_definition")
+        }
+        if(input$tabletypeInt0 == "Simple"){
+          if(!all(is.na(tissue))){ #tissue aware
+            #print(colnames(newTable()))
+            table<-newTable()[,c("species","Uberon_tissue","Uberon_ID","NCIT_celltype","NCIT_ID","marker","marker_type","EC_score","specificity_score")]
+            
+          }else {
+            table<-newTable()[,c("species","NCIT_celltype","NCIT_ID", "marker","marker_type","EC_score","specificity_score")]
+          }
+        } else {
+          if(!all(is.na(tissue))){ #tissue aware
+            #print(colnames(newTable()))
+            table<-newTable()[,c("species","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+            
+          }else {
+            table<-newTable()[,c("species","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
+          }
+        }
+      }
+          
+      setnames(table, "EC_score","ECs")
+      setnames(table, "specificity_score","SPs")
+      table
+      }
+  })
+  
+  output$table1Int <- renderDataTable({
+    if(!is.null(tableType())){
+      datatable(tableType(),rownames = FALSE,options = list(
         pageLength=5, scrollX='400px',columnDefs = list(
           list(width = '130px', targets = "_all"))), filter = 'top')
     }
@@ -1791,34 +2030,35 @@ server <- function(input, output, session) {
       if(input$databaseInt == "Healthy"){
         double_species<-unique(newTable()[,c("species","CL_celltype")])
         dup<-double_species[duplicated(CL_celltype)]
-        newTable()[, celltype_species:=ifelse(CL_celltype %in% dup$CL_celltype, paste0(CL_celltype, " (Hs, Mm)"),
+        table<-newTable()[, celltype_species:=ifelse(CL_celltype %in% dup$CL_celltype, paste0(CL_celltype, " (Hs, Mm)"),
                                                 ifelse(species =="Human", paste0(CL_celltype, " (Hs)"),
                                                        paste0(CL_celltype, " (Mm)")))]
 
 
 
-        setnames(newTable(), "CL_celltype","celltype")
-        setnames(newTable(), "CL_ID","celltype_ID")
-        setnames(newTable(), "CL_cell_definition","cell_definition")
+        setnames(table, "CL_celltype","celltype")
+        setnames(table, "CL_ID","celltype_ID")
+        setnames(table, "CL_cell_definition","cell_definition")
 
-        newTable()[,c("original_diseasetype","DO_ID","DO_definition"):=list(NA)]
-        newTable()[,DO_diseasetype:="healthy"]
+        table[,c("original_diseasetype","DO_ID","DO_definition"):=list(NA)]
+        table[,DO_diseasetype:="healthy"]
 
       } else{
 
         double_species<-unique(newTable()[,c("species","NCIT_celltype")])
         dup<-double_species[duplicated(NCIT_celltype)]
-        newTable()[, celltype_species:=ifelse(NCIT_celltype %in% dup$NCIT_celltype, paste0(NCIT_celltype, " (Hs, Mm)"),
+        table<-newTable()[, celltype_species:=ifelse(NCIT_celltype %in% dup$NCIT_celltype, paste0(NCIT_celltype, " (Hs, Mm)"),
                                                   ifelse(species =="Human", paste0(NCIT_celltype, " (Hs)"),
                                                          paste0(NCIT_celltype, " (Mm)")))]
 
-        setnames(newTable(), "NCIT_celltype","celltype")
-        setnames(newTable(), "NCIT_ID","celltype_ID")
-        setnames(newTable(), "NCIT_cell_definition","cell_definition")
+        setnames(table, "NCIT_celltype","celltype")
+        setnames(table, "NCIT_ID","celltype_ID")
+        setnames(table, "NCIT_cell_definition","cell_definition")
 
       }
-
-      table<-newTable()[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","celltype","celltype_species","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1")]
+   
+      
+      table<-table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","celltype","celltype_species","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1")]
       table<-as.data.table(table)
       table
     }
@@ -2131,34 +2371,34 @@ server <- function(input, output, session) {
 
       if(length(input$celltypeInt)!=0 & input$tabletypeInt=="Complete" & input$tissue_awareInt==TRUE){
         if(input$mergeDescendantInt=="Yes"){
-          markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                               c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","celltype_ancestor","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }else{
-          markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                               c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }
       } else if(length(input$celltypeInt)!=0 & input$tabletypeInt=="Complete" & input$tissue_awareInt==FALSE){
         if(input$mergeDescendantInt=="Yes"){
-          markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                               c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","celltype_ancestor","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }else{
-          markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                               c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition","NCIT_celltype","NCIT_ID","NCIT_cell_definition","marker", "marker_type","gene_description","ECs","SPs","resource","log2FC","p.value","adjusted_p.value","pct1")]
         }
       }  else if(length(input$celltypeInt)!=0 & input$tabletypeInt=="Simple" & input$tissue_awareInt==TRUE){
         if(input$mergeDescendantInt=="Yes"){
-          unique(markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          unique(markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                                      c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","celltype_ancestor","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }else{
-          unique(markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          unique(markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                                      c("species","DO_diseasetype","DO_ID","Uberon_tissue","Uberon_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }
       } else if(length(input$celltypeInt)!=0 & input$tabletypeInt=="Simple" & input$tissue_awareInt==FALSE){
         if(input$mergeDescendantInt=="Yes"){
-          unique(markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          unique(markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                                      c("species","DO_diseasetype","DO_ID","celltype_ancestor","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }else{
-          unique(markerTableOutputInt()[ECs>= str_replace_all(input$EC_scoreInt, ">=","") & SPs >= str_replace_all(input$specificityInt, ">=|=","")][,
+          unique(markerTableOutputInt()[ECs>= input$EC_scoreInt & SPs >= input$specificityInt][,
                                                                                                                                                      c("species","DO_diseasetype","DO_ID","CL_celltype","CL_ID","NCIT_celltype","NCIT_ID","marker", "marker_type","ECs","SPs")])
         }
       }
@@ -2214,8 +2454,61 @@ server <- function(input, output, session) {
 
 
 
-  ###### server for annotation -----
+  # server for annotation -----
+  observeEvent(input$annoInfo,{
+    showModal(modalDialog(
+      title = "Automatic annotation Information",
+      HTML("
+  Users can upload a file containing markers for each cluster or related to a single entity, and the 
+  <strong>Cell Marker Accordion</strong> will retrieve the respective cell type with the highest correlation.<br>
+<strong>IMPORTANT!</strong> Annotation is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion algorithm, 
+we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordion\" target=\"_blank\">R package</a>.<br>
+<p>
+<br>
 
+  The number of positive and negative genes to retain for each cluster can be specified by entering the desired number in the box and clicking the <strong>'Add value'</strong> button.
+</p>
+
+<p>
+  In the <strong>FindAllMarkers</strong> output, genes are classified as positive if <code>log2FC > 0</code> and negative if <code>log2FC < 0</code>.
+  In a custom table, this classification can be defined in the <code>'gene_type'</code> column.
+</p>
+
+<p>
+  Once the custom file is loaded, you can specify filters for the <strong>Cell Marker Accordion</strong> database before annotation. In particular:
+</p>
+
+<ul>
+  <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
+  <li><strong>Condition:</strong> healthy or multiple diseases.</li>
+  <li>
+    <strong>Tissue:</strong> select one or multiple tissues from the list. If no tissue is selected, the annotation will be performed using all tissues combined. 
+    If multiple tissues are selected, the annotation will be performed by combining the selected tissues.
+  </li>
+  <li>
+    <strong>Cell type:</strong> select one or multiple cell types from the list. If no cell type is selected, the annotation will be performed using all cell types.
+  </li>
+  <li>
+    <strong>ECs (Evidence Consistency Score):</strong> measures the agreement of different annotation sources. 
+    Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an EC score &ge; the selected value.
+  </li>
+  <li>
+    <strong>SPs (Specificity Score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database. 
+    Filter marker genes from the <strong>Accordion</strong> database with an SP score &ge; the selected value.
+  </li>
+  <li>
+    <strong>Maximum number of markers to keep for each cell type:</strong> specify the top N marker genes to retain for each cell type during automatic annotation. 
+    Markers are ranked based on their ECs and SPs. Default is <code>50</code>.
+  </li>
+</ul>
+
+
+
+"
+
+      )
+    ))
+  })
   observeEvent(input$userclusterfileinfo,{
     showModal(modalDialog(
       title = "Annotation input file format",
@@ -2354,6 +2647,7 @@ server <- function(input, output, session) {
   })
 
   inputTable <- reactive({
+    suppressWarnings({
     if(input$button){
     if (is.null(input$clusterfile) & input$demo_ex_anno > 0) {
       # Read the default example file
@@ -2377,7 +2671,7 @@ server <- function(input, output, session) {
       if (!is.na(as.numeric(input$nmarkerneg))) { # Select number of markers
         negative_marker <- table %>%
           group_by(cluster) %>%
-          slice_max(n = as.numeric(input$nmarkerneg), order_by = -avg_log2FC)
+          slice_max(n = as.numeric(input$nmarkerneg), order_by = avg_log2FC)
         negative_marker <- as.data.table(negative_marker)
         negative_marker <- negative_marker[avg_log2FC < 0]
       } else { # ALL
@@ -2474,18 +2768,36 @@ server <- function(input, output, session) {
       }
     }
     }
+      })
   })
 
+  
+  demoLoaded_anno <- reactiveVal(FALSE)  # Track if demo is loaded
+  
+  observeEvent(input$demo_ex_anno, {
+    showNotification("Demo example loaded!", type = "message", duration = 5)
+    demoLoaded_anno(TRUE)  # Mark demo as loaded
+  })
+  
+  output$success_icon_anno <- renderUI({
+    if (demoLoaded_anno()) {
+      tags$span(
+        icon("check-circle", class = "text-success", lib = "font-awesome"),
+        style = "font-size: 20px; margin-left: 10px;"
+      )
+    }
+  })
+  
 
   output$exampletable <- renderDataTable({
     if(input$demo_ex_anno>0 & is.null(input$clusterfile)){
       table<-fread("data/FindAllMarkers_small_ex.tsv", verbose = F)
       table[,p_val:=format(p_val, digits=2)]
       table[,avg_log2FC:=format(avg_log2FC, digits=2)]
-
+      table<-table[order(-avg_log2FC), by="cluster"]
       table<-datatable(table, options = list(scrollX='400px',
         dom = 't',      # Removes unnecessary UI elements
-        pageLength = 15 # Controls number of rows displayed
+        pageLength = 5 # Controls number of rows displayed
       ),rownames = FALSE) %>%
         formatStyle(columns = names(table), fontSize = '12px')%>%
         formatStyle(columns = names(table), target="row", fontSize = '12px')
@@ -2512,6 +2824,16 @@ server <- function(input, output, session) {
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTable()$Uberon_tissue))))
   })
 
+  toListen_celltypeA <- reactive({
+    list(input$speciesA, input$diseaseA, input$tissueA)
+  })
+  
+  observeEvent(toListen_celltypeA(),{
+    updatePickerInput(session,'celltypeA', selected = unique(markerTable()$celltype),
+                      choices=unique(markerTable()$celltype),
+                      option=list(`actions-box` = TRUE,style="box-celltypes"),
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(markerTable()$celltype))))
+  })
 
   markerTableTissue <- reactive ({
     if(is.null(input$tissueA)){ #if no tissues are selected perform annotation with all aggregated tissues
@@ -2521,7 +2843,14 @@ server <- function(input, output, session) {
     } else{
       table<-markerTable()[Uberon_tissue %in% input$tissueA]
     }
-
+    tissue<-unique(table$Uberon_tissue) 
+    if(length(tissue) >0){ #if more tissues are selected perform annotation with all aggregated tissues
+      table[,Uberon_tissue:=paste(tissue,collapse=", ")]
+    }
+    if(!is.null(input$celltypeA)){ #if no cell types are selected consider all, otherwise consider only the selected cell type
+      table<-table[celltype %in% input$celltypeA]
+    }
+    
       #calculate EC score based on filtered tissue
       accordion_marker<-unique(table[,c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker","marker_type","resource")])
       ECs<-ddply(accordion_marker,.(species,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
@@ -2557,38 +2886,46 @@ server <- function(input, output, session) {
 
 
   accMarkerAnnoTable <- reactive ({
-    accordion_complete_filt<-markerTableTissue()[ECs >= str_replace_all(input$EC_scoreA, ">=","") & SPs >= str_replace_all(input$specificityA, ">=|=","")]
-
-    if(as.numeric(input$max_n_marker)){
-      accordion_complete_filt<-accordion_complete_filt[order(-combined_score)]
-      accordion_complete_filt<-accordion_complete_filt[,.SD[1:input$max_n_marker], by=c("celltype")]
+    accordion_complete_filt<-markerTableTissue()[ECs >= input$EC_scoreA & SPs >= input$specificityA]
+    #req(accordion_complete_filt)
+    validate(need(nrow(accordion_complete_filt)>0, "No marker genes found with the selected filters."))   
+    if(nrow(accordion_complete_filt)>0){
+      if(as.numeric(input$max_n_marker)){
+        accordion_complete_filt<-accordion_complete_filt[order(-combined_score)]
+        accordion_complete_filt<-accordion_complete_filt[,.SD[1:input$max_n_marker], by=c("celltype")]
+      }
+  
+      positive_marker_acc<-accordion_complete_filt[marker_type=="positive" & species %in% input$speciesA][,pos_marker_acc:= paste(marker, collapse=" "), by= celltype]
+      positive_marker_acc<-unique(positive_marker_acc[,c("celltype","pos_marker_acc")])
+      negative_marker_acc<-accordion_complete_filt[marker_type=="negative" & species %in% input$speciesA][,neg_marker_acc:= paste(marker, collapse=" "), by= celltype]
+      negative_marker_acc<-unique(negative_marker_acc[,c("celltype","neg_marker_acc")])
+  
+      table<-merge(positive_marker_acc,negative_marker_acc, by="celltype",all.x=TRUE, all.y=TRUE)
+      as.data.table(table)
     }
-
-    positive_marker_acc<-accordion_complete_filt[marker_type=="positive" & species %in% input$speciesA][,pos_marker_acc:= paste(marker, collapse=" "), by= celltype]
-    positive_marker_acc<-unique(positive_marker_acc[,c("celltype","pos_marker_acc")])
-    negative_marker_acc<-accordion_complete_filt[marker_type=="negative" & species %in% input$speciesA][,neg_marker_acc:= paste(marker, collapse=" "), by= celltype]
-    negative_marker_acc<-unique(negative_marker_acc[,c("celltype","neg_marker_acc")])
-
-    table<-merge(positive_marker_acc,negative_marker_acc, by="celltype",all.x=TRUE, all.y=TRUE)
-    as.data.table(table)
-
   })
 
 
   inputTableLong <- reactive ({
+    if(!is.null(accMarkerAnnoTable())){
     suppressWarnings({
 
     input_marker_long<-do.call("rbind", replicate(nrow(accMarkerAnnoTable()), inputTable(), simplify = FALSE))
     input_marker_long<-input_marker_long[order(cluster)]
     input_marker_long
     })
+    }
   })
   accMarkerAnnoTableLong <- reactive ({
+    if(!is.null(accMarkerAnnoTable())){
     suppressWarnings({
     do.call("rbind", replicate(nrow(inputTable()), accMarkerAnnoTable(), simplify = FALSE))
     })
+    }
   })
   combineTable <- reactive({ #create table to perform Fisher Test
+    if(!is.null(accMarkerAnnoTableLong())){
+      
     dt_combine<-cbind(inputTableLong(),accMarkerAnnoTableLong())
     dt_combine<-as.data.table(dt_combine)
     #IY overlap between input and anno
@@ -2610,11 +2947,11 @@ server <- function(input, output, session) {
     dt_combine[,not_input_in_anno_tot:= paste0(not_input_in_anno_pos, " ", not_input_in_anno_neg)]
     dt_combine[,not_input_in_anno_tot := str_trim(not_input_in_anno_tot)]
     dt_combine
-
+    }
   })
 
   toListen_anno <- reactive({
-    list(input$button, inputTable())
+    list(input$button, inputTable(),accMarkerAnnoTable())
   })
 
   observeEvent(toListen_anno, {
