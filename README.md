@@ -197,8 +197,8 @@ Inputs:
     By default, all genes are considered positive (high expression) and associated with a single identity class (one cluster only).<br>
 
 User may also include additional columns:
-  - <strong>cluster</strong>: indicate the identity class of the markers
-  - <strong>gene_type</strong>: positive, whether the gene is positive (high expression) or negative, whether the gene is negative (low expression)
+       - <strong>cluster</strong>: indicate the identity class of the markers
+       - <strong>gene_type</strong>: positive, whether the gene is positive (high expression) or negative, whether the gene is negative (low expression) <br>
 
     ### Example of custom table:  
   
