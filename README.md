@@ -89,7 +89,7 @@ Inputs:
  <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database.
 
 Inputs:
-- Custom marker genes: upload a custom set of marker genes to be integrate witht the Cell Marker Accordion database. 
+- Custom marker genes: upload a custom set of marker genes to be integrate with the Cell Marker Accordion database.
  The file must contain at least two columns:
   - <strong>cell_type</strong>: specifies the cell type.<br>
     To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus.
@@ -104,9 +104,10 @@ Inputs:
   - <strong>resource</strong>: Indicates the data source. If omitted, markers are labeled as custom_set.
   - <strong>disease</strong>: Required if the integration is performed with the disease database. Standardization with Disease Ontology is recommended.<br>
     Non-standardized diseases will be added as new diseases. If omitted, disease specificity is ignored.
- 
 
- ![immagine](https://github.com/user-attachments/assets/c3542e15-598d-45d3-ab0c-36eacf00b67f)
+- Select the Accordion database: select the Accordion database to integrate with your custom set of marker genes, either healthy or disease. <br>
+![immagine](https://github.com/user-attachments/assets/90f3aa3b-b9fa-4cf0-b524-aab1dc698ceb)
+
 
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"> User can upload a file containing markers for every cluster, or just related to one entity, and the tool retrieves the respective cell type with the highest correlation.  <br />
