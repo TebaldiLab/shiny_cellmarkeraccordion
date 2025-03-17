@@ -202,47 +202,55 @@ User may also include additional columns:
   
      <table>
        <tr>
-         <th>Cluster</th>
-         <th>Gene</th>
-         <th>Gene Type</th>
+         <th>cluster</th>
+         <th>cene</th>
+         <th>gene_type</th>
        </tr>
        <tr>
-         <td>0</td> <td>CCR7</td> <td>Positive</td>
+         <td>0</td> <td>CCR7</td> <td>positive</td>
        </tr>
        <tr>
-         <td>0</td> <td>TMEM66</td> <td>Positive</td>
+         <td>0</td> <td>TMEM66</td> <td>positive</td>
        </tr>
        <tr>
-         <td>0</td> <td>HLA-DRA</td> <td>Negative</td>
+         <td>0</td> <td>HLA-DRA</td> <td>negative</td>
        </tr>
        <tr>
-         <td>0</td> <td>CD74</td> <td>Negative</td>
+         <td>0</td> <td>CD74</td> <td>negative</td>
        </tr>
        <tr>
-         <td>1</td> <td>S100B</td> <td>Positive</td>
+         <td>1</td> <td>S100B</td> <td>positive</td>
        </tr>
        <tr>
-         <td>1</td> <td>RGS10</td> <td>Positive</td>
+         <td>1</td> <td>RGS10</td> <td>positive</td>
        </tr>
        <tr>
-         <td>1</td> <td>KLF6</td> <td>Negative</td>
+         <td>1</td> <td>KLF6</td> <td>negative</td>
        </tr>
        <tr>
-         <td>1</td> <td>CLIC1</td> <td>Negative</td>
+         <td>1</td> <td>CLIC1</td> <td>negative</td>
        </tr>
        <tr>
-         <td>2</td> <td>VIM</td> <td>Positive</td>
+         <td>2</td> <td>VIM</td> <td>positive</td>
        </tr>
        <tr>
-         <td>2</td> <td>GSTK1</td> <td>Positive</td>
+         <td>2</td> <td>GSTK1</td> <td>positive</td>
        </tr>
        <tr>
-         <td>2</td> <td>CTSW</td> <td>Negative</td>
+         <td>2</td> <td>CTSW</td> <td>negative</td>
        </tr>
        <tr>
-         <td>2</td> <td>ZFA51</td> <td>Negative</td>
+         <td>2</td> <td>ZFA51</td> <td>negative</td>
        </tr>
      </table>
-
+ 
  <img src=https://github.com/user-attachments/assets/941a29a7-e0e7-4cf8-8144-51904ae92ddf style="width:50%; height:50%;">  <br />
+
+The number of positive and negative genes to retain for each cluster can be specified by entering the desired number in the box and clicking the 'Add value' button. <br/>
+In the FindAllMarkers output, genes are classified as positive if log2FC > 0 and negative if log2FC < 0. <br/>
+In a custom table, this classification can be defined in the 'gene_type' column. <br/>
+
+ <img src= https://github.com/user-attachments/assets/84ce4132-3030-461b-a41f-f27fd0e87dbf style="width:50%; height:50%;">  <br />
+
+
 
