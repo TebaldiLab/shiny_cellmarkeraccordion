@@ -95,7 +95,7 @@ Inputs:
     To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus.
     If non-standardized cell types are provided, they will be added as new cell types in the database.
   - <strong>marker</strong>: lists the marker genes<br>
-    Additional columns can also be included:
+  Additional columns can also be included:
   - <strong>species</strong>: Specifies the species (default: Human).
   - <strong>tissue</strong>: Specifies the related tissue. Standardization with Uberon Ontology is recommended for effective integration.<br>
     Non-standardized tissues will be added as new tissues. If omitted, integration will ignore tissue specificity.<br>
