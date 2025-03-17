@@ -92,12 +92,14 @@ Outputs:
 
 ### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.</strong>  <br /> 
 Users can also explore the subtypes of a selected cell type.
-
 For example, to view all subtypes of the monocyte population:
-    1. Select "Monocyte" in the Cell Type box.
-    2. Select "Monocyte" in the See Subtypes Of box.
-    3. The Ontology Tree will display all monocyte subtypes.
-    4. Click on any node to explore detailed definitions of cell types based on the Cell Ontology Tree.
+
+<ol>
+  <li>Select <strong>"Monocyte"</strong> in the <strong>Cell Type</strong> box.</li>
+  <li>Select <strong>"Monocyte"</strong> in the <strong>See Subtypes Of</strong> box.</li>
+  <li>The <strong>Ontology Tree</strong> will display all monocyte subtypes.</li>
+  <li>Click on any node to explore detailed definitions of cell types based on the <strong>Cell Ontology Tree</strong>.</li>
+</ol>
 
 <img src= https://github.com/user-attachments/assets/753224d1-d0dd-4463-8691-ab201a68693c style="width:50%; height:50%;"> <br />
 
