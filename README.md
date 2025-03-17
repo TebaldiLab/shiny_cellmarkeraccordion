@@ -91,8 +91,15 @@ Outputs:
 
 
 ### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.</strong>  <br /> 
+Users can also explore the subtypes of a selected cell type.
 
- <img src=https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/2b87c289-1159-45c6-a855-54528a168393 style="width:25%; height:25%;">  <br />
+For example, to view all subtypes of the monocyte population:
+    1. Select "Monocyte" in the Cell Type box.
+    2. Select "Monocyte" in the See Subtypes Of box.
+    3. The Ontology Tree will display all monocyte subtypes.
+    4. Click on any node to explore detailed definitions of cell types based on the Cell Ontology Tree.
+
+<img src= https://github.com/user-attachments/assets/753224d1-d0dd-4463-8691-ab201a68693c style="width:50%; height:50%;"> <br />
 
 ### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores) </strong>.  <br />
 Filters:
