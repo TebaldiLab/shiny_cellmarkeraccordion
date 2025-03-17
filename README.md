@@ -280,7 +280,7 @@ For full access to the Cell Marker Accordion algorithm, we recommend using our R
  
 
 The number of positive and negative genes to retain for each cluster can be specified by entering the desired number in the box and clicking the 'Add value' button. <br/>
-In the FindAllMarkers output, genes are classified as positive if log2FC > 0 and negative if log2FC < 0. <br/>
+In the FindAllMarkers output, genes are classified as positive if avg_log2FC > 0 and negative if avg_log2FC < 0. Genes will be ranked based on their <code>avg_log2FC < 0</code> values and then only the top N for each cluster will be used. <br> <br/>
 In a custom table, this classification can be defined in the 'gene_type' column. <br/>
 
  <img src= https://github.com/user-attachments/assets/84ce4132-3030-461b-a41f-f27fd0e87dbf style="width:30%; height:30%;">  <br />
