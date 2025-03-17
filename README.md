@@ -113,6 +113,8 @@ Inputs:
 
 <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong> Annotate cell populations in health and disease.</strong>  <br />
 User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieves the respective cell type with the highest correlation.
+IMPORTANT! Annotation is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
+For full access to the Cell Marker Accordion algorithm, we recommend using our R package.
 
 Inputs:
 - Load file to annotate: upload a file for automatic annotation. The file can be one of the following types:
@@ -248,7 +250,22 @@ The number of positive and negative genes to retain for each cluster can be spec
 In the FindAllMarkers output, genes are classified as positive if log2FC > 0 and negative if log2FC < 0. <br/>
 In a custom table, this classification can be defined in the 'gene_type' column. <br/>
 
- <img src= https://github.com/user-attachments/assets/84ce4132-3030-461b-a41f-f27fd0e87dbf style="width:50%; height:50%;">  <br />
+ <img src= https://github.com/user-attachments/assets/84ce4132-3030-461b-a41f-f27fd0e87dbf style="width:30%; height:30%;">  <br />
 
+
+Once the custom file is loaded you can specificy some filters for the Cell Marker Accordion database prior annotation.
+In particular:
+- Select species: currently Human and/or Mouse.
+- Condition: healthy or multiple diseases.
+- Tissue: select one or multiple tissues from the list. If no tissue is selected, the annotation will be performed using all tissues combined. If multiple tissues are selected, the annotation will be performed by combining the selected tissues.
+- Cell type: select one or multiple cell types from the list. If no cell type is selected, the annotation will be performed using all cell types.
+- ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes from the Cell Marker Accordion Accordion database with an evidence consistency score >= the selected value.
+- SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes from the Accordion database with a specificity score >= the selected value.
+- Maximum number of markers to keep for each cell type: indicate the top N marker genes to keep for each cell type to perform automatic annotation. Markers are ordered according to their ECs and SPs. Default is 50. 
+
+
+
+
+ <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:30%; height:30%;">  <br />
 
 
