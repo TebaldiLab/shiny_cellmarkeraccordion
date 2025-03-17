@@ -121,17 +121,17 @@ Inputs:
  <img src= https://github.com/user-attachments/assets/f9cad287-a438-4c49-8c20-42df010add85 style="width:80%; height:80%;">  <br />
 
 
-
+<br>
    ### Example of FindAllMarkers output table:
     <table>
       <tr>
-        <th>Cluster</th>
+        <th>cluster</th>
         <th>p_val</th>
         <th>avg_log2FC</th>
         <th>pct.1</th>
         <th>pct.2</th>
         <th>p_val_adj</th>
-        <th>Gene</th>
+        <th>gene</th>
       </tr>
       <tr>
         <td>0</td> <td>0</td> <td>1.196</td> <td>0.327</td> <td>0.135</td> <td>0</td> <td>CCR7</td>
@@ -195,6 +195,7 @@ Inputs:
       </tr>
     </table>
    <br>
+   
   - Alternatively, user can provide a custom table with at least one column (<strong>gene column</strong>) containing the list of genes (one per row). <br>
     By default, all genes are considered positive (high expression) and associated with a single identity class (one cluster only).<br>
 
