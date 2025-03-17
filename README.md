@@ -70,7 +70,7 @@ Inputs:
 Inputs: 
 - Select species: currently Human and/or Mouse.
 - Inser marker genes: enter a list of marker genes, using | , : ; ! ? as delimiters to separate them.
-- Upload file with marker genes: provide a .txt, .csv, .xlsx, or .tsv file containing a list of marker genes. Use |, ,, :, ;, !, or ? as delimiters to separate them. Both the markers entered in the "Insert marker genes" box and those in the uploaded file will be considered. 
+- Upload file with marker genes: provide a .txt, .csv, .xlsx, or .tsv file containing a list of marker genes. Use | , : ; ! ? as delimiters to separate them. Both the markers entered in the "Insert marker genes" box and those in the uploaded file will be considered. 
 - Condition: healthy or multiple diseases.
 - Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
 
@@ -86,7 +86,24 @@ Inputs:
 
  <img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
 
- <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database
+ <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database.
+
+Inputs:
+- Custom marker genes: upload a custom set of marker genes to be integrate witht the Cell Marker Accordion database. 
+ The file must contain at least two columns:
+ <strong>cell_type<strong/>: specifies the cell type.
+ To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus.
+ If non-standardized cell types are provided, they will be added as new cell types in the database.
+ <strong>marker<strong/>: lists the marker genes
+ Additional columns can also be included:
+ <strong>species<strong/>: Specifies the species (default: Human).
+ <strong>tissue<strong/>: Specifies the related tissue. Standardization with Uberon Ontology is recommended for effective integration.
+ Non-standardized tissues will be added as new tissues. If omitted, integration will ignore tissue specificity.
+ <strong>marker_type<strong/>: Defines marker type (positive or negative; default: positive).
+ <strong>resource<strong/>: Indicates the data source. If omitted, markers are labeled as custom_set.
+ <strong>disease<strong/>: Required if the integration is performed with the disease database. Standardization with Disease Ontology is recommended.
+ Non-standardized diseases will be added as new diseases. If omitted, disease specificity is ignored.
+ 
 
  ![immagine](https://github.com/user-attachments/assets/c3542e15-598d-45d3-ab0c-36eacf00b67f)
 
