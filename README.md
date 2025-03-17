@@ -193,7 +193,6 @@ Inputs:
         <td>1</td> <td>0</td> <td>0.583</td> <td>0.999</td> <td>0.981</td> <td>0</td> <td>RPS25</td>
       </tr>
     </table>
-   <br>
    
   - Alternatively, user can provide a custom table with at least one column (<strong>gene column</strong>) containing the list of genes (one per row). <br>
     By default, all genes are considered positive (high expression) and associated with a single identity class (one cluster only).<br>
