@@ -54,7 +54,7 @@ runApp()
 ## Usage
 The Cell Marker Accordion web interface allows to easily:  <br />
 
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions. <br />
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/a2d0501b-2b59-48f4-b220-be7871b57b95" width="25" height="25"> <strong>Search and download lists of marker genes by cell types across different tissues, both in healthy and pathological conditions.</strong> <br />
 
 Inputs: 
 - Select species: currently Human and/or Mouse.
@@ -65,7 +65,7 @@ Inputs:
 
 <img src=https://github.com/user-attachments/assets/7021b223-2de7-4dd2-adc2-5184556053db style="width:50%; height:50%;"> <br />
 
- <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> Search and download lists of cell types associate with input marker genes across different tissues in health and disease. <br />
+ <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> <strong>Search and download lists of cell types associate with input marker genes across different tissues in health and disease.</strong> <br />
 
 Inputs: 
 - Select species: currently Human and/or Mouse.
@@ -76,17 +76,17 @@ Inputs:
 
 <img src=https://github.com/user-attachments/assets/23399d3f-8a45-41ed-ba81-8890abe51aa9 style="width:50%; height:50%;"> <br />
 
-<img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.  <br /> 
+<img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.</strong>  <br /> 
 
  <img src=https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/2b87c289-1159-45c6-a855-54528a168393 style="width:25%; height:25%;">  <br />
 
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores).  <br />
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores) </strong>.  <br />
 
 
 
  <img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
 
- <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"> Integrate custom set of marker genes with the Cell Marker Accordion database.
+ <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
 
 Inputs:
 - Custom marker genes: upload a custom set of marker genes to be integrate with the Cell Marker Accordion database.
@@ -111,7 +111,7 @@ Inputs:
 
 
 
-<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"> Annotate cell populations in health and disease.  <br />
+<img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong> Annotate cell populations in health and disease.</strong>  <br />
 User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieves the respective cell type with the highest correlation.
 
 Inputs:
@@ -243,8 +243,6 @@ User may also include additional columns:
          <td>2</td> <td>ZFA51</td> <td>Negative</td>
        </tr>
      </table>
-
-
 
  <img src=https://github.com/user-attachments/assets/941a29a7-e0e7-4cf8-8144-51904ae92ddf style="width:50%; height:50%;">  <br />
 
