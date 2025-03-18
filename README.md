@@ -7,8 +7,8 @@ To address this issue, we developed Cell Marker Accordion, a user-friendly platf
 The Cell Marker Accordion database includes thousand of markers associated with both human and mouse cell types from different tissues, in physiological and pathological conditions. 
 The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers. Additionally, users can upload custom gene sets to integrate with the database or identify the closest associated cell type—all without any programming skills required.
 
-## Citing the cellmarkeraccordion
-Please cite the following article when using the <strong>cellmarkeraccordion</strong>:
+## Citing the Cell Marker Accordion Shiny web app
+Please cite the following article when using the <strong>Cell Marker Accordion Shiny web app</strong>:
 
 <strong>Cell Marker Accordion: interpretable single-cell and spatial omics annotation in health and disease</strong>
 
@@ -84,7 +84,7 @@ Outputs:
 
 <strong>Inputs: </strong> 
 - Select species: currently Human and/or Mouse.
-- Inser marker genes: enter a list of marker genes, using | , : ; ! ? as delimiters to separate them.
+- Insert marker genes: enter a list of marker genes, using | , : ; ! ? as delimiters to separate them.
 - Upload file with marker genes: provide a .txt, .csv, .xlsx, or .tsv file containing a list of marker genes. Use | , : ; ! ? as delimiters to separate them. Both the markers entered in the "Insert marker genes" box and those in the uploaded file will be considered. 
 - Condition: healthy or multiple diseases.
 - Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
@@ -95,36 +95,10 @@ Outputs:
 - Hierarchies of input cell types following the Cell Ontology structure
 - Interactive and downloadable table with lists of cell types associated to the input markers
 
-
-### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.</strong>  <br /> 
-Users can also explore the subtypes of a selected cell type.
-For example, to view all subtypes of the monocyte population:
-
-<ol>
-  <li>Select <strong>"monocyte"</strong> in the <strong>Cell type</strong> box.</li>
-  <li>Select <strong>"monocyte"</strong> in the <strong>See subtypes of</strong> box.</li>
-  <li>The <strong>Ontology Tree</strong> will display all monocyte subtypes.</li>
-  <li>Click on any node to explore detailed definitions of cell types based on the <strong>Cell Ontology Tree</strong>.</li>
-</ol>
-
-<img src= https://github.com/user-attachments/assets/753224d1-d0dd-4463-8691-ab201a68693c style="width:50%; height:50%;"> <br />
-
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores) </strong>.  <br />
-<strong>Filters:</strong>
-- ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes with an evidence consistency score >= the selected value.
-- SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes with a specificity score >= the selected value.
-Table type:
-  - Simple: provides a compact table with fewer columns for easier viewing
-  - Complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.<br />
-  
-<img src= https://github.com/user-attachments/assets/aca61132-4bd7-47f8-b0fd-bb0280c8bdcb style="width:80%; height:80%;">  <br />
-
-<img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
-
 ### <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
 
 <strong>Inputs:</strong>
-- Custom marker genes: upload a custom set of marker genes to be integrate with the Cell Marker Accordion database.
+- Custom marker genes: upload a custom set of marker genes to be integrated with the Cell Marker Accordion database.
  The file must contain at least two columns:
   - <strong>cell_type</strong>: specifies the cell type.<br>
     To ensure proper integration, cell types nomenclature should be standardized on the Cell Ontology or the NCI Thesaurus.
@@ -148,9 +122,10 @@ Table type:
 - Interactive and downloadable integrated table  
 
 ### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong> Annotate cell populations in health and disease.</strong>  <br />
-User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieves the respective cell type with the highest correlation. <br>
-<strong> IMPORTANT!</strong> Annotation is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
-For full access to the Cell Marker Accordion algorithm, we recommend using our R package.
+User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieve the respective cell type with the highest correlation. <br>
+<br>
+<strong> IMPORTANT! Annotation is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
+For full access to the Cell Marker Accordion algorithm, we recommend using our R package. </strong><br>
 
 <strong>Inputs:</strong>
 - Load file to annotate: upload a file for automatic annotation. The file can be one of the following types:
@@ -229,7 +204,7 @@ For full access to the Cell Marker Accordion algorithm, we recommend using our R
       </tr>
     </table>
    
-  - Alternatively, user can provide a custom table with at least one column (<strong>gene column</strong>) containing the list of genes (one per row). <br>
+  - Alternatively, users can provide a custom table with at least one column (<strong>gene column</strong>) containing the list of genes (one per row). <br>
     By default, all genes are considered positive (high expression) and associated with a single identity class (one cluster only).<br>
     User may also include additional columns:
        - <strong>cluster</strong>: indicate the identity class of the markers
@@ -289,14 +264,14 @@ In a custom table, this classification can be defined in the 'gene_type' column.
  <img src= https://github.com/user-attachments/assets/84ce4132-3030-461b-a41f-f27fd0e87dbf style="width:30%; height:30%;">  <br />
 
 
-Once the custom file is loaded you can specificy some filters for the Cell Marker Accordion database prior annotation.
+Once the custom file is loaded you can specify some filters for the Cell Marker Accordion database prior annotation.
 In particular:
 - Select species: currently Human and/or Mouse.
 - Condition: healthy or multiple diseases.
 - Tissue: select one or multiple tissues from the list. If no tissue is selected, the annotation will be performed using all tissues combined. If multiple tissues are selected, the annotation will be performed by combining the selected tissues.
 - Cell type: select one or multiple cell types from the list. If no cell type is selected, the annotation will be performed using all cell types.
-- ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes from the Cell Marker Accordion Accordion database with an evidence consistency score >= the selected value.
-- SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes from the Accordion database with a specificity score >= the selected value.
+- ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes from the Cell Marker Accordion database with an evidence consistency score >= the selected value.
+- SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the Cell Marker Accordion database. Filter marker genes from the Accordion database with a specificity score >= the selected value.
 - Maximum number of markers to keep for each cell type: indicate the top N marker genes to keep for each cell type to perform automatic annotation. Markers are ordered according to their ECs and SPs. Default is 50. 
 
  <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:40%; height:40%;">  <br />
@@ -305,3 +280,33 @@ In particular:
 - Interactive and downloadable Annotation table: for each cluster identity the cell type with the highest association is reported. The table also includes significance information and overlapping genes.
 
  <img src= https://github.com/user-attachments/assets/2cb1fa00-fc5a-46ff-8883-deb7827b1ad3   style="width:100%; height:100%;">  <br />
+
+
+## Additionally, in all sections users can easily:
+
+### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.</strong>  <br /> 
+
+Users can also explore the subtypes of a selected cell type.
+For example, to view all subtypes of the monocyte population:
+
+<ol>
+  <li>Select <strong>"monocyte"</strong> in the <strong>Cell type</strong> box.</li>
+  <li>Select <strong>"monocyte"</strong> in the <strong>See subtypes of</strong> box.</li>
+  <li>The <strong>Ontology Tree</strong> will display all monocyte subtypes.</li>
+  <li>Click on any node to explore detailed definitions of cell types based on the <strong>Cell Ontology Tree</strong>.</li>
+</ol>
+
+<img src= https://github.com/user-attachments/assets/753224d1-d0dd-4463-8691-ab201a68693c style="width:50%; height:50%;"> <br />
+
+### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores) </strong>.  <br />
+<strong>Filters:</strong>
+- ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes with an evidence consistency score >= the selected value.
+- SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes with a specificity score >= the selected value.
+Table type:
+  - Simple: provides a compact table with fewer columns for easier viewing
+  - Complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.<br />
+  
+<img src= https://github.com/user-attachments/assets/aca61132-4bd7-47f8-b0fd-bb0280c8bdcb style="width:80%; height:80%;">  <br />
+
+<img src=https://github.com/user-attachments/assets/cac2b4b5-00d0-4d24-869c-35d892d9039f style="width:80%; height:80%;">  <br />
+
