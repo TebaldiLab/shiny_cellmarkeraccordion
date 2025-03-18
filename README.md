@@ -18,7 +18,9 @@ bioRxiv 2024.03.08.584053; doi: https://doi.org/10.1101/2024.03.08.584053
 
 ## Download the Accordion database
 To download the Accordion database as an excel file you can click on the download button on the shiny app (https://rdds.it/CellMarkerAccordion/). 
-Otherwise downalod the "AccordionDB.xlsb" file sotred in this repository.
+<img src= https://github.com/user-attachments/assets/ea25a808-68ed-406f-a655-16f1ebbe00ac style="width:30%; height:30%;"> <br />
+
+Otherwise downalod the "AccordionDB.xlsb" file stored in this repository.
 
 ## Local installation 
 ### Prerequisites
