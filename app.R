@@ -26,7 +26,7 @@ source('helper_function.R')
 source("install_dependencies.R")
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -369,7 +369,14 @@ ui <- dashboardPage(
                 fluidRow(
                   wellPanel(
                     id = "sidebar",
-
+                    div(
+                      style = "display: flex; justify-content: center; align-items: center;",
+                      actionButton(
+                        'intInfo', 'Info',
+                        icon = icon("info"),
+                        style = 'margin-top: 5px; margin-bottom: 5px;'
+                      )
+                    ),
                     # File input and database selection
                     fluidRow(
                       column(
@@ -473,6 +480,14 @@ ui <- dashboardPage(
               useShinyjs(),
               h2("Filter the integrated database"),
               div(fluidRow(column(width=8,wellPanel(id="sidebar",
+                                                    div(
+                                                      style = "display: flex; justify-content: center; align-items: center;",
+                                                      actionButton(
+                                                        'celltypeInfo', 'Info',
+                                                        icon = icon("info"),
+                                                        style = 'margin-top: 5px; margin-bottom: 5px;'
+                                                      )
+                                                    ),
                                                     checkboxGroupInput("speciesInt", "Select species:",
                                                                        choiceNames =
                                                                          list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
@@ -762,12 +777,11 @@ server <- function(input, output, session) {
   observeEvent(input$celltypeInfo,{
     showModal(modalDialog(
       title = "Inputs information",
-      HTML(
-      "
+      HTML(     "
 <ul>
   <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
   <li><strong>Condition:</strong> healthy or multiple diseases.</li>
-  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <code>tissue_aware</code> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
+  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <strong>'Tissue aware'</strong> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
   <li><strong>Cell type:</strong> select one or multiple cell types from the list.</li>
   <li><strong>See subtypes of:</strong> displays the list of cell type descendants of the previously selected cell types. Users can select one or more subtypes to visualize in the Ontology tree and the output table.</li>
 </ul>
@@ -780,13 +794,13 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Table Option Information",
       HTML("Marker genes can be ranked and selected by: <br>
-      <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-       <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
+      <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+       <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
 
       In addition:  <br>
       <strong> Merged subtypes </strong>:  if subtypes of at least one input cell type is displayed
       <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
-      <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
+      <strong> Table type </strong> <br> <ul><li><strong>simple</strong>: retrieves a compact and easy table format</li><li> <strong>complete</strong>: additional information are added</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
@@ -796,10 +810,10 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Table Option Information",
       HTML("Marker genes can be ranked and selected by: <br>
-             <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-             <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
+             <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+             <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
              In addition: <br>
-             <strong> Table type </strong> <br> <ul><li>simple: provides a compact table with fewer columns for easier viewing </li><li> complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.</li></ul>")
+      <strong> Table type </strong> <br> <ul><li><strong>simple</strong>: retrieves a compact and easy table format</li><li> <strong>complete</strong>: additional information are added</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
@@ -1132,7 +1146,7 @@ server <- function(input, output, session) {
   <li><strong>Insert marker genes:</strong> enter a list of marker genes, using <code>| , : ; ! ?</code> as delimiters to separate them.</li>
   <li><strong>Upload file with marker genes:</strong> provide a <code>.txt</code>, <code>.csv</code>, <code>.xlsx</code>, or <code>.tsv</code> file containing a list of marker genes. Use <code>| , : ; ! ?</code> as delimiters to separate them. Both the markers entered in the \"Insert marker genes\" box and those in the uploaded file will be considered.</li>
   <li><strong>Condition:</strong> healthy or multiple diseases.</li>
-  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <code>tissue_aware</code> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
+  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <strong>'Tissue aware'</strong> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
 </ul>
 "
 
@@ -1144,10 +1158,10 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Table Option Information",
       HTML("Marker genes can be ranked and selected by: <br>
-             <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-             <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li></ul>
+             <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+             <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li></ul>
              In addition: <br>
-             <strong> Table type </strong> <br> <ul><li>simple: provides a compact table with fewer columns for easier viewing </li><li> complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.</li></ul>")
+      <strong> Table type </strong> <br> <ul><li><strong>simple</strong>: retrieves a compact and easy table format</li><li> <strong>complete</strong>: additional information are added</li></ul>")
     ))
   })
 
@@ -1454,10 +1468,24 @@ server <- function(input, output, session) {
 
   # server for custom markers integration with the accordion database -----
 
+  observeEvent(input$intInfo,{
+    showModal(modalDialog(
+      title = "Table Option Information",
+      HTML("Upload a custom set of marker genes to be integrated with the Cell Marker Accordion database, either healthy or disease.
+      Click the  <strong>'InputFile'</strong> button to access details on the input file format. <br>
+      <strong> Select the Accordion database </strong> <br> <ul><li><strong>Healthy</strong>: integrate a custom set with the healthy Accordion database</li><li> <strong>Disease</strong>: integrate a custom set with the disease Accordion database</li></ul>
+      Click the <strong>'Load demo example'</strong> button to load an example of custom marker gene set for integration. To download the example set, click the <strong> InputFile</strong> button and use the <strong> Download Example</strong> option.   <br>
+      To start the integration press on the 'Start the integration!' button.
+      Once the integration is performed you can explore and download the integrated table.
+      <strong> Table type </strong> <br> <ul><li><strong>simple</strong>: retrieves a compact and easy table format</li><li> <strong>complete</strong>: additional information are added</li></ul>")
+      #textInput('text2', 'You can also put UI elements here')
+    ))
+  })
+  
   observeEvent(input$usermarkerinfo,{
     showModal(modalDialog(
       title = "Marker genes input file",
-      HTML("Add a custom set of marker genes to be integrated with the Cell Marker Accordion database, either healthy or disease. <br>
+      HTML("Upload a custom set of marker genes to be integrated with the Cell Marker Accordion database, either healthy or disease. <br>
       The file must contain at least two columns:
       <ul>
         <li> <strong> cell_type </strong>:  specifies the cell type.
@@ -2070,13 +2098,13 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Table Option Information",
       HTML("Marker genes can be ranked and selected by: <br>
-      <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-       <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
+      <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+       <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
 
       In addition:  <br>
       <strong> Merged subtypes </strong>:  if subtypes of at least one input cell type is displayed
       <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
-      <strong> Table type </strong> <br> <ul><li>simple: retrieves a compact and easy table format</li><li> complete: additional information are added</li></ul>")
+      <strong> Table type </strong> <br> <ul><li><strong>simple</strong>: retrieves a compact and easy table format</li><li> <strong>complete</strong>: additional information are added</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
@@ -2086,8 +2114,8 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Table Option Information",
       HTML("Marker genes can be ranked and selected by: <br>
-             <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-             <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
+             <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+             <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database </li>
              In addition: <br>
              <strong> Table type </strong> <br> <ul><li>simple: provides a compact table with fewer columns for easier viewing </li><li> complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
@@ -2465,8 +2493,9 @@ server <- function(input, output, session) {
 we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordion\" target=\"_blank\">R package</a>.<br>
 <p>
 <br>
-
-  The number of positive and negative genes to retain for each cluster can be specified by entering the desired number in the box and clicking the <strong>'Add value'</strong> button.
+  Click the  <strong>'InputFile'</strong> button to access details on the input file format. <br>
+  Click the <strong>'Load demo example'</strong> button to load an example set of <strong>FindAllMarkers</strong> output. To download the example set, click the <strong> InputFile</strong> button and use the <strong>Download Example</strong> option. <br>
+  The number of positive and negative genes to retain for each cluster can be specified by entering the desired number in the box and clicking the <strong>'Add value'</strong> button.<br>
 </p>
 
 <p>
@@ -2489,12 +2518,12 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     <strong>Cell type:</strong> select one or multiple cell types from the list. If no cell type is selected, the annotation will be performed using all cell types.
   </li>
   <li>
-    <strong>ECs (Evidence Consistency Score):</strong> measures the agreement of different annotation sources. 
-    Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an EC score &ge; the selected value.
+    <strong>ECs (evidence consistency ccore):</strong> measures the agreement of different annotation sources. 
+    Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an ECs &ge; the selected value.
   </li>
   <li>
-    <strong>SPs (Specificity Score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database. 
-    Filter marker genes from the <strong>Accordion</strong> database with an SP score &ge; the selected value.
+    <strong>SPs (specificity score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database. 
+    Filter marker genes from the <strong>Accordion</strong> database with an SPs &ge; the selected value.
   </li>
   <li>
     <strong>Maximum number of markers to keep for each cell type:</strong> specify the top N marker genes to retain for each cell type during automatic annotation. 
@@ -2626,8 +2655,8 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     showModal(modalDialog(
       title = "Filters Information",
       HTML("Marker genes employed to annotate your data can be filtered by: <br>
-      <ul><li> <strong> ECs </strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-       <li> <strong> SPs </strong>: specificity score, indicating whether a gene is a marker for different cell types present in the accordion database </li>")    ))
+      <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
+       <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in the accordion database </li>")    ))
   })
 
   observeEvent(input$addpos, {
