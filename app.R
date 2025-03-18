@@ -23,10 +23,9 @@ library(shinyjs)
 library(rstudioapi)
 
 source('helper_function.R')
-source("install_dependencies.R")
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -119,7 +118,7 @@ ui <- dashboardPage(
                 br(),
                 tags$style("@import url('https://use.fontawesome.com/releases/v6.1.1/css/all.css');"),
                 HTML("<p style='text-align: justify;'>
-            <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial data.
+            <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial omics data.
             Our framework includes both a <strong>Shiny app</strong> and an
             <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.
             <br><br>
@@ -129,11 +128,14 @@ ui <- dashboardPage(
               ),
 
               titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes associate with input cell types across different tissues in health and disease. </h>")))),
-              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of cell types associate with input marker genes across different tissues in health and disease. </h>")))),
-              titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options. </h>")))),
-              titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>")))),
-              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database. </h>")))),
-              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> Annotate cell populations in health and disease. </h>"))))),
+              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h>  Search and download lists of cell types associated with input marker genes across different tissues in health and disease. </h>")))),
+              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database. </h>")))),
+              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome",style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Annotate cell populations in health and disease. </h>")))),
+              HTML("<p style='text-align: left; margin-left:-30px;'> <h>Additionally, in all sections users can easily: </p></h>"),
+              
+
+              titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options. </h>")))),
+              titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify; margin-top:-30px;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>"))))),
 
 
 
@@ -146,7 +148,7 @@ ui <- dashboardPage(
                 style = "font-weight: bold; text-align: center;"
               ),
               tags$style(css),
-              div(fluidRow(column(width=8,wellPanel(id="sidebar",                                                                
+              div(fluidRow(column(width=12,wellPanel(id="sidebar",                                                                
                                                     div(
                                                       style = "display: flex; justify-content: center; align-items: center;",
                                                       actionButton(
@@ -170,18 +172,20 @@ ui <- dashboardPage(
                                                     pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE,selected=celltype_list, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                                                                         br(),
                                                     pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
-                                                    checkboxInput("cellid","Plot celltype_ID",value=FALSE))),
-                           br(),
+                                                    checkboxInput("cellid","Plot celltype_ID",value=FALSE)))),
+                           
                            #change style sliderinput
                            tags$style(HTML("
   .irs-single, .irs-bar-edge, .irs-bar {
     background: #990000 !important;
   }
 ")),
-                           titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=4,offset=0, sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
-                                  br(),
-                                  sliderInput(inputId = "width", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
+                          fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
+                            column(width=6,
+                           sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%")),
+                                 
+                           column(width=6,sliderInput(inputId = "width", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
+                  
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -254,7 +258,7 @@ ui <- dashboardPage(
                 "Search and download lists of cell types by marker genes across different tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
-              div(fluidRow(column(width=8,wellPanel(id="sidebar",
+              div(fluidRow(column(width=12,wellPanel(id="sidebar",
                                                     
                                                     div(
                                                       style = "display: flex; justify-content: center; align-items: center;",
@@ -278,15 +282,17 @@ ui <- dashboardPage(
                                                     pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     checkboxInput("tissue_awareM","Tissue aware",value=TRUE),
 
-                                                    checkboxInput("cellidM","Plot celltype_ID",value=FALSE))),
-                           br(),
-                           #change style sliderinput
-                           tags$style(HTML(".js-irs-2 .irs-single, .js-irs-2 .irs-bar-edge, .js-irs-2 .irs-bar {background: #990000}")),
-                           tags$style(HTML(".js-irs-3 .irs-single, .js-irs-3 .irs-bar-edge, .js-irs-3 .irs-bar {background: #990000}")),
-                           titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=4,offset=0, sliderInput(inputId = "heightM", label = "Height", min = 200, max = 3500, value = 600, step = 200,width="80%"),
-                                  br(),
-                                  sliderInput(inputId = "widthM", label = "Width", min = 200, max = 3500, value = 600, step=200,width="80%"))),
+                                                    checkboxInput("cellidM","Plot celltype_ID",value=FALSE)))),
+                  
+                  
+                  
+                  fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
+                           column(width=6,
+                                  sliderInput(inputId = "heightM", label = "Height", min = 200, max = 6500, value = 600, step = 200,width="80%")),
+                           
+                           column(width=6,sliderInput(inputId = "widthM", label = "Width", min = 200, max = 6500, value = 600, step=200,width="80%"))),
+                  
+                
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -506,15 +512,17 @@ ui <- dashboardPage(
                                                     pickerInput('celltypeInt', 'Cell type', choices= NULL ,multiple=TRUE,selected=celltype_list, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     br(),
                                                     pickerInput('descendantsofInt', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
-                                                    checkboxInput("cellidInt","Plot celltype_ID",value=FALSE))),
-                           br(),
-                           #change style sliderinput
-                           tags$style(HTML(".js-irs-4 .irs-single, .js-irs-4 .irs-bar-edge, .js-irs-4 .irs-bar {background: #990000}")),
-                           tags$style(HTML(".js-irs-5 .irs-single, .js-irs-5 .irs-bar-edge, .js-irs-5 .irs-bar {background: #990000}")),
-                           titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=4,offset=0, sliderInput(inputId = "heightInt", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%"),
-                                  br(),
-                                  sliderInput(inputId = "widthInt", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
+                                                    checkboxInput("cellidInt","Plot celltype_ID",value=FALSE)))),
+                  
+                  
+                  fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
+                           column(width=6,
+                                  sliderInput(inputId = "heightInt", label = "Height", min = 200, max = 6500, value = 600, step = 200,width="80%")),
+                           
+                           column(width=6,sliderInput(inputId = "widthInt", label = "Width", min = 200, max = 6500, value = 600, step=200,width="80%"))),
+                  
+                          
+                        
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -700,14 +708,17 @@ ui <- dashboardPage(
                   br(),
                   dataTableOutput('table1A', width = "100%"),
                   br(),
-                  br(),
+          
 
-                  #change style sliderinput
-                  tags$style(HTML(".js-irs-8 .irs-single, .js-irs-8 .irs-bar-edge, .js-irs-8 .irs-bar {background: #990000}")),
-                  tags$style(HTML(".js-irs-9 .irs-single, .js-irs-9 .irs-bar-edge, .js-irs-9 .irs-bar {background: #990000}")),
-                  titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>Adjust plot size </h>")))),
-                    fluidRow(column(width=6,sliderInput(inputId = "heightA", label = "Height", min = 200, max = 3500, value = 400, step = 200,width="80%")),
-                             column(width=6,sliderInput(inputId = "widthA", label = "Width", min = 200, max = 3500, value = 400, step=200,width="80%"))),
+                  
+                  fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
+                           column(width=6,
+                                  sliderInput(inputId = "heightA", label = "Height", min = 200, max = 6500, value = 600, step = 200,width="80%")),
+                           
+                           column(width=6,sliderInput(inputId = "widthA", label = "Width", min = 200, max = 6500, value = 600, step=200,width="80%"))),
+                  
+                  
+              
                     checkboxInput("cellidA","Plot celltype_ID",value=FALSE),
                     #Ontology plot
                     titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
@@ -1146,7 +1157,7 @@ server <- function(input, output, session) {
   <li><strong>Insert marker genes:</strong> enter a list of marker genes, using <code>| , : ; ! ?</code> as delimiters to separate them.</li>
   <li><strong>Upload file with marker genes:</strong> provide a <code>.txt</code>, <code>.csv</code>, <code>.xlsx</code>, or <code>.tsv</code> file containing a list of marker genes. Use <code>| , : ; ! ?</code> as delimiters to separate them. Both the markers entered in the \"Insert marker genes\" box and those in the uploaded file will be considered.</li>
   <li><strong>Condition:</strong> healthy or multiple diseases.</li>
-  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <strong>'Tissue aware'</strong> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, selected tissues will be combined and analyzed together.</li>
+  <li><strong>Tissue:</strong> select one or multiple tissues from the list. When the <strong>'Tissue aware'</strong> button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, the selected tissues will be combined and analyzed together.</li>
 </ul>
 "
 
@@ -1232,7 +1243,20 @@ server <- function(input, output, session) {
     }
   })
 
+  
+  
+  toListen_diseaseM <- reactive({
+    list(input$speciesM,  tableInputComplete_notissue())
+  })
 
+  observeEvent(toListen_diseaseM(),{
+    updatePickerInput(session,'diseaseM', selected=tableInputComplete_notissue()$DO_diseasetype,
+                      choices=unique(tableInputComplete_notissue()$DO_diseasetype),
+                      option=list(`actions-box` = TRUE,style="box-celltypes"),
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(tableInputComplete_notissue()$DO_diseasetype))))
+  })
+  
+  
 
   toListen_tissueM <- reactive({
     list(input$speciesM, input$diseaseM, tableInputComplete_notissue())
@@ -1470,7 +1494,7 @@ server <- function(input, output, session) {
 
   observeEvent(input$intInfo,{
     showModal(modalDialog(
-      title = "Table Option Information",
+      title = "Inputs information",
       HTML("Upload a custom set of marker genes to be integrated with the Cell Marker Accordion database, either healthy or disease.
       Click the  <strong>'InputFile'</strong> button to access details on the input file format. <br>
       <strong> Select the Accordion database </strong> <br> <ul><li><strong>Healthy</strong>: integrate a custom set with the healthy Accordion database</li><li> <strong>Disease</strong>: integrate a custom set with the disease Accordion database</li></ul>
@@ -1698,7 +1722,7 @@ server <- function(input, output, session) {
           user_inputfile[,marker_type:="positive"]
         }
         if(!"resource" %in% colnames(user_inputfile)){
-          showNotification("\"resource\" column not found. By default a unique resource will be associated to possible recurrence markers.", type = "warning", duration = 5)
+          showNotification("\"resource\" column not found. By default a unique resource will be associated with possible recurrence markers.", type = "warning", duration = 5)
           user_inputfile[,resource:="custom_set"]
         }
         user_inputfile[,original_celltype:=CL_celltype]
@@ -1785,7 +1809,7 @@ server <- function(input, output, session) {
           user_inputfile[,marker_type:="positive"]
         }
         if(!"resource" %in% colnames(user_inputfile)){
-          showNotification("\"resource\" column not found. By default a unique resource will be associated to possible recurrence markers.", type = "warning", duration = 5)
+          showNotification("\"resource\" column not found. By default a unique resource will be associated with possible recurrence markers.", type = "warning", duration = 5)
           user_inputfile[,resource:="custom_set"]
         }
 
@@ -2104,7 +2128,7 @@ server <- function(input, output, session) {
       In addition:  <br>
       <strong> Merged subtypes </strong>:  if subtypes of at least one input cell type is displayed
       <br> <ul><li> yes: merge together the subtypes gene markers and assign them to selected cell type </li><li> no: merge of subtypes is not performed </li></ul>
-      <strong> Table type </strong> <br> <ul><li><strong>simple</strong>: retrieves a compact and easy table format</li><li> <strong>complete</strong>: additional information are added</li></ul>")
+             <strong> Table type </strong> <br> <ul><li>simple: provides a compact table with fewer columns for easier viewing </li><li> complete: displays the full database, including detailed mapping relationships for diseases, tissues, and cell types to the Disease Ontology, Uberon Ontology, Cell Ontology and NCIT.</li></ul>")
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
@@ -2489,8 +2513,9 @@ server <- function(input, output, session) {
       HTML("
   Users can upload a file containing markers for each cluster or related to a single entity, and the 
   <strong>Cell Marker Accordion</strong> will retrieve the respective cell type with the highest correlation.<br>
-<strong>IMPORTANT!</strong> Annotation is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion algorithm, 
-we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordion\" target=\"_blank\">R package</a>.<br>
+  <br>
+<strong>IMPORTANT! Annotation is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion algorithm, 
+we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordion\" target=\"_blank\">R package</a></strong>.<br>
 <p>
 <br>
   Click the  <strong>'InputFile'</strong> button to access details on the input file format. <br>
@@ -2518,7 +2543,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     <strong>Cell type:</strong> select one or multiple cell types from the list. If no cell type is selected, the annotation will be performed using all cell types.
   </li>
   <li>
-    <strong>ECs (evidence consistency ccore):</strong> measures the agreement of different annotation sources. 
+    <strong>ECs (evidence consistency score):</strong> measures the agreement of different annotation sources. 
     Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an ECs &ge; the selected value.
   </li>
   <li>
