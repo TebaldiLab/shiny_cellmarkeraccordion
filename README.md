@@ -4,7 +4,7 @@ A Web tool for single-cell and spatial RNA-seq cell types annotation: https://rd
 
 A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
 To address this issue, we developed Cell Marker Accordion, a user-friendly platform that includes both an [R package](https://github.com/TebaldiLab/cellmarkeraccordion) and a [Shiny app](https://rdds.it/CellMarkerAccordion/), designed as a harmonization framework. By leveraging filtering, standardization, and integration, it systematically refines the contributions of multiple gene marker databases and cell sorting marker sources, distinguishing positive from negative markers. This process ensures a more consistent and reliable annotation, ultimately enhancing the clarity and interpretability of single-cell and spatial datasets. 
-The Cell Marker Accordion database includes thousand of markers associated with both human and mouse cell types from different tissues, in physiological and pathological conditions. 
+The Cell Marker Accordion database includes thousands of markers associated with both human and mouse cell types from different tissues, in physiological and pathological conditions. 
 The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers. Additionally, users can upload custom gene sets to integrate with the database or identify the closest associated cell type—all without any programming skills required.
 
 ## Citing the Cell Marker Accordion Shiny web app
@@ -65,7 +65,7 @@ The Cell Marker Accordion web interface allows to easily:  <br />
 Inputs: 
 - Select species: currently Human and/or Mouse.
 - Condition: healthy or multiple diseases.
-- Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
+- Tissue: select one or multiple tissues from the list. When the *Tissue aware* button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise, the tissues selected will be combined and analyzed together.
 - Cell type: select one or multiple cell types from the list.
 - See subtypes of: displays the list of cell type descendants of the previously selected cell types. Users can select one or more subtypes to visualize in the Ontology tree and the output table.
 
@@ -76,24 +76,24 @@ Outputs:
 
 <img src= https://github.com/user-attachments/assets/a61cdc52-d5a3-45b3-ac1d-bfcf0a072a60 style="width:20%; height:20%;"> <br />  <br />
 
-- Interactive and downloadable table with lists of markers genes associated to the input cell types
+- Interactive and downloadable table with lists of markers genes associated with the input cell types
 
 <img src= https://github.com/user-attachments/assets/7a81788a-f3e6-4410-bbb6-1165e54de993  style="width:100%; height:100%;"> <br />
 
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> <strong>Search and download lists of cell types associate with input marker genes across different tissues in health and disease.</strong> <br />
+### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> <strong>Search and download lists of cell types associated with input marker genes across different tissues in health and disease.</strong> <br />
 
 <strong>Inputs: </strong> 
 - Select species: currently Human and/or Mouse.
 - Insert marker genes: enter a list of marker genes, using | , : ; ! ? as delimiters to separate them.
 - Upload file with marker genes: provide a .txt, .csv, .xlsx, or .tsv file containing a list of marker genes. Use | , : ; ! ? as delimiters to separate them. Both the markers entered in the "Insert marker genes" box and those in the uploaded file will be considered. 
 - Condition: healthy or multiple diseases.
-- Tissue: select one or multiple tissues from the list. When the tissue_aware button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
+- Tissue: select one or multiple tissues from the list. When the *Tissue aware* button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
 
 <img src=https://github.com/user-attachments/assets/23399d3f-8a45-41ed-ba81-8890abe51aa9 style="width:30%; height:30%;"> <br />
 
 <strong>Outputs:</strong>
 - Hierarchies of input cell types following the Cell Ontology structure
-- Interactive and downloadable table with lists of cell types associated to the input markers
+- Interactive and downloadable table with lists of cell types associated with the input markers
 
 ### <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
 
@@ -284,7 +284,7 @@ In particular:
 
 ## Additionally, in all sections users can easily:
 
-### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both searches options.</strong>  <br /> 
+### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.</strong>  <br /> 
 
 Users can also explore the subtypes of a selected cell type.
 For example, to view all subtypes of the monocyte population:
