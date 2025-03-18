@@ -298,7 +298,7 @@ For example, to view all subtypes of the monocyte population:
 
 <img src= https://github.com/user-attachments/assets/753224d1-d0dd-4463-8691-ab201a68693c style="width:50%; height:50%;"> <br />
 
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores) </strong>.  <br />
+### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores)</strong>.  <br />
 <strong>Filters:</strong>
 - ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes with an evidence consistency score >= the selected value.
 - SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes with a specificity score >= the selected value.
