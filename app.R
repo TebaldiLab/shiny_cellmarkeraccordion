@@ -25,7 +25,7 @@ library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -181,9 +181,7 @@ ui <- dashboardPage(
   }
 ")),
 
-        fluidRow(column = 12, sliderInput("zoom", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
-                  titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
                   fluidRow(column(12,   downloadButton("save_plot", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_format", "", choices = c("PNG", "PDF"), inline=TRUE),
                                                                                                    
                  tags$style(HTML("
@@ -194,6 +192,13 @@ ui <- dashboardPage(
              margin-top: -20px; /* Reduces space between elements */
            }
          "))),  # Format selection),
+                 column(12, titlePanel(
+                   shiny::span(
+                     style = "display: flex; align-items: center; justify-content: center; margin-top: -50px;",
+                     icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
+                     p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
+                   )
+                 )),  column(12, sliderInput("zoom", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
                     column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplot')))),
                   #grVizOutput("plot1"),
                   tags$style(
@@ -287,8 +292,7 @@ ui <- dashboardPage(
                   
                   
                   
-                  fluidRow(column = 12, sliderInput("zoomM", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
-                  
+
                   
                 
                   tags$head(tags$style(HTML('
@@ -296,9 +300,7 @@ ui <- dashboardPage(
             background-color: #ad000019;
             font-size: 16px;
         }'))),
-                  #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
-                  titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  
+
                   fluidRow(column(12,   downloadButton("save_plotM", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatM", "", choices = c("PNG", "PDF"), inline=TRUE),
                                                                                                                                                   
                                                                                                                                                   tags$style(HTML("
@@ -308,8 +310,16 @@ ui <- dashboardPage(
            #file_formatM {
              margin-top: -20px; /* Reduces space between elements */
            }
-         ")))),
-                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotM')))),
+         "))),
+                           # Format selection),
+                           column(12, titlePanel(
+                             shiny::span(
+                               style = "display: flex; align-items: center; justify-content: center; margin-top: -50px;",
+                               icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
+                               p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
+                             )
+                           )),  column(12, sliderInput("zoomM", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                           column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotM')))),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testM {
@@ -522,11 +532,7 @@ ui <- dashboardPage(
                                                     br(),
                                                     pickerInput('descendantsofInt', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
                                                     checkboxInput("cellidInt","Plot celltype_ID",value=FALSE)))),
-                  
-                  
-                  fluidRow(column = 12, sliderInput("zoomInt", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
-                  
-                  
+         
                           
                         
                   tags$head(tags$style(HTML('
@@ -534,9 +540,7 @@ ui <- dashboardPage(
             background-color: #ad000019;
             font-size: 16px;
         }'))),
-                  #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
-                  titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  
+
                   fluidRow(column(12,   downloadButton("save_plotInt", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatInt", "", choices = c("PNG", "PDF"), inline=TRUE),
                                                                                                                                                    
                                                                                                                                                    tags$style(HTML("
@@ -546,9 +550,16 @@ ui <- dashboardPage(
            #file_formatInt {
              margin-top: -20px; /* Reduces space between elements */
            }
-         ")))),
+         "))),   
+                           column(12, titlePanel(
+                             shiny::span(
+                               style = "display: flex; align-items: center; justify-content: center; margin-top: -50px;",
+                               icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
+                               p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
+                             )
+                           )),  column(12, sliderInput("zoomInt", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                           column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotInt')))),
                   
-                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotInt')))),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testInt {
@@ -728,12 +739,9 @@ ui <- dashboardPage(
                   br(),
           
 
-                  fluidRow(column = 12, sliderInput("zoomA", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
-
                     checkboxInput("cellidA","Plot celltype_ID",value=FALSE),
                     #Ontology plot
-                    titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                    
+
                   fluidRow(column(12,   downloadButton("save_plotA", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatA", "", choices = c("PNG", "PDF"), inline=TRUE),
                                                                                                                                                      
                                                                                                                                                      tags$style(HTML("
@@ -743,8 +751,16 @@ ui <- dashboardPage(
            #file_formatA {
              margin-top: -20px; /* Reduces space between elements */
            }
-         ")))),
-                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotA')))),
+         "))),
+                           column(12, titlePanel(
+                             shiny::span(
+                               style = "display: flex; align-items: center; justify-content: center; margin-top: -50px;",
+                               icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
+                               p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
+                             )
+                           )),  column(12, sliderInput("zoomA", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                           column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotA')))),
+                  
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testA {
