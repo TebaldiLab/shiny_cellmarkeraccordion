@@ -121,7 +121,7 @@ Outputs:
 <strong>Outputs</strong>
 - Interactive and downloadable integrated table  
 
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong> Annotate cell populations in health and disease.</strong>  <br />
+### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong>  Perform cell type marker enrichment analysis across tissues in health and disease. </strong>  <br />
 User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieve the respective cell type with the highest correlation. <br>
 <br>
 <strong> IMPORTANT! Annotation is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
