@@ -26,7 +26,7 @@ library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -118,25 +118,92 @@ ui <- dashboardPage(
                 br(),
                 br(),
                 tags$style("@import url('https://use.fontawesome.com/releases/v6.1.1/css/all.css');"),
-                HTML("<p style='text-align: justify;'>
-            <h><strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial omics data.
+                HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
+	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'>
+            <strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial omics data.
             Our framework includes both a <strong>Shiny app</strong> and an
             <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.
             <br><br>
             The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers.
             Specifically, it enables:
-        </p></h>")
+        </p>")
               ),
 
-              titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes associate with input cell types across different tissues in health and disease. </h>")))),
-              titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h>  Search and download lists of cell types associated with input marker genes across different tissues in health and disease. </h>")))),
-              titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database. </h>")))),
-              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome",style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Perform cell type marker enrichment analysis across tissues in health and disease. </h>")))),
-              HTML("<p style='text-align: left; margin-left:-30px;'> <h>Additionally, in all sections users can easily: </p></h>"),
+              titlePanel(
+                div(
+                  style = "display: flex; align-items: center;font-size: 24px;
+	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+                  icon("circle-notch", class = "about-icon fa-fw", lib = "font-awesome"),
+                  p(
+                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+                    HTML("Search and download lists of marker genes associated with input cell types across different tissues in health and disease.")
+                  )
+                )
+              ),
               
+              titlePanel(
+                div(
+                  style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
+	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+                  icon("dna", class = "about-icon fa-fw", lib = "font-awesome"),
+                  p(
+                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+                    HTML("Search and download lists of cell types associated with input marker genes across different tissues in health and disease.")
+                  )
+                )
+              ),
+              titlePanel(
+                div(
+                  style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
+	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+                  icon("gear", class = "about-icon fa-fw", lib = "font-awesome"),
+                  p(
+                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+                    HTML("Integrate custom set of marker genes with the Cell Marker Accordion database.")
+                  )
+                )
+              ),
+              titlePanel(
+                div(
+                  style = "display: flex; align-items: center;font-size: 24px; margin-top: -20px;
+	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+                  icon("stack-overflow", class = "about-icon fa-fw", lib = "font-awesome"),
+                  p(
+                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black;",
+                    HTML("Perform cell type marker enrichment analysis across tissues in health and disease. ")
+                  )
+                )
+              ),
+              
+            br(),  
+            HTML("<p style='text-align: justify; margin-left:-30px;'> <h>Additionally, in all sections users can easily: </p></h>"),
+            
+            titlePanel(
+              div(
+                style = "display: flex; align-items: center;font-size: 24px;
+	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+                icon("sitemap", class = "about-icon fa-fw", lib = "font-awesome"),
+                p(
+                  style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+                  HTML("Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.")
+                )
+              )
+            ),
+            
+            titlePanel(
+              div(
+                style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
+	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+                icon("arrow-down-short-wide", class = "about-icon fa-fw", lib = "font-awesome"),
+                p(
+                  style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+                  HTML("Rank and select marker genes by their evidence consistency and specificity scores.")
+                )
+              )
+            )
+            
 
-              titlePanel(shiny::span((icon("sitemap",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options. </h>")))),
-              titlePanel(shiny::span((icon("arrow-down-short-wide",class ="about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify; margin-top:-30px;", HTML("<h> Rank and select marker genes by their evidence consistency and specificity scores. </h>"))))),
+            ),
 
 
 
