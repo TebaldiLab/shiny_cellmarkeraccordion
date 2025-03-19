@@ -2,6 +2,7 @@ library(shinydashboard)
 library(shiny)
 library(stringr)
 library(DiagrammeR)
+library(DiagrammeRsvg)
 library(igraph)
 library(shinyWidgets)
 library(ontologyIndex)
@@ -21,11 +22,10 @@ library(tidyverse)
 library(data.table)
 library(shinyjs)
 library(rstudioapi)
-
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -82,8 +82,8 @@ ui <- dashboardPage(
                                menuItem("Homepage", tabName = "dashboard", icon = icon("home")),
                                menuItem("Search by tissue and cell types", tabName = "celltype_h", icon = icon("circle-notch")),
                                menuItem("Search by marker genes", tabName = "marker_h", icon = icon("dna")),
-                               menuItem(HTML("Custom markers integration"), tabName = "integration", icon = icon("gear")),
-                               menuItem("Cell types annotation", tabName = "anno", icon = icon("stack-overflow")),
+                               menuItem("Custom markers integration", tabName = "integration", icon = icon("gear")),
+                               menuItem("Marker enrichment analysis", tabName = "anno", icon = icon("stack-overflow")),
 
                                # Centered Download Button
                                div(style = "display: flex; justify-content: center; margin-top: 20px;",
@@ -130,7 +130,7 @@ ui <- dashboardPage(
               titlePanel(shiny::span((icon("circle-notch",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h>  Search and download lists of marker genes associate with input cell types across different tissues in health and disease. </h>")))),
               titlePanel(shiny::span((icon("dna",class = "about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h>  Search and download lists of cell types associated with input marker genes across different tissues in health and disease. </h>")))),
               titlePanel(shiny::span((icon("gear",class ="about-icon fa-pull-left", lib = "font-awesome", style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Integrate custom set of marker genes with the Cell Marker Accordion database. </h>")))),
-              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome",style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Annotate cell populations in health and disease. </h>")))),
+              titlePanel(shiny::span((icon("stack-overflow",class ="about-icon fa-pull-left", lib = "font-awesome",style= "margin-top:-30px;")), p(style="text-align: justify;margin-top:-30px;", HTML("<h> Perform cell type marker enrichment analysis across tissues in health and disease. </h>")))),
               HTML("<p style='text-align: left; margin-left:-30px;'> <h>Additionally, in all sections users can easily: </p></h>"),
               
 
@@ -165,11 +165,11 @@ ui <- dashboardPage(
                                                                          list("Human","Mouse"),selected = c("Human"),inline=TRUE),
                                                     br(),
                                                     #pickerInput('disease', 'Hematologic disorder', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
-                                                    pickerInput('disease', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
-                                                    pickerInput('tissue', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    pickerInput('disease', 'Condition',  choices= NULL, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    pickerInput('tissue', 'Tissue',  choices= NULL,selected="blood", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     #checkboxInput("collapse_tissue","",value=FALSE))),
                                                     checkboxInput("tissue_aware","Tissue aware",value=TRUE),
-                                                    pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE,selected=celltype_list, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    pickerInput('celltype', 'Cell type', choices= NULL ,multiple=TRUE,selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"), options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                                                                         br(),
                                                     pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
                                                     checkboxInput("cellid","Plot celltype_ID",value=FALSE)))),
@@ -193,7 +193,17 @@ ui <- dashboardPage(
         }'))),
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplot')))),
+                  fluidRow(column(12,   downloadButton("save_plot", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_format", "", choices = c("PNG", "PDF"), inline=TRUE),
+                                                                                                   
+                 tags$style(HTML("
+                #file_format .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #file_format {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         "))),  # Format selection),
+                    column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplot')))),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#test {
@@ -278,8 +288,8 @@ ui <- dashboardPage(
                                                     textInput("marker", "Insert marker genes", value = "OLIG2", width = NULL, placeholder = NULL),
                                                     fileInput("markerfile", "Upload file with marker genes ",buttonLabel=list(icon("upload")),
                                                               multiple = FALSE),
-                                                    pickerInput('diseaseM', 'Condition', selected = "healthy", choices= disease_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
-                                                    pickerInput('tissueM', 'Tissue',  choices= NULL,selected=tissue_list, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    pickerInput('diseaseM', 'Condition', selected = "healthy", choices= NULL, multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
+                                                    pickerInput('tissueM', 'Tissue',  choices= NULL,selected="brain", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                                                     checkboxInput("tissue_awareM","Tissue aware",value=TRUE),
 
                                                     checkboxInput("cellidM","Plot celltype_ID",value=FALSE)))),
@@ -300,6 +310,17 @@ ui <- dashboardPage(
         }'))),
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
+                  
+                  fluidRow(column(12,   downloadButton("save_plotM", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatM", "", choices = c("PNG", "PDF"), inline=TRUE),
+                                                                                                                                                  
+                                                                                                                                                  tags$style(HTML("
+                #file_formatM .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #file_formatM {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         ")))),
                   fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotM')))),
                   #grVizOutput("plot1"),
                   tags$style(
@@ -530,6 +551,18 @@ ui <- dashboardPage(
         }'))),
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
+                  
+                  fluidRow(column(12,   downloadButton("save_plotInt", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatInt", "", choices = c("PNG", "PDF"), inline=TRUE),
+                                                                                                                                                   
+                                                                                                                                                   tags$style(HTML("
+                #file_formatInt .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #file_formatInt {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         ")))),
+                  
                   fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotInt')))),
                   #grVizOutput("plot1"),
                   tags$style(
@@ -586,12 +619,12 @@ ui <- dashboardPage(
                   br()
               )),
 
-      # Automatic annotation with Fisher test-----
+      # enrichment with Fisher test-----
 
       tabItem(tabName="anno",
               tags$style(css),
               tags$h2(
-                "Annotate cell populations in different tissues in health and disease",
+                "Perform cell type marker enrichment analysis across tissues in health and disease",
                 style = "font-weight: bold; text-align: center;"
               ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",
@@ -604,7 +637,7 @@ ui <- dashboardPage(
                                                         style = 'margin-top: 5px; margin-bottom: 5px;'
                                                       )
                                                     ),
-                                                    splitLayout(cellWidths = c("75%", "25%"),fileInput("clusterfile", "Load file to annotate",buttonLabel=list(icon("upload")),multiple = FALSE),
+                                                    splitLayout(cellWidths = c("75%", "25%"),fileInput("clusterfile", "Load file",buttonLabel=list(icon("upload")),multiple = FALSE),
                                                                 actionButton('userclusterfileinfo', 'InputFile',icon= icon("file-circle-question"), align="left", style='margin-top:30px; margin-bottom:0px')),
                                                     
                                                     fluidRow(column(width=6,radioButtons("nmarkerpos", HTML("Specificy the number of <em>positive</em> genes to keep for each cluster"), choices = nmarker_values)),
@@ -681,7 +714,7 @@ ui <- dashboardPage(
 
                   column(6,div(img(src = "Logo.png",height="40%", width="40%"),style="text-align: center;"),
                          br(),
-                         actionButton("button", HTML("<strong>Click to annotate!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
+                         actionButton("button", HTML("<strong>Start enrichment!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
 
                   conditionalPanel(
                     condition= "input.button > 0",           
@@ -722,7 +755,18 @@ ui <- dashboardPage(
                     checkboxInput("cellidA","Plot celltype_ID",value=FALSE),
                     #Ontology plot
                     titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
-                    fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotA')))),
+                    
+                  fluidRow(column(12,   downloadButton("save_plotA", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatA", "", choices = c("PNG", "PDF"), inline=TRUE),
+                                                                                                                                                     
+                                                                                                                                                     tags$style(HTML("
+                #file_formatA .shiny-options-group label {
+             font-size: 12px !important;
+           }
+           #file_formatA {
+             margin-top: -20px; /* Reduces space between elements */
+           }
+         ")))),
+                  fluidRow(column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotA')))),
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testA {
@@ -829,6 +873,19 @@ server <- function(input, output, session) {
     ))
   })
 
+  
+  toListen_disease <- reactive({
+    list(input$species)
+  })
+  
+  observeEvent(toListen_disease(),{
+    updatePickerInput(session,'disease', selected="healthy",
+                      choices=unique(accordion_complete[species %in% input$species]$DO_diseasetype),
+                      option=list(`actions-box` = TRUE,style="box-celltypes"),
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete[species %in% input$species]$DO_diseasetype))))
+  })
+  
+  
   markerTableComplete <- reactive({
     validate(need(length(input$disease) >=1, "Please select at least one condition"))
     accordion_complete<-accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]
@@ -837,14 +894,14 @@ server <- function(input, output, session) {
   })
 
   toListen_tissue <- reactive({
-    list(input$disease,input$species, input$disease)
+    list(input$disease,input$species)
   })
 
   observeEvent(toListen_tissue(),{
-    updatePickerInput(session,'tissue', selected=tissue_list,
+    updatePickerInput(session,'tissue', selected="blood",
                       choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]$Uberon_tissue),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete$Uberon_tissue))))
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]$Uberon_tissue))))
   })
 
   toListen <- reactive({
@@ -855,7 +912,7 @@ server <- function(input, output, session) {
     updatePickerInput(session,'celltype', selected=c("hematopoietic stem cell (Hs, Mm)", "hematopoietic multipotent progenitor cell (Hs, Mm)","hematopoietic lineage restricted progenitor cell (Hs, Mm)"),
                       choices=unique(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species & Uberon_tissue %in% input$tissue]$celltype_species),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete$celltype))))
+                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species & Uberon_tissue %in% input$tissue]$celltype))))
   })
 
 
@@ -863,13 +920,19 @@ server <- function(input, output, session) {
     if("healthy" %in% input$disease){
       onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
       node<-as.data.table(unique(markerTableComplete()[celltype_species %in% input$celltype & Uberon_tissue %in% input$tissue & DO_diseasetype=="healthy"]$celltype))
+      node_present<-V(onto_igraph)$name
+      node_present <- gsub("CL:\\d+", "", gsub("\n", " ", node_present))
+      # Trim extra spaces
+      node_present <- trimws(node_present)      
       dt<- data.table(celltype=character(), distance=numeric())
       for (i in 1:nrow(node)){
+        if (node[i]$V1 %in% node_present) {
         distan<-max(eccentricity(onto_igraph, vids = node[i]$V1, mode = c("out")))
         data<-as.data.table(t(c(node[i]$V1,distan)))
         colnames(data)<-c("celltype","distance")
         dt<-rbind(dt,data)
-      }
+        }
+      }  
       as.data.table(dt)
     } else{
       data.table(celltype="", distance =0)
@@ -975,8 +1038,10 @@ server <- function(input, output, session) {
   })
 
   Plot <- reactive({
+    
     if(!is.null(markerTablePlot())){
       healthy_ct<-unique(markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID)
+    
       if("healthy" %in% input$disease){
         if (length(healthy_ct) > 1 | length(input$descendantsof)>=1){
           ontosubplot<-onto_plot2(cell_onto,healthy_ct,cex=0.8)
@@ -1004,25 +1069,79 @@ server <- function(input, output, session) {
   })
 
 
-  output$plot1 <- renderGrViz({
-    if(!is.null(markerTablePlot())){
-      healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
-      if(length(healthy_ct>=1)){
-        if(length(input$descendantsof)>=1){
-          hierac_plot1_desc(markerTableComplete(),Plot(),healthy_ct,descendantTable(),input$cellid, input$disease)
-        }else{
-          hierac_plot1(markerTableComplete(),Plot(),healthy_ct,input$cellid, input$disease)
+  # Reactive expression to store the Graphviz plot
+  graphPlot <- reactive({
+    if(!is.null(markerTablePlot())) {
+      healthy_ct <- markerTablePlot()[DO_diseasetype == "healthy"]$celltype_ID
+      if (length(healthy_ct) >= 1) {
+        if (length(input$descendantsof) >= 1) {
+          return(hierac_plot1_desc(markerTableComplete(), Plot(), healthy_ct, descendantTable(), input$cellid, input$disease))
+        } else {
+          return(hierac_plot1(markerTableComplete(), Plot(), healthy_ct, input$cellid, input$disease))
         }
       }
-    }
+    } else {
+    return(NULL)  #Return NULL if no plot is available
+    }#
   })
+  
+  output$plot1 <- renderGrViz({
+    graphPlot()  # Use the reactive graphPlot()
+  })
+  
+  # output$plot1 <- renderGrViz({
+  #   if(!is.null(markerTablePlot())){
+  #     healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
+  #     if(length(healthy_ct>=1)){
+  #       if(length(input$descendantsof)>=1){
+  #         hierac_plot1_desc(markerTableComplete(),Plot(),healthy_ct,descendantTable(),input$cellid, input$disease)
+  #       }else{
+  #         hierac_plot1(markerTableComplete(),Plot(),healthy_ct,input$cellid, input$disease)
+  #       }
+  #     }
+  #   }
+  # })
 
   output$scalableplot <- renderUI({
     tagList(
       div(grVizOutput('plot1',height = input$height, width = input$width)))
   })
 
+  
+  output$save_plot <- downloadHandler(
+    filename = function() {
+      if (input$file_format == "PNG") {
+      "Ontology_plot.png"
+      } else if(input$file_format == "PDF") {
+        "Ontology_plot.png"
+      }
+    },
+    content = function(file) {
+      grViz_obj <- graphPlot()  # Use the stored reactive Graphviz plot
+      
+      if (is.null(grViz_obj)) {
+        stop("No plot available to save.")
+      }
+      
+      svg_file <- tempfile(fileext = ".svg")
+      
+      # Convert Graphviz to SVG and save
+      svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
+      writeLines(svg_content, svg_file)  # Write to temporary SVG file
+      
+      # Convert SVG to PNG with specified width & height
+      if (input$file_format == "PNG") {
+      suppressWarnings(
+        rsvg_png(svg_file, file, width = input$width, height = input$height)
+      
+      )} else if(input$file_format == "PDF"){
+        suppressWarnings(
+        rsvg_pdf(svg_file, file, width = input$width / 100, height = input$height / 100) 
+        )}
+    }
+  )
 
+  
 
   click_plot<-reactive ({
     click_node(accordion_complete,ontology_celltype,Plot(),markerTableComplete(),input$cellid, ontology_def, input$disease)
@@ -1188,12 +1307,12 @@ server <- function(input, output, session) {
       marker_dt<-tolower(accordion_complete$marker)
       validate(need(marker_input %in% marker_dt, "Please insert valid marker genes!"))
       gene_marker<-accordion_complete[tolower(marker) %in% tolower(marker_vec$marker_gene)]
-      gene_marker<-gene_marker[species %in% input$speciesM]
+      #gene_marker<-gene_marker[species %in% input$speciesM]
       gene_marker
-      if(length(input$diseaseM>0)){
-        gene_marker<- gene_marker[DO_diseasetype %in% input$diseaseM]
-        gene_marker
-      }
+      # if(length(input$diseaseM>0)){
+      #   gene_marker<- gene_marker[DO_diseasetype %in% input$diseaseM]
+      #   gene_marker
+      # }
 
     }
   })
@@ -1206,11 +1325,11 @@ server <- function(input, output, session) {
     marker_vec<-as.data.frame(unlist(strsplit(mark, "[\\|, \t\n\r;:]+")))
     colnames(marker_vec)<-"marker_gene"
     table_marker_file<-accordion_complete[tolower(marker) %in% tolower(marker_vec$marker_gene)]
-    table_marker_file <- table_marker_file[species %in% input$speciesM]
-    if(length(input$diseaseM>0)){
-      table_marker_file<- table_marker_file[DO_diseasetype %in% input$diseaseM]
-
-    }
+    #table_marker_file <- table_marker_file[species %in% input$speciesM]
+    # if(length(input$diseaseM>0)){
+    #   table_marker_file<- table_marker_file[DO_diseasetype %in% input$diseaseM]
+    # 
+    # }
     table_marker_file
   })
 
@@ -1219,63 +1338,79 @@ server <- function(input, output, session) {
   #2. Marker add through a marker file
   #3. If both marker in the box and file marker are present add together
 
-  tableInputComplete_notissue<-reactive({
-    if(nchar(input$marker)>1 & (!is.null(input$markerfile))){
-      table_tot<-rbind(tableMarkerInput(),tableFileMarker())
-      if(length(input$diseaseM)>0){
-        table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-
-      }
-      table_tot
-    }else if(nchar(input$marker)>1  & is.null(input$markerfile)){
-      table_tot<-tableMarkerInput()
-      if(length(input$diseaseM)>0){
-        table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-      }
-      table_tot
-    }else if (nchar(input$marker)==0 & !is.null(input$markerfile)) {
-      table_tot<-tableFileMarker()
-      if(length(input$diseaseM)>0){
-        table_tot<-table_tot[DO_diseasetype %in% input$diseaseM]
-
-      }
-      table_tot
+  tableInputComplete_nodis_notissue <- reactive({
+    req(input$speciesM)  # Ensure input$speciesM exists
+    
+    if (nchar(input$marker) > 1 & !is.null(input$markerfile)) {
+      table_tot <- rbind(tableMarkerInput(), tableFileMarker())
+    } else if (nchar(input$marker) > 1 & is.null(input$markerfile)) {
+      table_tot <- tableMarkerInput()
+    } else if (nchar(input$marker) == 0 & !is.null(input$markerfile)) {
+      table_tot <- tableFileMarker()
+    } else {
+      return(NULL)  # Return NULL if none of the conditions match
     }
+    
+    table_tot <- table_tot[species %in% input$speciesM]
+    
+    return(table_tot)
   })
-
-  
   
   toListen_diseaseM <- reactive({
-    list(input$speciesM,  tableInputComplete_notissue())
-  })
-
-  observeEvent(toListen_diseaseM(),{
-    updatePickerInput(session,'diseaseM', selected=tableInputComplete_notissue()$DO_diseasetype,
-                      choices=unique(tableInputComplete_notissue()$DO_diseasetype),
-                      option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(tableInputComplete_notissue()$DO_diseasetype))))
+    list(input$speciesM, tableInputComplete_nodis_notissue())
   })
   
+  observeEvent(toListen_diseaseM(), {
+    if (is.null(tableInputComplete_nodis_notissue())) {
+      # Set pickerInput to empty when table is NULL
+      updatePickerInput(session, 'diseaseM',  selected = character(0), choices = character(0))
+    } else {
+      updatePickerInput(
+        session,
+        'diseaseM',
+        selected = unique(tableInputComplete_nodis_notissue()$DO_diseasetype),
+        choices = unique(tableInputComplete_nodis_notissue()$DO_diseasetype),
+        options = list(`actions-box` = TRUE, style = "box-celltypes"),
+        choicesOpt = list(style = rep("font-size: 18px; line-height: 1.6;", 
+                                      uniqueN(tableInputComplete_nodis_notissue()$DO_diseasetype)))
+      )
+    }
+  })
   
-
+  tableInputComplete_notissue <- reactive({
+    req(tableInputComplete_nodis_notissue(), input$diseaseM)
+    table_filtered <- tableInputComplete_nodis_notissue()[DO_diseasetype %in% input$diseaseM]
+    return(table_filtered)
+  })
+  
   toListen_tissueM <- reactive({
-    list(input$speciesM, input$diseaseM, tableInputComplete_notissue())
+    list(input$speciesM, input$diseaseM, tableInputComplete_nodis_notissue())
   })
-
-  observeEvent(toListen_tissueM(),{
-    updatePickerInput(session,'tissueM',selected=tableInputComplete_notissue()$Uberon_tissue,
-                      choices=unique(tableInputComplete_notissue()$Uberon_tissue),
-                      option=list(`actions-box` = TRUE,style="box-celltypes"),
-                      choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(tableInputComplete_notissue()$Uberon_tissue))))
+  
+  observeEvent(toListen_tissueM(), {
+    if (is.null(tableInputComplete_nodis_notissue())) {
+      # Set pickerInput to empty when table is NULL
+      updatePickerInput(session, 'tissueM', selected = character(0), choices = character(0))
+    } else {
+      updatePickerInput(
+        session,
+        'tissueM',
+        selected = unique(tableInputComplete_notissue()$Uberon_tissue),
+        choices = unique(tableInputComplete_notissue()$Uberon_tissue),
+        options = list(`actions-box` = TRUE, style = "box-celltypes"),
+        choicesOpt = list(style = rep("font-size: 18px; line-height: 1.6;", 
+                                      uniqueN(tableInputComplete_notissue()$Uberon_tissue)))
+      )
+    }
   })
-
-
-  tableInputComplete <- reactive ({
-    if(!is.null(tableInputComplete_notissue())){
-      if(nrow(tableInputComplete_notissue())){
-
-      tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
-      }
+  tableInputComplete <- reactive({
+    req(tableInputComplete_notissue(), input$tissueM)
+    
+    if (nrow(tableInputComplete_notissue()) > 0) {
+      table_final <- tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
+      return(table_final)
+    } else {
+      return(NULL)
     }
   })
 
@@ -1308,26 +1443,67 @@ server <- function(input, output, session) {
   })
 
 
-
-
-  output$plot1M <- renderGrViz({
+  
+  # Reactive expression to store the Graphviz plot
+  graphPlotM <- reactive({
     if(!is.null(tableInputComplete())){
-      if(nrow(tableInputComplete())){
-
-      healthy_ct<-tableInputComplete()[DO_diseasetype=="healthy"]$celltype_ID
-      if(length(healthy_ct>=1)){
-        hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM)
+      if(nrow(tableInputComplete())>0){
+        healthy_ct<-tableInputComplete()[DO_diseasetype=="healthy"]$celltype_ID
+        if(length(healthy_ct>=1)){
+          return(hierac_plot2(accordion_complete, PlotM(), tableInputComplete(),input$cellidM, input$diseaseM))
+        }
       }
-    }
+    } else{
+      return(NULL)
     }
   })
-
+  
+  output$plot1M <- renderGrViz({
+    graphPlotM()  # Use the reactive graphPlot()
+  })
+  
+  
   output$scalableplotM <- renderUI({
     tagList(
       div(grVizOutput('plot1M',height = input$heightM, width = input$widthM)))
   })
-
-
+  
+  
+  output$save_plotM <- downloadHandler(
+    filename = function() {
+      if (input$file_formatM == "PNG") {
+        "Ontology_plot.png"
+      } else if(input$file_formatM == "PDF") {
+        "Ontology_plot.png"
+      }
+    },
+    content = function(file) {
+      grViz_obj <- graphPlotM()  # Use the stored reactive Graphviz plot
+      
+      if (is.null(grViz_obj)) {
+        stop("No plot available to save.")
+      }
+      
+      svg_file <- tempfile(fileext = ".svg")
+      
+      # Convert Graphviz to SVG and save
+      svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
+      writeLines(svg_content, svg_file)  # Write to temporary SVG file
+      
+      # Convert SVG to PNG with specified width & height
+      if (input$file_formatM == "PNG") {
+        suppressWarnings(
+          rsvg_png(svg_file, file, width = input$widthM, height = input$heightM)
+          
+        )} else if(input$file_formatM == "PDF"){
+          suppressWarnings(
+            rsvg_pdf(svg_file, file, width = input$widthM / 100, height = input$heightM / 100) 
+          )}
+    }
+  )
+  
+  
+  
 
   click_plotM<-reactive ({
     click_node(accordion_complete, ontology_celltype, PlotM(), tableInputComplete(),input$cellidM, ontology_def, input$diseaseM)
@@ -2228,19 +2404,25 @@ server <- function(input, output, session) {
       if("healthy" %in% input$diseaseInt){
         onto_igraph<-graph_from_graphnel(onto_plot, name = TRUE, weight = TRUE, unlist.attrs = TRUE)
         node<-as.data.table(unique(markerTableCompleteInt()[celltype_species %in% input$celltypeInt & Uberon_tissue %in% input$tissueInt & DO_diseasetype=="healthy"]$celltype))
+        node_present<-V(onto_igraph)$name
+        node_present <- gsub("CL:\\d+", "", gsub("\n", " ", node_present))
+        # Trim extra spaces
+        node_present <- trimws(node_present)      
         dt<- data.table(celltype=character(), distance=numeric())
         for (i in 1:nrow(node)){
-          distan<-max(eccentricity(onto_igraph, vids = node[i]$V1, mode = c("out")))
-          data<-as.data.table(t(c(node[i]$V1,distan)))
-          colnames(data)<-c("celltype","distance")
-          dt<-rbind(dt,data)
-        }
+          if (node[i]$V1 %in% node_present) {
+            distan<-max(eccentricity(onto_igraph, vids = node[i]$V1, mode = c("out")))
+            data<-as.data.table(t(c(node[i]$V1,distan)))
+            colnames(data)<-c("celltype","distance")
+            dt<-rbind(dt,data)
+          }
+        }  
         as.data.table(dt)
       } else{
         data.table(celltype="", distance =0)
       }
     }
-  })
+    })
 
 
   observeEvent(input$celltypeInt,{
@@ -2371,26 +2553,77 @@ server <- function(input, output, session) {
   })
 
 
-  output$plot1Int <- renderGrViz({
+
+
+
+
+  
+
+  # Reactive expression to store the Graphviz plot
+  graphPlotInt <- reactive({
     if(!is.null(markerTablePlotInt())){
       healthy_ct<-markerTablePlotInt()[DO_diseasetype=="healthy"]$celltype_ID
       if(length(healthy_ct>=1)){
         if(length(input$descendantsofInt)>=1){
-          hierac_plot1_desc(markerTableCompleteInt(),PlotInt(),healthy_ct,descendantTableInt(),input$cellidInt, input$diseaseInt)
+          return(hierac_plot1_desc(markerTableCompleteInt(),PlotInt(),healthy_ct,descendantTableInt(),input$cellidInt, input$diseaseInt))
         }else{
-          hierac_plot1(markerTableCompleteInt(),PlotInt(),healthy_ct,input$cellidInt, input$diseaseInt)
+          return(hierac_plot1(markerTableCompleteInt(),PlotInt(),healthy_ct,input$cellidInt, input$diseaseInt))
         }
       }
+    } else{
+      return(NULL)  # Return NULL if no plot is available
+      
     }
   })
-
+  
+  output$plot1Int <- renderGrViz({
+    graphPlotInt()  # Use the reactive graphPlot()
+  })
+  
+  
+  
   output$scalableplotInt <- renderUI({
     tagList(
       div(grVizOutput('plot1Int',height = input$heightInt, width = input$widthInt)))
   })
-
-
-
+  
+  
+  output$save_plotInt <- downloadHandler(
+    filename = function() {
+      if (input$file_formatInt == "PNG") {
+        "Ontology_plot.png"
+      } else if(input$file_formatInt == "PDF") {
+        "Ontology_plot.png"
+      }
+    },
+    content = function(file) {
+      grViz_obj <- graphPlotInt()  # Use the stored reactive Graphviz plot
+      
+      if (is.null(grViz_obj)) {
+        stop("No plot available to save.")
+      }
+      
+      svg_file <- tempfile(fileext = ".svg")
+      
+      # Convert Graphviz to SVG and save
+      svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
+      writeLines(svg_content, svg_file)  # Write to temporary SVG file
+      
+      # Convert SVG to PNG with specified width & height
+      if (input$file_formatInt == "PNG") {
+        suppressWarnings(
+          rsvg_png(svg_file, file, width = input$width, height = input$height)
+          
+        )} else if(input$file_formatInt == "PDF"){
+          suppressWarnings(
+            rsvg_pdf(svg_file, file, width = input$width / 100, height = input$height / 100) 
+          )}
+    }
+  )
+  
+  
+  
+  
   click_plotInt<-reactive ({
     click_node(integratedDBmod(),ontology_celltype,PlotInt(),markerTableCompleteInt(),input$cellidInt, ontology_def, input$diseaseInt)
   })
@@ -2506,15 +2739,15 @@ server <- function(input, output, session) {
 
 
 
-  # server for annotation -----
+  # server for enrichment -----
   observeEvent(input$annoInfo,{
     showModal(modalDialog(
-      title = "Automatic annotation Information",
+      title = "Cell type marker enrichment analysis",
       HTML("
   Users can upload a file containing markers for each cluster or related to a single entity, and the 
   <strong>Cell Marker Accordion</strong> will retrieve the respective cell type with the highest correlation.<br>
   <br>
-<strong>IMPORTANT! Annotation is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion algorithm, 
+<strong>IMPORTANT! Enrichment analysis is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion annotation algorithm, 
 we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordion\" target=\"_blank\">R package</a></strong>.<br>
 <p>
 <br>
@@ -2528,35 +2761,6 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   In a custom table, this classification can be defined in the <code>'gene_type'</code> column.
 </p>
 
-<p>
-  Once the custom file is loaded, you can specify filters for the <strong>Cell Marker Accordion</strong> database before annotation. In particular:
-</p>
-
-<ul>
-  <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
-  <li><strong>Condition:</strong> healthy or multiple diseases.</li>
-  <li>
-    <strong>Tissue:</strong> select one or multiple tissues from the list. If no tissue is selected, the annotation will be performed using all tissues combined. 
-    If multiple tissues are selected, the annotation will be performed by combining the selected tissues.
-  </li>
-  <li>
-    <strong>Cell type:</strong> select one or multiple cell types from the list. If no cell type is selected, the annotation will be performed using all cell types.
-  </li>
-  <li>
-    <strong>ECs (evidence consistency score):</strong> measures the agreement of different annotation sources. 
-    Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an ECs &ge; the selected value.
-  </li>
-  <li>
-    <strong>SPs (specificity score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database. 
-    Filter marker genes from the <strong>Accordion</strong> database with an SPs &ge; the selected value.
-  </li>
-  <li>
-    <strong>Maximum number of markers to keep for each cell type:</strong> specify the top N marker genes to retain for each cell type during automatic annotation. 
-    Markers are ranked based on their ECs and SPs. Default is <code>50</code>.
-  </li>
-</ul>
-
-
 
 "
 
@@ -2565,8 +2769,8 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   })
   observeEvent(input$userclusterfileinfo,{
     showModal(modalDialog(
-      title = "Annotation input file format",
-      HTML("Load marker genes file for automatic annotation. <br>
+      title = "Input file format",
+      HTML("Upload marker genes file to perform cell type marker enrichment analysis. <br>
     The file can be one of the following types:
     <ul><li> <strong> The Output table generated by the <em>FindAllMarkers </em> function in the Seurat package,</strong> as txt, xlsx, csv or tsv file</li>
            <strong> Example </strong>"),
@@ -2679,9 +2883,32 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   observeEvent(input$filterhelpA,{
     showModal(modalDialog(
       title = "Filters Information",
-      HTML("Marker genes employed to annotate your data can be filtered by: <br>
-      <ul><li> <strong> ECs</strong>: evidence consistency score, measuring the agreement of different annotation sources </li>
-       <li> <strong> SPs</strong>: specificity score, indicating whether a gene is a marker for different cell types present in the accordion database </li>")    ))
+      HTML("Once the custom file is loaded, you can specify filters for the <strong>Cell Marker Accordion</strong> database before running enrichment. In particular:
+</p>
+
+<ul>
+  <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
+  <li><strong>Condition:</strong> healthy or multiple diseases.</li>
+  <li>
+    <strong>Tissue:</strong> select one or multiple tissues from the list. If no tissue is selected, the enrichment will be performed using all tissues combined. 
+    If multiple tissues are selected, the enrichment will be performed by combining the selected tissues.
+  </li>
+  <li>
+    <strong>Cell type:</strong> select one or multiple cell types from the list. If no cell type is selected, the enrichment will be performed using all cell types.
+  </li>
+  <li>
+    <strong>ECs (evidence consistency score):</strong> measures the agreement of different enrichment sources. 
+    Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an ECs &ge; the selected value.
+  </li>
+  <li>
+    <strong>SPs (specificity score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database. 
+    Filter marker genes from the <strong>Accordion</strong> database with an SPs &ge; the selected value.
+  </li>
+  <li>
+    <strong>Maximum number of markers to keep for each cell type:</strong> specify the top N marker genes to retain for each cell type during automatic enrichment 
+    Markers are ranked based on their ECs and SPs. Default is <code>50</code>.
+  </li>
+</ul>")    ))
   })
 
   observeEvent(input$addpos, {
@@ -2798,7 +3025,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
         user_inputfile <- as.data.table(user_inputfile)
 
         if (!"gene" %in% colnames(user_inputfile)) {
-          validate(need("gene" %in% colnames(user_inputfile), "\"gene\" column not found. Please specify the \"gene\" column containing the list of genes for annotation."))
+          validate(need("gene" %in% colnames(user_inputfile), "\"gene\" column not found. Please specify the \"gene\" column containing the list of genes for enrichment analysis."))
         }
 
         if (!"gene_type" %in% colnames(user_inputfile)) {  # Corrected 'colnmames' typo
@@ -2847,8 +3074,8 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     if(input$demo_ex_anno>0 & is.null(input$clusterfile)){
       table<-fread("data/FindAllMarkers_small_ex.tsv", verbose = F)
       table[,p_val:=format(p_val, digits=2)]
+      table<-table[order(-avg_log2FC)]
       table[,avg_log2FC:=format(avg_log2FC, digits=2)]
-      table<-table[order(-avg_log2FC), by="cluster"]
       table<-datatable(table, options = list(scrollX='400px',
         dom = 't',      # Removes unnecessary UI elements
         pageLength = 5 # Controls number of rows displayed
@@ -3018,11 +3245,11 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
         inputseppos<-separate_rows(as.data.frame(inputTable()), pos_marker, sep=" ")
         inputsepneg<-separate_rows(as.data.frame(inputTable()), neg_marker, sep=" ")
         univ<- uniqueN(unique(c(accordion_complete$marker, inputseppos$pos_marker, inputsepneg$neg_marker)))
-        withProgress(message = 'Making cluster identification', value = 0, {
+        withProgress(message = 'Running enrichment analysis...', value = 0, {
           for (cl in unique(inputTable()$cluster)){
             sub_dt<-combineTable()[cluster==cl]
             # Increment the progress bar, and update the detail text.
-            incProgress(1 / (nrow(inputTable())-1), detail = paste("Processing cluster", cl))
+            incProgress(1 / (nrow(inputTable())-1), detail = paste("Analyzing cluster", cl))
             # Pause for 0.1 seconds to simulate a long computation.
             Sys.sleep(0.1)
             for (ct in (accMarkerAnnoTable()$celltype)){
@@ -3078,7 +3305,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
 
     output$downloadDataA <- downloadHandler(
       filename = function() {
-        paste0("TheCellMarkerAccordion_annotation", input$downloadTypeA)
+        paste0("TheCellMarkerAccordion_enrichment_results", input$downloadTypeA)
       },
       content = function(file) {
         if(input$downloadTypeA == ".csv"){
@@ -3136,18 +3363,66 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     })
 
 
-    output$plot1A <- renderGrViz({
+    
+    # Reactive expression to store the Graphviz plot
+    graphPlotA <- reactive({
       if(!is.null(tablePlotOntology())){
         if(nrow(tablePlotOntology())>0){
-      hierac_plot2(accordion_complete, PlotA(), tablePlotOntology(),input$cellidA, input$diseaseA)
+          return(hierac_plot2(accordion_complete, PlotA(), tablePlotOntology(),input$cellidA, input$diseaseA))
         }
+      } else{
+        return(NULL)  # Return NULL if no plot is available
+        
       }
     })
-
+    
+    output$plot1A <- renderGrViz({
+      graphPlotA()  # Use the reactive graphPlot()
+    })
+    
+    
+    
     output$scalableplotA <- renderUI({
       tagList(
         div(grVizOutput('plot1A',height = input$heightA, width = input$widthA)))
     })
+    
+    
+    output$save_plotA <- downloadHandler(
+      filename = function() {
+        if (input$file_formatA == "PNG") {
+          "Ontology_plot.png"
+        } else if(input$file_formatA == "PDF") {
+          "Ontology_plot.png"
+        }
+      },
+      content = function(file) {
+        grViz_obj <- graphPlotA()  # Use the stored reactive Graphviz plot
+        
+        if (is.null(grViz_obj)) {
+          stop("No plot available to save.")
+        }
+        
+        svg_file <- tempfile(fileext = ".svg")
+        
+        # Convert Graphviz to SVG and save
+        svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
+        writeLines(svg_content, svg_file)  # Write to temporary SVG file
+        
+        # Convert SVG to PNG with specified width & height
+        if (input$file_formatA == "PNG") {
+          suppressWarnings(
+            rsvg_png(svg_file, file, width = input$width, height = input$height)
+            
+          )} else if(input$file_formatA == "PDF"){
+            suppressWarnings(
+              rsvg_pdf(svg_file, file, width = input$width / 100, height = input$height / 100) 
+            )}
+      }
+    )
+    
+    
+
 
 
 
