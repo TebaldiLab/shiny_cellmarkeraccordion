@@ -180,17 +180,8 @@ ui <- dashboardPage(
     background: #990000 !important;
   }
 ")),
-                          fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
-                            column(width=6,
-                           sliderInput(inputId = "height", label = "Height", min = 200, max = 6500, value = 400, step = 200,width="80%")),
-                                 
-                           column(width=6,sliderInput(inputId = "width", label = "Width", min = 200, max = 6500, value = 400, step=200,width="80%"))),
-                  
-                  tags$head(tags$style(HTML('
-         #sidebar {
-            background-color: #ad000019;
-            font-size: 16px;
-        }'))),
+
+        fluidRow(column = 12, sliderInput("zoom", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
                   fluidRow(column(12,   downloadButton("save_plot", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_format", "", choices = c("PNG", "PDF"), inline=TRUE),
@@ -296,11 +287,8 @@ ui <- dashboardPage(
                   
                   
                   
-                  fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,
-                                  sliderInput(inputId = "heightM", label = "Height", min = 200, max = 6500, value = 600, step = 200,width="80%")),
-                           
-                           column(width=6,sliderInput(inputId = "widthM", label = "Width", min = 200, max = 6500, value = 600, step=200,width="80%"))),
+                  fluidRow(column = 12, sliderInput("zoomM", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
+                  
                   
                 
                   tags$head(tags$style(HTML('
@@ -536,11 +524,8 @@ ui <- dashboardPage(
                                                     checkboxInput("cellidInt","Plot celltype_ID",value=FALSE)))),
                   
                   
-                  fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,
-                                  sliderInput(inputId = "heightInt", label = "Height", min = 200, max = 6500, value = 600, step = 200,width="80%")),
-                           
-                           column(width=6,sliderInput(inputId = "widthInt", label = "Width", min = 200, max = 6500, value = 600, step=200,width="80%"))),
+                  fluidRow(column = 12, sliderInput("zoomInt", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
+                  
                   
                           
                         
@@ -743,15 +728,8 @@ ui <- dashboardPage(
                   br(),
           
 
-                  
-                  fluidRow(titlePanel(shiny::span((icon("sliders",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;top-margin:200px;", HTML("<h>Adjust plot size </h>")))),
-                           column(width=6,
-                                  sliderInput(inputId = "heightA", label = "Height", min = 200, max = 6500, value = 600, step = 200,width="80%")),
-                           
-                           column(width=6,sliderInput(inputId = "widthA", label = "Width", min = 200, max = 6500, value = 600, step=200,width="80%"))),
-                  
-                  
-              
+                  fluidRow(column = 12, sliderInput("zoomA", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2)),  # Zoom slider
+
                     checkboxInput("cellidA","Plot celltype_ID",value=FALSE),
                     #Ontology plot
                     titlePanel(shiny::span((icon("hand-pointer",class = "about-icon fa-pull-left", lib = "font-awesome")), p(style="text-align: justify;", HTML("<h> <strong> Click </strong> on a node to look at cell type description</h>")))),
@@ -1086,25 +1064,20 @@ server <- function(input, output, session) {
   })
   
   output$plot1 <- renderGrViz({
-    graphPlot()  # Use the reactive graphPlot()
-  })
+
+      
+      graphPlot()  # Render the reactive graphPlot()
+
+    })
   
-  # output$plot1 <- renderGrViz({
-  #   if(!is.null(markerTablePlot())){
-  #     healthy_ct<-markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID
-  #     if(length(healthy_ct>=1)){
-  #       if(length(input$descendantsof)>=1){
-  #         hierac_plot1_desc(markerTableComplete(),Plot(),healthy_ct,descendantTable(),input$cellid, input$disease)
-  #       }else{
-  #         hierac_plot1(markerTableComplete(),Plot(),healthy_ct,input$cellid, input$disease)
-  #       }
-  #     }
-  #   }
-  # })
 
   output$scalableplot <- renderUI({
-    tagList(
-      div(grVizOutput('plot1',height = input$height, width = input$width)))
+    tagList( tags$div(
+      #div(grVizOutput('plot1',height = input$height, width = input$width)))
+     grVizOutput('plot1', height = "700px", width = "700px"),
+     style = paste("transform: scale(", input$zoom, "); transform-origin: center;")
+    )
+    )
   })
 
   
@@ -1113,7 +1086,7 @@ server <- function(input, output, session) {
       if (input$file_format == "PNG") {
       "Ontology_plot.png"
       } else if(input$file_format == "PDF") {
-        "Ontology_plot.png"
+        "Ontology_plot.pdf"
       }
     },
     content = function(file) {
@@ -1129,14 +1102,21 @@ server <- function(input, output, session) {
       svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
       writeLines(svg_content, svg_file)  # Write to temporary SVG file
       
+      # Get actual width from UI
+      default <-700
+
+      # Scale dimensions based on zoom input
+      scaled_zoom <- default * input$zoom
+
+      
       # Convert SVG to PNG with specified width & height
       if (input$file_format == "PNG") {
       suppressWarnings(
-        rsvg_png(svg_file, file, width = input$width, height = input$height)
+        rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
       
       )} else if(input$file_format == "PDF"){
         suppressWarnings(
-        rsvg_pdf(svg_file, file, width = input$width / 100, height = input$height / 100) 
+        rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
         )}
     }
   )
@@ -1462,19 +1442,22 @@ server <- function(input, output, session) {
     graphPlotM()  # Use the reactive graphPlot()
   })
   
-  
+
   output$scalableplotM <- renderUI({
-    tagList(
-      div(grVizOutput('plot1M',height = input$heightM, width = input$widthM)))
+    tagList( tags$div(
+      #div(grVizOutput('plot1',height = input$height, width = input$width)))
+      grVizOutput('plot1M', height = "700px", width = "700px"),
+      style = paste("transform: scale(", input$zoomM, "); transform-origin: center;")
+    )
+    )
   })
-  
   
   output$save_plotM <- downloadHandler(
     filename = function() {
       if (input$file_formatM == "PNG") {
         "Ontology_plot.png"
       } else if(input$file_formatM == "PDF") {
-        "Ontology_plot.png"
+        "Ontology_plot.pdf"
       }
     },
     content = function(file) {
@@ -1490,14 +1473,21 @@ server <- function(input, output, session) {
       svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
       writeLines(svg_content, svg_file)  # Write to temporary SVG file
       
+      # Get actual width from UI
+      default <-700
+      
+      # Scale dimensions based on zoom input
+      scaled_zoom <- default * input$zoomM
+      
+      
       # Convert SVG to PNG with specified width & height
-      if (input$file_formatM == "PNG") {
+      if (input$file_format == "PNG") {
         suppressWarnings(
-          rsvg_png(svg_file, file, width = input$widthM, height = input$heightM)
+          rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
           
-        )} else if(input$file_formatM == "PDF"){
+        )} else if(input$file_format == "PDF"){
           suppressWarnings(
-            rsvg_pdf(svg_file, file, width = input$widthM / 100, height = input$heightM / 100) 
+            rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
           )}
     }
   )
@@ -2583,17 +2573,20 @@ server <- function(input, output, session) {
   
   
   output$scalableplotInt <- renderUI({
-    tagList(
-      div(grVizOutput('plot1Int',height = input$heightInt, width = input$widthInt)))
+    tagList( tags$div(
+      #div(grVizOutput('plot1',height = input$height, width = input$width)))
+      grVizOutput('plot1Int', height = "700px", width = "700px"),
+      style = paste("transform: scale(", input$zoomInt, "); transform-origin: center;")
+    )
+    )
   })
-  
   
   output$save_plotInt <- downloadHandler(
     filename = function() {
       if (input$file_formatInt == "PNG") {
         "Ontology_plot.png"
       } else if(input$file_formatInt == "PDF") {
-        "Ontology_plot.png"
+        "Ontology_plot.pdf"
       }
     },
     content = function(file) {
@@ -2609,19 +2602,24 @@ server <- function(input, output, session) {
       svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
       writeLines(svg_content, svg_file)  # Write to temporary SVG file
       
+      # Get actual width from UI
+      default <-700
+      
+      # Scale dimensions based on zoom input
+      scaled_zoom <- default * input$zoomInt
+      
+      
       # Convert SVG to PNG with specified width & height
-      if (input$file_formatInt == "PNG") {
+      if (input$file_format == "PNG") {
         suppressWarnings(
-          rsvg_png(svg_file, file, width = input$width, height = input$height)
+          rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
           
-        )} else if(input$file_formatInt == "PDF"){
+        )} else if(input$file_format == "PDF"){
           suppressWarnings(
-            rsvg_pdf(svg_file, file, width = input$width / 100, height = input$height / 100) 
+            rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
           )}
     }
   )
-  
-  
   
   
   click_plotInt<-reactive ({
@@ -3381,19 +3379,21 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     })
     
     
-    
     output$scalableplotA <- renderUI({
-      tagList(
-        div(grVizOutput('plot1A',height = input$heightA, width = input$widthA)))
+      tagList( tags$div(
+        #div(grVizOutput('plot1',height = input$height, width = input$width)))
+        grVizOutput('plot1A', height = "700px", width = "700px"),
+        style = paste("transform: scale(", input$zoomA, "); transform-origin: center;")
+      )
+      )
     })
-    
     
     output$save_plotA <- downloadHandler(
       filename = function() {
         if (input$file_formatA == "PNG") {
           "Ontology_plot.png"
         } else if(input$file_formatA == "PDF") {
-          "Ontology_plot.png"
+          "Ontology_plot.pdf"
         }
       },
       content = function(file) {
@@ -3409,18 +3409,24 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
         svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
         writeLines(svg_content, svg_file)  # Write to temporary SVG file
         
+        # Get actual width from UI
+        default <-700
+        
+        # Scale dimensions based on zoom input
+        scaled_zoom <- default * input$zoomA
+        
+        
         # Convert SVG to PNG with specified width & height
-        if (input$file_formatA == "PNG") {
+        if (input$file_format == "PNG") {
           suppressWarnings(
-            rsvg_png(svg_file, file, width = input$width, height = input$height)
+            rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
             
-          )} else if(input$file_formatA == "PDF"){
+          )} else if(input$file_format == "PDF"){
             suppressWarnings(
-              rsvg_pdf(svg_file, file, width = input$width / 100, height = input$height / 100) 
+              rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
             )}
       }
     )
-    
     
 
 
