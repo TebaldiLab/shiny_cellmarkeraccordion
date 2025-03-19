@@ -21,11 +21,12 @@ library(rstatix)
 library(tidyverse)
 library(data.table)
 library(shinyjs)
+library(rsvg)
 library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -1132,7 +1133,7 @@ server <- function(input, output, session) {
       
       )} else if(input$file_format == "PDF"){
         suppressWarnings(
-        rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
+        rsvg_pdf(svg_file, file, width = scaled_zoom, height = scaled_zoom) 
         )}
     }
   )
@@ -1503,7 +1504,7 @@ server <- function(input, output, session) {
           
         )} else if(input$file_format == "PDF"){
           suppressWarnings(
-            rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
+            rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
           )}
     }
   )
@@ -2632,7 +2633,7 @@ server <- function(input, output, session) {
           
         )} else if(input$file_format == "PDF"){
           suppressWarnings(
-            rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
+            rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
           )}
     }
   )
@@ -3439,7 +3440,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
             
           )} else if(input$file_format == "PDF"){
             suppressWarnings(
-              rsvg_pdf(svg_file, file, width = scaled_zoom / 100, height = scaled_zoom / 100) 
+              rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
             )}
       }
     )
