@@ -5,14 +5,16 @@
 if (!"reticulate" %in% installed.packages()[,"Package"]) {
   install.packages("reticulate", dependencies = T)
 }
-
+if (!py_available(initialize = TRUE)) {
+  install_miniconda()
+}
 #if OntoProc not already installed create python environment:
 
 if(!("ontoProc" %in% installed.packages()[,"Package"])){
 
   library(reticulate)
   # Create a virtual environment
-  venv_path <- file.path("~", ".virtualenvs", "r-reticulate")
+  venv_path <- file.path("HOME", ".virtualenvs", "r-reticulate")
   if (!dir.exists(venv_path)) {
     virtualenv_create(venv_path)
   }
@@ -26,12 +28,11 @@ if(!("ontoProc" %in% installed.packages()[,"Package"])){
 list.of.packages <- c("rstudioapi","shinydashboard","shiny","stringr","DiagrammeR","igraph",
                       "shinyWidgets","ontologyIndex","data.table","plyr","ontologyPlot",
                       "writexl", "dplyr", "shinyBS","shinyhelper","DT","shinyjs",
-                      "shinydashboardPlus", "readxl","rstatix", "tidyverse")
+                      "shinydashboardPlus", "readxl","rstatix", "tidyverse","rsvg","DiagrammeRsvg")
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) suppressMessages(suppressWarnings({install.packages(new.packages, dependencies = T)}))
 
 
-list.of.packages.bio<-c("ontoProc")
 if (!require("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 list.of.packages.bio<-c("ontoProc")
