@@ -26,7 +26,7 @@ library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -122,8 +122,8 @@ ui <- dashboardPage(
 	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'>
             <strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial omics data.
             Our framework includes both a <strong>Shiny app</strong> and an
-            <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.
-            <br><br>
+            <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.<br>
+            <br>To perfom cell type annotation exploiting the comprehensive Cell Marker Accordion algorithm, we recommend using our <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.<br><br>
             The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers.
             Specifically, it enables:
         </p>")
@@ -1565,11 +1565,11 @@ server <- function(input, output, session) {
       
       
       # Convert SVG to PNG with specified width & height
-      if (input$file_format == "PNG") {
+      if (input$file_formatM == "PNG") {
         suppressWarnings(
           rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
           
-        )} else if(input$file_format == "PDF"){
+        )} else if(input$file_formatM == "PDF"){
           suppressWarnings(
             rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
           )}
@@ -2694,11 +2694,11 @@ server <- function(input, output, session) {
       
       
       # Convert SVG to PNG with specified width & height
-      if (input$file_format == "PNG") {
+      if (input$file_formatInt == "PNG") {
         suppressWarnings(
           rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
           
-        )} else if(input$file_format == "PDF"){
+        )} else if(input$file_formatInt == "PDF"){
           suppressWarnings(
             rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
           )}
@@ -3160,7 +3160,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
       table[,avg_log2FC:=format(avg_log2FC, digits=2)]
       table<-datatable(table, options = list(scrollX='400px',
         dom = 't',      # Removes unnecessary UI elements
-        pageLength = 5 # Controls number of rows displayed
+        pageLength = 8 # Controls number of rows displayed
       ),rownames = FALSE) %>%
         formatStyle(columns = names(table), fontSize = '12px')%>%
         formatStyle(columns = names(table), target="row", fontSize = '12px')
@@ -3501,11 +3501,11 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
         
         
         # Convert SVG to PNG with specified width & height
-        if (input$file_format == "PNG") {
+        if (input$file_formatA == "PNG") {
           suppressWarnings(
             rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
             
-          )} else if(input$file_format == "PDF"){
+          )} else if(input$file_formatA == "PDF"){
             suppressWarnings(
               rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
             )}
