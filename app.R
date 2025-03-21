@@ -26,7 +26,7 @@ library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -105,15 +105,6 @@ ui <- dashboardPage(
               fluidRow(
                 HTML("<h3>The Cell Marker Accordion</h3>"),
                 HTML("<h2>A Web Tool for Single-Cell and Spatial Omics Annotation</h2>"),
-                titlePanel(
-                  div(
-                    style = "display: flex; align-items: center; gap: 5px; text-align: left;",  # Align left with small gap
-                    icon("github", class = "fa-lg", lib = "font-awesome", style = "color: black; font-size: 20px;"),
-                    shiny::span(
-                      HTML("<p style='margin: 0; font-size: 18px;'><h>Encountering issues? Check out our <a href='https://github.com/TebaldiLab/shiny_cellmarkeraccordion' target='_blank'>GitHub page</a>!</p></h>")
-                    )
-                  )
-                ),
                 div(img(src = "Logo.png"), style = "text-align: center;"),
                 br(),
                 br(),
@@ -123,7 +114,7 @@ ui <- dashboardPage(
             <strong>The Cell Marker Accordion</strong> is a powerful and user-friendly platform designed to enhance the accuracy and interpretation of normal and aberrant cell populations in single-cell and spatial omics data.
             Our framework includes both a <strong>Shiny app</strong> and an
             <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.<br>
-            <br>To perfom cell type annotation exploiting the comprehensive Cell Marker Accordion algorithm, we recommend using our <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>.<br><br>
+            <br>
             The Cell Marker Accordion web interface allows users to easily explore the integrated built-in database of consistency-weighted markers.
             Specifically, it enables:
         </p>")
@@ -176,7 +167,8 @@ ui <- dashboardPage(
               ),
               
             br(),  
-            HTML("<p style='text-align: justify; margin-left:-30px;'> <h>Additionally, in all sections users can easily: </p></h>"),
+            HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
+	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'> Additionally, in all sections users can easily: </p>"),
             
             titlePanel(
               div(
@@ -200,9 +192,26 @@ ui <- dashboardPage(
                   HTML("Rank and select marker genes by their evidence consistency and specificity scores.")
                 )
               )
-            )
+            ),
+            br(),
             
-
+            HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
+	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'>
+  To perfom cell type annotation exploiting the comprehensive Cell Marker Accordion algorithm, we recommend using our <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>
+        </p>"),
+            
+            
+            titlePanel(
+              div(
+                style = "color: black;font-size: 24px;
+	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica; display: flex; align-items: center; gap: 5px;",  # Align left with small gap
+                icon("github", class = "fa-lg", lib = "font-awesome", style = "color: black; font-size: 20px;"),
+                shiny::span(
+                  HTML("<p style='text-align: center; margin: 0; padding-left: 10px; color: black;font-size: 24px;
+	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'>Encountering issues? Check out our <a href='https://github.com/TebaldiLab/shiny_cellmarkeraccordion' target='_blank'>GitHub page</a>!</p>")
+                )
+              )
+            )
             ),
 
 
@@ -874,13 +883,8 @@ server <- function(input, output, session) {
       incProgress(0.1, detail = "Downloading The Cell Marker Accordion database...")  # Initial step (10%)
       Sys.sleep(1)  # Simulate processing time
 
-      # Load data
-      load("./data/AccordionDB_list.rda")
-      incProgress(0.2, detail = "Downloading The Cell Marker Accordion database...")  # Update progress (20%)
-      Sys.sleep(1)  # Simulate some more processing time
-
-      # Write the file
-      write_xlsx(data_list, file)
+      file.copy("data/TheCellMarkerAccordion_database_v0.9.5.xlsx", file)  # Copy from data folder to temp file
+  
       incProgress(0.5, detail = "Downloading The Cell Marker Accordion database...")  # Another update (50%)
       Sys.sleep(1)  # Simulate the writing process
 
@@ -1894,8 +1898,8 @@ server <- function(input, output, session) {
       "Custom_set_integration_example.xlsx"
     },
     content = function(file) {
-      table<-read_excel("data/Demo_example_integration.xlsx")
-      write_xlsx(table, file)
+      file.copy("data/Demo_example_integration.xlsx", file)  # Copy from data folder to temp file
+      
     }
   )
 
@@ -2956,8 +2960,9 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
       "Custom_set_annotation_example2.xlsx"
     },
     content = function(file) {
-      table<-read_xlsx("data/Demo_example_annotation2.xlsx")
-      write_xlsx(table, file)
+      file.copy("data/Demo_example_annotation2.xlsx", file)  # Copy from data folder to temp file
+      
+      
     }
   )
 
