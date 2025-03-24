@@ -26,7 +26,7 @@ library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -874,7 +874,7 @@ server <- function(input, output, session) {
   # Download handler
   output$downloadAccordionDB <- downloadHandler(
     filename = function() {
-      "TheCellMarkerAccordion_database_v0.9.5.xlsx"  # Name of the downloaded file
+      "TheCellMarkerAccordion_database_v0.9.7.xlsx"  # Name of the downloaded file
     },
 
     content = function(file) {
@@ -883,7 +883,7 @@ server <- function(input, output, session) {
       incProgress(0.1, detail = "Downloading The Cell Marker Accordion database...")  # Initial step (10%)
       Sys.sleep(1)  # Simulate processing time
 
-      file.copy("data/TheCellMarkerAccordion_database_v0.9.5.xlsx", file)  # Copy from data folder to temp file
+      file.copy("data/TheCellMarkerAccordion_database_v0.9.7.xlsx", file)  # Copy from data folder to temp file
   
       incProgress(0.5, detail = "Downloading The Cell Marker Accordion database...")  # Another update (50%)
       Sys.sleep(1)  # Simulate the writing process
@@ -1310,7 +1310,7 @@ server <- function(input, output, session) {
 
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste0("TheCellMarkerAccordion_database_v0.9.5", input$downloadType)
+      paste0("TheCellMarkerAccordion_database_v0.9.7", input$downloadType)
     },
     content = function(file) {
       if(input$downloadType == ".csv"){
@@ -1724,7 +1724,7 @@ server <- function(input, output, session) {
 
   output$downloadDataM <- downloadHandler(
     filename = function() {
-      paste0("TheCellMarkerAccordion_database_v0.9.5", input$downloadTypeM)
+      paste0("TheCellMarkerAccordion_database_v0.9.7", input$downloadTypeM)
     },
     content = function(file) {
       if(input$downloadTypeM == ".csv"){
@@ -2314,7 +2314,7 @@ server <- function(input, output, session) {
 
   output$downloadDataInt <- downloadHandler(
     filename = function() {
-      paste0("TheIntegratedCellMarkerAccordion_database_v0.9.5", input$downloadTypeInt)
+      paste0("TheIntegratedCellMarkerAccordion_database_v0.9.7", input$downloadTypeInt)
     },
     content = function(file) {
       if(input$downloadTypeInt == ".csv"){
@@ -2805,7 +2805,7 @@ server <- function(input, output, session) {
 
   output$downloadDataInt2 <- downloadHandler(
     filename = function() {
-      paste0("TheIntegratedCellMarkerAccordionFilt_database_v0.9.5", input$downloadTypeInt2)
+      paste0("TheIntegratedCellMarkerAccordionFilt_database_v0.9.7", input$downloadTypeInt2)
     },
     content = function(file) {
       if(input$downloadTypeInt2 == ".csv"){
