@@ -1,17 +1,13 @@
-<div style="overflow: hidden;">
+<h1>The Cell Marker Accordion</h1>
 
-  <div style="float: left;">
-    <h1 style="margin-bottom: 0;">The Cell Marker Accordion</h1>
-    <h3 style="margin-top: 0;">
-      <strong>A web tool for single-cell and spatial RNA-seq cell type annotation</strong>
-    </h3>
-  </div>
+<h3><strong>A web tool for single-cell and spatial RNA-seq cell type annotation</strong></h3>
 
-  <div style="float: right; display: flex; align-items: center; height: 100px;">
-    <img src="https://github.com/user-attachments/assets/089da800-dc0b-4a3c-994a-3cbd17cf189b" height="100">
-  </div>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/089da800-dc0b-4a3c-994a-3cbd17cf189b" height="140">
+</p>
 
-</div>
+<hr style="border: none; height: 2px; background-color: #ccc;" />
+
 
 <hr style="border: none; height: 2px; background-color: #ccc; clear: both;" />
 
