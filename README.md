@@ -1,5 +1,9 @@
-# The Cell Marker Accordion <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" align="right" height="200" />
----
+<div style="display: flex; justify-content: space-between; align-items: center;">
+  <h1 style="margin: 0;">The Cell Marker Accordion</h1>
+  <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" height="100">
+</div>
+
+<hr style="width: 60%; margin-left: 0;"/>
 
 ### A Web tool for single-cell and spatial RNA-seq cell types annotation: https://rdds.it/CellMarkerAccordion/
 
