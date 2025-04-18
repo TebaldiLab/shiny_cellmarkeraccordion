@@ -3,14 +3,8 @@
 <h3><strong>A web tool for single-cell and spatial RNA-seq cell type annotation</strong></h3>
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/089da800-dc0b-4a3c-994a-3cbd17cf189b" height="140">
+  <img src="https://github.com/user-attachments/assets/089da800-dc0b-4a3c-994a-3cbd17cf189b" height="300">
 </p>
-
-<hr style="border: none; height: 2px; background-color: #ccc;" />
-
-
-<hr style="border: none; height: 2px; background-color: #ccc; clear: both;" />
-
 
 <hr style="border: none; height: 2px; background-color: #ccc;" />
 
