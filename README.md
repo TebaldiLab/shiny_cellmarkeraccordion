@@ -2,7 +2,7 @@
 
 <h1>The Cell Marker Accordion</h1>
 
-<hr style="width: 65%; margin-left: 0;" />
+<div style="height: 2px; background-color: gray; width: 65%; margin-bottom: 16px;"></div>
 
 ### A Web tool for single-cell and spatial RNA-seq cell types annotation: [https://rdds.it/CellMarkerAccordion/](https://rdds.it/CellMarkerAccordion/)
 
