@@ -1,10 +1,18 @@
-<img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" align="right" height="100">
+<table style="width: 100%;">
+  <tr>
+    <td>
+      <h1 style="margin-bottom: 0;">The Cell Marker Accordion</h1>
+      <p style="font-size: 1.1em;"><em>A web tool for single-cell and spatial RNA-seq cell type annotation</em></p>
+    </td>
+    <td align="right">
+      <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" height="100">
+    </td>
+  </tr>
+</table>
 
-<h1>The Cell Marker Accordion</h1>
+---
 
-<div style="height: 2px; background-color: gray; width: 65%; margin-bottom: 16px;"></div>
-
-### A Web tool for single-cell and spatial RNA-seq cell types annotation: [https://rdds.it/CellMarkerAccordion/](https://rdds.it/CellMarkerAccordion/)
+🔗 [**Try it here**](https://rdds.it/CellMarkerAccordion/)
 
 ## Overview
 A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
