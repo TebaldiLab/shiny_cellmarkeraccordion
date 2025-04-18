@@ -26,7 +26,7 @@ library(rstudioapi)
 source('helper_function.R')
 
 # REMEMBER TO CHANGE WHEN  -----
-#setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
+setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
 #load data
@@ -105,7 +105,7 @@ ui <- dashboardPage(
               fluidRow(
                 HTML("<h3>The Cell Marker Accordion</h3>"),
                 HTML("<h2>A Web Tool for Single-Cell and Spatial Omics Annotation</h2>"),
-                div(img(src = "Logo.png"), style = "text-align: center;"),
+                div(img(src = "Accordion_logo.png", height="40%", width="40%"), style = "text-align: center;"),
                 br(),
                 br(),
                 tags$style("@import url('https://use.fontawesome.com/releases/v6.1.1/css/all.css');"),
@@ -785,7 +785,7 @@ ui <- dashboardPage(
 
 
 
-                  column(6,div(img(src = "Logo.png",height="40%", width="40%"),style="text-align: center;"),
+                  column(6,div(img(src = "Accordion_logo.png",height="40%", width="40%"),style="text-align: center;"),
                          br(),
                          actionButton("button", HTML("<strong>Start enrichment!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
 
