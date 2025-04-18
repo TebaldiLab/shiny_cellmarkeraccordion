@@ -10,6 +10,7 @@
 ### 🔗 [https://rdds.it/CellMarkerAccordion/](https://rdds.it/CellMarkerAccordion/)
 
 <hr style="border: none; height: 2px; background-color: #ccc;" />
+
 ## Overview
 A critical step in single-cell and spatial data analysis is the accurate annotation of cell types. The inherent heterogeneity of single-cell data, combined with significant inconsistencies in annotation methodologies, often results in noisy and unreliable classifications. These discrepancies can hide biological insights and hinder reproducibility.
 
