@@ -1,16 +1,11 @@
-<div style="overflow: hidden;">
+<h1 align="left">
+  The Cell Marker Accordion
+  <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" align="right" height="100">
+</h1>
 
-  <div style="float: left;">
-    <h1 style="margin-bottom: 0;">The Cell Marker Accordion</h1>
-    <h3 style="margin-top: 0;">
-      <strong>A web tool for single-cell and spatial RNA-seq cell type annotation</strong>
-    </h3>
-  </div>
+<h3><strong>A web tool for single-cell and spatial RNA-seq cell type annotation</strong></h3>
 
-  <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" height="100" style="float: right;">
-</div>
-
-<hr style="border: none; height: 2px; background-color: #ccc; clear: both; margin-top: 16px; margin-bottom: 24px;" />
+<hr style="border: none; height: 2px; background-color: #ccc;" />
 
 ### 🔗 [https://rdds.it/CellMarkerAccordion/](https://rdds.it/CellMarkerAccordion/)
 
