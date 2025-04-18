@@ -1,8 +1,6 @@
 <h1>The Cell Marker Accordion</h1>
 
-<p style="font-size: 5em; font-weight: bold; margin-top: -10px;">
-  A web tool for single-cell and spatial RNA-seq cell type annotation
-</p>
+<h3><strong>A web tool for single-cell and spatial RNA-seq cell type annotation</strong></h3>
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" height="140">
