@@ -1,15 +1,16 @@
-<table style="width: 100%;">
+<table style="width: 100%; border: none;" border="0" cellspacing="0" cellpadding="0">
   <tr>
-    <td style="text-align: left;">
+    <td style="text-align: left; vertical-align: middle;">
       <h1 style="margin: 0;">The Cell Marker Accordion</h1>
+      <hr style="width: 60%; margin-left: 0;" />
     </td>
-    <td style="text-align: right; vertical-align: top;">
+    <td style="text-align: right; vertical-align: middle;">
       <img src="https://github.com/user-attachments/assets/07c7995f-fb44-40a0-8f03-e7526dca7a1e" height="80" />
     </td>
   </tr>
 </table>
 
-<hr style="width: 60%; margin-left: 0;" />
+### A Web tool for single-cell and spatial RNA-seq cell types annotation: [https://rdds.it/CellMarkerAccordion/](https://rdds.it/CellMarkerAccordion/)
 
 ### A Web tool for single-cell and spatial RNA-seq cell types annotation: [https://rdds.it/CellMarkerAccordion/](https://rdds.it/CellMarkerAccordion/)
 
