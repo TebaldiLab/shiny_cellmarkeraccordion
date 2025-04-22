@@ -33,7 +33,6 @@ setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 load("data/accordion_complete.rda")
 load("data/cell_onto.rda")
 
-
 onto_plot<-onto_plot2(cell_onto, unique(accordion_complete$celltype_ID))
 nodes<-as.data.table(onto_plot@nodes)
 nodes<-nodes[,V1:=tstrsplit(nodes$V1,"CL", fixed = TRUE, keep = 1)]
