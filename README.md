@@ -35,7 +35,7 @@ To download the Accordion database as an excel file you can click on the downloa
 <br>
 <img src= https://github.com/user-attachments/assets/ea25a808-68ed-406f-a655-16f1ebbe00ac style="width:25%; height:25%;"> <br />
 
-Otherwise downalod the "TheCellMarkerAccordion_database_v0.9.7.xlsx" file stored in the "data" folder of this repository.
+Otherwise downalod the "TheCellMarkerAccordion_database_v1.0.0.xlsx" file stored in the "data" folder of this repository.
 
 ## Local installation 
 ### Prerequisites
