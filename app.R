@@ -130,7 +130,7 @@ ui <- dashboardPage(
                   )
                 )
               ),
-              
+
               titlePanel(
                 div(
                   style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
@@ -164,11 +164,11 @@ ui <- dashboardPage(
                   )
                 )
               ),
-              
-            br(),  
+
+            br(),
             HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
 	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'> Additionally, in all sections users can easily: </p>"),
-            
+
             titlePanel(
               div(
                 style = "display: flex; align-items: center;font-size: 24px;
@@ -180,7 +180,7 @@ ui <- dashboardPage(
                 )
               )
             ),
-            
+
             titlePanel(
               div(
                 style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
@@ -193,13 +193,13 @@ ui <- dashboardPage(
               )
             ),
             br(),
-            
+
             HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
 	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'>
   To perfom cell type annotation exploiting the comprehensive Cell Marker Accordion algorithm, we recommend using our <a href='https://github.com/TebaldiLab/cellmarkeraccordion' target='_blank'> <strong>R package</strong></a>
         </p>"),
-            
-            
+
+
             titlePanel(
               div(
                 style = "color: black;font-size: 24px;
@@ -216,7 +216,7 @@ ui <- dashboardPage(
 
 
 
-      # Second tab content: 
+      # Second tab content:
       # Search markers according to cell types ----
       tabItem(tabName = "celltype_h",
               tags$h2(
@@ -224,7 +224,7 @@ ui <- dashboardPage(
                 style = "font-weight: bold; text-align: center;"
               ),
               tags$style(css),
-              div(fluidRow(column(width=12,wellPanel(id="sidebar",                                                                
+              div(fluidRow(column(width=12,wellPanel(id="sidebar",
                                                     div(
                                                       style = "display: flex; justify-content: center; align-items: center;",
                                                       actionButton(
@@ -233,7 +233,7 @@ ui <- dashboardPage(
                                                         style = 'margin-top: 5px; margin-bottom: 5px;'
                                                       )
                                                     ),
-                                                    
+
                                                      checkboxGroupInput("species", "Select species:",
                                                                        choiceNames =
                                                                          list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
@@ -249,7 +249,7 @@ ui <- dashboardPage(
                                                                                                         br(),
                                                     pickerInput('descendantsof', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
                                                     checkboxInput("cellid","Plot celltype_ID",value=FALSE)))),
-                           
+
                            #change style sliderinput
                            tags$style(HTML("
   .irs-single, .irs-bar-edge, .irs-bar {
@@ -259,7 +259,7 @@ ui <- dashboardPage(
 
                   #HTML(icon("hand-back-point-up"),"<h4> <strong> Click </strong> on a node to look at cell type description</h4>"),
                   fluidRow(column(12,   downloadButton("save_plot", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_format", "", choices = c("PNG", "PDF"), inline=TRUE),
-                                                                                                   
+
                  tags$style(HTML("
                 #file_format .shiny-options-group label {
              font-size: 12px !important;
@@ -274,7 +274,7 @@ ui <- dashboardPage(
                      icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
                      p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
                    )
-                 )),  column(12, sliderInput("zoom", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                 )),  column(12, sliderInput("zoom", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)
                     column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplot')))),
                   #grVizOutput("plot1"),
                   tags$style(
@@ -290,22 +290,22 @@ ui <- dashboardPage(
                   conditionalPanel(condition= "input.descendantsof == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_empty', 'Info',icon= icon("info"), align="left"))))),
 
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
-                                                              
+
                                                               fluidRow(column(3,sliderInput('EC_score','ECs',min = 1, max = 17, value = 1, step=1)),
                                                                        column(3,sliderInput('specificity','SPs', min = 0, max = 1, value = 0, step=0.1)),
-                                                                       column(3,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),          
-                                                              
+                                                                       column(3,radioButtons("tabletype","Table type",c("Simple","Complete"),selected="Simple")),
+
                                                               conditionalPanel(condition= "input.descendantsof != ''", column(2,radioButtons("mergeDescendant","Merge subtypes", c("Yes","No"),selected="No"))))))),
-                  
+
                   fluidRow(
-                    column(12, 
-                           downloadButton("downloadData", "Download", 
+                    column(12,
+                           downloadButton("downloadData", "Download",
                                           style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
-                    column(12, 
+                    column(12,
                            radioButtons("downloadType", "",  # No title
                                         choices = c("CSV" = ".csv",
                                                     "XLSX" = ".xlsx",
-                                                    "TSV" = ".tsv"), 
+                                                    "TSV" = ".tsv"),
                                         inline = TRUE),
                            tags$style(HTML("
                 #downloadType .shiny-options-group label {
@@ -316,8 +316,8 @@ ui <- dashboardPage(
            }
          "))) # CSS to make choices smaller
                   ),
-                  
-                  
+
+
 
                   tags$head(tags$style(HTML('
          #sidebar2 {
@@ -341,7 +341,7 @@ ui <- dashboardPage(
                 style = "font-weight: bold; text-align: center;"
               ),
               div(fluidRow(column(width=12,wellPanel(id="sidebar",
-                                                    
+
                                                     div(
                                                       style = "display: flex; justify-content: center; align-items: center;",
                                                       actionButton(
@@ -350,7 +350,7 @@ ui <- dashboardPage(
                                                         style = 'margin-top: 5px; margin-bottom: 5px;'
                                                       )
                                                     ),
-                                                    
+
                                                     checkboxGroupInput("speciesM", "Select species:",
                                                                                     choiceNames =
                                                                                       list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
@@ -365,12 +365,12 @@ ui <- dashboardPage(
                                                     checkboxInput("tissue_awareM","Tissue aware",value=TRUE),
 
                                                     checkboxInput("cellidM","Plot celltype_ID",value=FALSE)))),
-                  
-                  
-                  
 
-                  
-                
+
+
+
+
+
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -378,7 +378,7 @@ ui <- dashboardPage(
         }'))),
 
                   fluidRow(column(12,   downloadButton("save_plotM", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatM", "", choices = c("PNG", "PDF"), inline=TRUE),
-                                                                                                                                                  
+
                                                                                                                                                   tags$style(HTML("
                 #file_formatM .shiny-options-group label {
              font-size: 12px !important;
@@ -394,7 +394,7 @@ ui <- dashboardPage(
                                icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
                                p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
                              )
-                           )),  column(12, sliderInput("zoomM", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                           )),  column(12, sliderInput("zoomM", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)
                            column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotM')))),
                   #grVizOutput("plot1"),
                   tags$style(
@@ -410,22 +410,22 @@ ui <- dashboardPage(
                                                      # fluidRow(column(3,radioButtons('EC_scoreM','ECs', c(">=1",">=2",">=3",">=4",">=5",">=6",">=7"), selected = ">=1")),
                                                      #          column(3,radioButtons('specificityM','SPs', c(">=0",">=0.25",">=0.5","=1"),selected = ">=0")),
                                                      #          column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
-                  
-                                                     
+
+
                                                       fluidRow(column(3,sliderInput('EC_scoreM','ECs',min = 1, max = 17, value = 1, step=1)),
                                                                column(3,sliderInput('specificityM','SPs', min = 0, max = 1, value = 0, step=0.1)),
-                                                               column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),                                  
-                                                                                        
-                  
+                                                               column(3,radioButtons("tabletypeM","Table type",c("Simple","Complete"),selected="Simple")))))),
+
+
                   fluidRow(
-                    column(12, 
-                           downloadButton("downloadDataM", "Download", 
+                    column(12,
+                           downloadButton("downloadDataM", "Download",
                                           style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
-                    column(12, 
+                    column(12,
                            radioButtons("downloadTypeM", "",  # No title
                                         choices = c("CSV" = ".csv",
                                                     "XLSX" = ".xlsx",
-                                                    "TSV" = ".tsv"), 
+                                                    "TSV" = ".tsv"),
                                         inline = TRUE),
                            tags$style(HTML("
                 #downloadTypeM .shiny-options-group label {
@@ -436,7 +436,7 @@ ui <- dashboardPage(
            }
          "))) # CSS to make choices smaller
                   ),
-                  
+
                   tags$head(tags$style(HTML('
          #sidebar2M {
             background-color: #ad000019;
@@ -524,7 +524,7 @@ ui <- dashboardPage(
                           uiOutput("success_icon_int")  # Checkmark icon appears here
                         )
                       ),
-                      
+
                       column(
                         width = 8,
                         div(
@@ -544,25 +544,25 @@ ui <- dashboardPage(
                         )
                       )
                     )
-                
+
                   )
                 )
               ),
 
               conditionalPanel(condition = "input.start_int > 0",
-              
+
                         fluidRow(column(12,radioButtons("tabletypeInt0","Table type",c("Simple","Complete"),selected="Simple",inline = TRUE))),
-              
-                       
+
+
                        fluidRow(
-                         column(12, 
-                                downloadButton("downloadDataInt", "Download", 
+                         column(12,
+                                downloadButton("downloadDataInt", "Download",
                                                style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
-                         column(12, 
+                         column(12,
                                 radioButtons("downloadTypeInt", "",  # No title
                                              choices = c("CSV" = ".csv",
                                                          "XLSX" = ".xlsx",
-                                                         "TSV" = ".tsv"), 
+                                                         "TSV" = ".tsv"),
                                              inline = TRUE),
                                 tags$style(HTML("
                 #downloadTypeInt .shiny-options-group label {
@@ -608,9 +608,9 @@ ui <- dashboardPage(
                                                     br(),
                                                     pickerInput('descendantsofInt', 'See subtypes of:', choices= NULL,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes"),choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), 141))),
                                                     checkboxInput("cellidInt","Plot celltype_ID",value=FALSE)))),
-         
-                          
-                        
+
+
+
                   tags$head(tags$style(HTML('
          #sidebar {
             background-color: #ad000019;
@@ -618,7 +618,7 @@ ui <- dashboardPage(
         }'))),
 
                   fluidRow(column(12,   downloadButton("save_plotInt", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatInt", "", choices = c("PNG", "PDF"), inline=TRUE),
-                                                                                                                                                   
+
                                                                                                                                                    tags$style(HTML("
                 #file_formatInt .shiny-options-group label {
              font-size: 12px !important;
@@ -626,16 +626,16 @@ ui <- dashboardPage(
            #file_formatInt {
              margin-top: -20px; /* Reduces space between elements */
            }
-         "))),   
+         "))),
                            column(12, titlePanel(
                              shiny::span(
                                style = "display: flex; align-items: center; justify-content: center; margin-top: -50px;",
                                icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
                                p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
                              )
-                           )),  column(12, sliderInput("zoomInt", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                           )),  column(12, sliderInput("zoomInt", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)
                            column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotInt')))),
-                  
+
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testInt {
@@ -650,23 +650,23 @@ ui <- dashboardPage(
                   conditionalPanel(condition= "input.descendantsofInt == ''",titlePanel(shiny::span(p(style="text-align: justify;", HTML("<h>Table options</h>"),actionButton('help_emptyInt', 'Info',icon= icon("info"), align="left"))))),
 
                   fluidRow(column(width=12,wellPanel(id="sidebar2",
-                                                    
+
                                                               fluidRow(column(3,sliderInput('EC_scoreInt','ECs',min = 1, max = 17, value = 1, step=1)),
                                                                        column(3,sliderInput('specificityInt','SPs', min = 0, max = 1, value = 0, step=0.1)),
-                                                                       column(3,radioButtons("tabletypeInt","Table type",c("Simple","Complete"),selected="Simple")),          
-                                                                       
+                                                                       column(3,radioButtons("tabletypeInt","Table type",c("Simple","Complete"),selected="Simple")),
+
                                                               conditionalPanel(condition= "input.descendantsofInt != ''", column(2,radioButtons("mergeDescendantInt","Merge subtypes", c("Yes","No"),selected="No"))))))),
 
 
                   fluidRow(
-                    column(12, 
-                           downloadButton("downloadDataInt2", "Download", 
+                    column(12,
+                           downloadButton("downloadDataInt2", "Download",
                                           style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
-                    column(12, 
+                    column(12,
                            radioButtons("downloadTypeInt2", "",  # No title
                                         choices = c("CSV" = ".csv",
                                                     "XLSX" = ".xlsx",
-                                                    "TSV" = ".tsv"), 
+                                                    "TSV" = ".tsv"),
                                         inline = TRUE),
                            tags$style(HTML("
                 #downloadTypeInt2 .shiny-options-group label {
@@ -700,7 +700,7 @@ ui <- dashboardPage(
                 style = "font-weight: bold; text-align: center;"
               ),
               div(fluidRow(column(width=6,wellPanel(id="sidebar",
-                                                    
+
                                                     div(
                                                       style = "display: flex; justify-content: center; align-items: center;",
                                                       actionButton(
@@ -711,7 +711,7 @@ ui <- dashboardPage(
                                                     ),
                                                     splitLayout(cellWidths = c("75%", "25%"),fileInput("clusterfile", "Load file",buttonLabel=list(icon("upload")),multiple = FALSE),
                                                                 actionButton('userclusterfileinfo', 'InputFile',icon= icon("file-circle-question"), align="left", style='margin-top:30px; margin-bottom:0px')),
-                                                    
+
                                                     fluidRow(column(width=6,radioButtons("nmarkerpos", HTML("Specificy the number of <em>positive</em> genes to keep for each cluster"), choices = nmarker_values)),
                                                              column(width=6, radioButtons("nmarkerneg", HTML("Specificy the number of <em>negative</em> genes to keep for each cluster"), choices = nmarker_values))),
                                                     fluidRow(column(width=6,textInput("nmarkerotherpos", HTML("Type in number of <em>positive</em> genes"))),
@@ -719,7 +719,7 @@ ui <- dashboardPage(
                                                     fluidRow(column(width=6,actionButton("addpos", HTML("Add value"))),
                                                              column(width=6,actionButton("addneg", HTML("Add value")))),
                                                     #checkboxInput("collapse_tissue","",value=FALSE))),
-                                                    
+
 
                                                     style = "padding-bottom: 5px;")),
                            column(
@@ -735,9 +735,9 @@ ui <- dashboardPage(
                                div(style = "display: flex; align-items: center;", uiOutput("success_icon_anno"))  # Keeps icon aligned
                              )
                            ),
-                           
-                           
-                           
+
+
+
                             br(),
                             column(6, HTML("Output table generated by the FindAllMarkers function in the Seurat package"), align="center"),
                            br(),
@@ -764,13 +764,13 @@ ui <- dashboardPage(
                         pickerInput('diseaseA', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                         pickerInput('tissueA', 'Tissue',  choices= unique(accordion_complete[DO_diseasetype == "healthy"]$Uberon_tissue),selected="blood", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                         pickerInput('celltypeA', 'Cell type', choices= unique(accordion_complete[DO_diseasetype == "healthy" & Uberon_tissue=="blood"]$celltype) ,multiple=TRUE,selected=unique(accordion_complete[DO_diseasetype == "healthy" & Uberon_tissue=="blood"]$celltype), options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
-                        
+
                           br(),
                           fluidRow(column(4,sliderInput('EC_scoreA','ECs',min = 1, max = 17, value = 1, step=1)),
                                    column(4,sliderInput('specificityA','SPs', min = 0, max = 1, value = 0, step=0.1)),
-                        
-                          
-                          
+
+
+
                           column(width = 4,
                                  textInput("max_n_marker",
                                            value = 50,
@@ -789,17 +789,17 @@ ui <- dashboardPage(
                          actionButton("button", HTML("<strong>Start enrichment!</strong>"),style="font-size: 20px;",icon= icon("rocket")), align="center")),
 
                   conditionalPanel(
-                    condition= "input.button > 0",           
-  
+                    condition= "input.button > 0",
+
                   fluidRow(
-                    column(12, 
-                           downloadButton("downloadDataA", "Download", 
+                    column(12,
+                           downloadButton("downloadDataA", "Download",
                                           style = "padding: 10px 20px; font-size: 18px;")), # Bigger button
-                    column(12, 
+                    column(12,
                            radioButtons("downloadTypeA", "",  # No title
                                         choices = c("CSV" = ".csv",
                                                     "XLSX" = ".xlsx",
-                                                    "TSV" = ".tsv"), 
+                                                    "TSV" = ".tsv"),
                                         inline = TRUE),
                            tags$style(HTML("
                 #downloadTypeA .shiny-options-group label {
@@ -813,13 +813,13 @@ ui <- dashboardPage(
                   br(),
                   dataTableOutput('table1A', width = "100%"),
                   br(),
-          
+
 
                     checkboxInput("cellidA","Plot celltype_ID",value=FALSE),
                     #Ontology plot
 
                   fluidRow(column(12,   downloadButton("save_plotA", "Save Ontology plot",style = "padding: 10px 20px; font-size: 18px;")), column(12, radioButtons("file_formatA", "", choices = c("PNG", "PDF"), inline=TRUE),
-                                                                                                                                                     
+
                                                                                                                                                      tags$style(HTML("
                 #file_formatA .shiny-options-group label {
              font-size: 12px !important;
@@ -834,9 +834,9 @@ ui <- dashboardPage(
                                icon("hand-pointer", class = "about-icon", lib = "font-awesome"),
                                p(style = "text-align: center; ", HTML("<h><strong>Click</strong> on a node to look at cell type description</h>"))
                              )
-                           )),  column(12, sliderInput("zoomA", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)               
+                           )),  column(12, sliderInput("zoomA", "Zoom:", min = 0.5, max = 10, value = 1, step = 0.2),style = "display: flex; align-items: center;justify-content: center;margin-top: -40px;"), # Zoom slider)
                            column(12,align="center",div(style='width:100%;overflow-x: scroll;height:100%;overflow-y: scroll;', uiOutput('scalableplotA')))),
-                  
+
                   #grVizOutput("plot1"),
                   tags$style(
                     '#testA {
@@ -873,7 +873,7 @@ server <- function(input, output, session) {
   # Download handler
   output$downloadAccordionDB <- downloadHandler(
     filename = function() {
-      "TheCellMarkerAccordion_database_v0.9.7.xlsx"  # Name of the downloaded file
+      "TheCellMarkerAccordion_database_v1.0.0.xlsx"  # Name of the downloaded file
     },
 
     content = function(file) {
@@ -882,8 +882,8 @@ server <- function(input, output, session) {
       incProgress(0.1, detail = "Downloading The Cell Marker Accordion database...")  # Initial step (10%)
       Sys.sleep(1)  # Simulate processing time
 
-      file.copy("data/TheCellMarkerAccordion_database_v0.9.7.xlsx", file)  # Copy from data folder to temp file
-  
+      file.copy("data/TheCellMarkerAccordion_database_v1.0.0.xlsx", file)  # Copy from data folder to temp file
+
       incProgress(0.5, detail = "Downloading The Cell Marker Accordion database...")  # Another update (50%)
       Sys.sleep(1)  # Simulate the writing process
 
@@ -909,7 +909,7 @@ server <- function(input, output, session) {
         )
         ))
   })
-  
+
   observeEvent(input$help,{
     showModal(modalDialog(
       title = "Table Option Information",
@@ -938,19 +938,19 @@ server <- function(input, output, session) {
     ))
   })
 
-  
+
   toListen_disease <- reactive({
     list(input$species)
   })
-  
+
   observeEvent(toListen_disease(),{
     updatePickerInput(session,'disease', selected="healthy",
                       choices=unique(accordion_complete[species %in% input$species]$DO_diseasetype),
                       option=list(`actions-box` = TRUE,style="box-celltypes"),
                       choicesOpt = list(style = rep(("font-size: 18px; line-height: 1.6;"), uniqueN(accordion_complete[species %in% input$species]$DO_diseasetype))))
   })
-  
-  
+
+
   markerTableComplete <- reactive({
     validate(need(length(input$disease) >=1, "Please select at least one condition"))
     accordion_complete<-accordion_complete[DO_diseasetype %in% input$disease & species %in% input$species]
@@ -988,7 +988,7 @@ server <- function(input, output, session) {
       node_present<-V(onto_igraph)$name
       node_present <- gsub("CL:\\d+", "", gsub("\n", " ", node_present))
       # Trim extra spaces
-      node_present <- trimws(node_present)      
+      node_present <- trimws(node_present)
       dt<- data.table(celltype=character(), distance=numeric())
       for (i in 1:nrow(node)){
         if (node[i]$V1 %in% node_present) {
@@ -997,7 +997,7 @@ server <- function(input, output, session) {
         colnames(data)<-c("celltype","distance")
         dt<-rbind(dt,data)
         }
-      }  
+      }
       as.data.table(dt)
     } else{
       data.table(celltype="", distance =0)
@@ -1103,10 +1103,10 @@ server <- function(input, output, session) {
   })
 
   Plot <- reactive({
-    
+
     if(!is.null(markerTablePlot())){
       healthy_ct<-unique(markerTablePlot()[DO_diseasetype=="healthy"]$celltype_ID)
-    
+
       if("healthy" %in% input$disease){
         if (length(healthy_ct) > 1 | length(input$descendantsof)>=1){
           ontosubplot<-onto_plot2(cell_onto,healthy_ct,cex=0.8)
@@ -1149,14 +1149,14 @@ server <- function(input, output, session) {
     return(NULL)  #Return NULL if no plot is available
     }#
   })
-  
+
   output$plot1 <- renderGrViz({
 
-      
+
       graphPlot()  # Render the reactive graphPlot()
 
     })
-  
+
 
   output$scalableplot <- renderUI({
     tagList( tags$div(
@@ -1167,7 +1167,7 @@ server <- function(input, output, session) {
     )
   })
 
-  
+
   output$save_plot <- downloadHandler(
     filename = function() {
       if (input$file_format == "PNG") {
@@ -1178,37 +1178,37 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       grViz_obj <- graphPlot()  # Use the stored reactive Graphviz plot
-      
+
       if (is.null(grViz_obj)) {
         stop("No plot available to save.")
       }
-      
+
       svg_file <- tempfile(fileext = ".svg")
-      
+
       # Convert Graphviz to SVG and save
       svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
       writeLines(svg_content, svg_file)  # Write to temporary SVG file
-      
+
       # Get actual width from UI
       default <-700
 
       # Scale dimensions based on zoom input
       scaled_zoom <- default * input$zoom
 
-      
+
       # Convert SVG to PNG with specified width & height
       if (input$file_format == "PNG") {
       suppressWarnings(
         rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
-      
+
       )} else if(input$file_format == "PDF"){
         suppressWarnings(
-        rsvg_pdf(svg_file, file, width = scaled_zoom, height = scaled_zoom) 
+        rsvg_pdf(svg_file, file, width = scaled_zoom, height = scaled_zoom)
         )}
     }
   )
 
-  
+
 
   click_plot<-reactive ({
     click_node(accordion_complete,ontology_celltype,Plot(),markerTableComplete(),input$cellid, ontology_def, input$disease)
@@ -1309,7 +1309,7 @@ server <- function(input, output, session) {
 
   output$downloadData <- downloadHandler(
     filename = function() {
-      paste0("TheCellMarkerAccordion_database_v0.9.7", input$downloadType)
+      paste0("TheCellMarkerAccordion_database_v1.0.0", input$downloadType)
     },
     content = function(file) {
       if(input$downloadType == ".csv"){
@@ -1333,7 +1333,7 @@ server <- function(input, output, session) {
 
 
   # server for marker search ----
-  
+
   observeEvent(input$markerInfo,{
     showModal(modalDialog(
       title = "Inputs information",
@@ -1350,7 +1350,7 @@ server <- function(input, output, session) {
       )
     ))
   })
-  
+
   observeEvent(input$helpM,{
     showModal(modalDialog(
       title = "Table Option Information",
@@ -1395,7 +1395,7 @@ server <- function(input, output, session) {
     #table_marker_file <- table_marker_file[species %in% input$speciesM]
     # if(length(input$diseaseM>0)){
     #   table_marker_file<- table_marker_file[DO_diseasetype %in% input$diseaseM]
-    # 
+    #
     # }
     table_marker_file
   })
@@ -1407,7 +1407,7 @@ server <- function(input, output, session) {
 
   tableInputComplete_nodis_notissue <- reactive({
     req(input$speciesM)  # Ensure input$speciesM exists
-    
+
     if (nchar(input$marker) > 1 & !is.null(input$markerfile)) {
       table_tot <- rbind(tableMarkerInput(), tableFileMarker())
     } else if (nchar(input$marker) > 1 & is.null(input$markerfile)) {
@@ -1417,16 +1417,16 @@ server <- function(input, output, session) {
     } else {
       return(NULL)  # Return NULL if none of the conditions match
     }
-    
+
     table_tot <- table_tot[species %in% input$speciesM]
-    
+
     return(table_tot)
   })
-  
+
   toListen_diseaseM <- reactive({
     list(input$speciesM, tableInputComplete_nodis_notissue())
   })
-  
+
   observeEvent(toListen_diseaseM(), {
     if (is.null(tableInputComplete_nodis_notissue())) {
       # Set pickerInput to empty when table is NULL
@@ -1438,22 +1438,22 @@ server <- function(input, output, session) {
         selected = unique(tableInputComplete_nodis_notissue()$DO_diseasetype),
         choices = unique(tableInputComplete_nodis_notissue()$DO_diseasetype),
         options = list(`actions-box` = TRUE, style = "box-celltypes"),
-        choicesOpt = list(style = rep("font-size: 18px; line-height: 1.6;", 
+        choicesOpt = list(style = rep("font-size: 18px; line-height: 1.6;",
                                       uniqueN(tableInputComplete_nodis_notissue()$DO_diseasetype)))
       )
     }
   })
-  
+
   tableInputComplete_notissue <- reactive({
     req(tableInputComplete_nodis_notissue(), input$diseaseM)
     table_filtered <- tableInputComplete_nodis_notissue()[DO_diseasetype %in% input$diseaseM]
     return(table_filtered)
   })
-  
+
   toListen_tissueM <- reactive({
     list(input$speciesM, input$diseaseM, tableInputComplete_nodis_notissue())
   })
-  
+
   observeEvent(toListen_tissueM(), {
     if (is.null(tableInputComplete_nodis_notissue())) {
       # Set pickerInput to empty when table is NULL
@@ -1465,14 +1465,14 @@ server <- function(input, output, session) {
         selected = unique(tableInputComplete_notissue()$Uberon_tissue),
         choices = unique(tableInputComplete_notissue()$Uberon_tissue),
         options = list(`actions-box` = TRUE, style = "box-celltypes"),
-        choicesOpt = list(style = rep("font-size: 18px; line-height: 1.6;", 
+        choicesOpt = list(style = rep("font-size: 18px; line-height: 1.6;",
                                       uniqueN(tableInputComplete_notissue()$Uberon_tissue)))
       )
     }
   })
   tableInputComplete <- reactive({
     req(tableInputComplete_notissue(), input$tissueM)
-    
+
     if (nrow(tableInputComplete_notissue()) > 0) {
       table_final <- tableInputComplete_notissue()[Uberon_tissue %in% input$tissueM]
       return(table_final)
@@ -1510,7 +1510,7 @@ server <- function(input, output, session) {
   })
 
 
-  
+
   # Reactive expression to store the Graphviz plot
   graphPlotM <- reactive({
     if(!is.null(tableInputComplete())){
@@ -1524,11 +1524,11 @@ server <- function(input, output, session) {
       return(NULL)
     }
   })
-  
+
   output$plot1M <- renderGrViz({
     graphPlotM()  # Use the reactive graphPlot()
   })
-  
+
 
   output$scalableplotM <- renderUI({
     tagList( tags$div(
@@ -1538,7 +1538,7 @@ server <- function(input, output, session) {
     )
     )
   })
-  
+
   output$save_plotM <- downloadHandler(
     filename = function() {
       if (input$file_formatM == "PNG") {
@@ -1549,38 +1549,38 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       grViz_obj <- graphPlotM()  # Use the stored reactive Graphviz plot
-      
+
       if (is.null(grViz_obj)) {
         stop("No plot available to save.")
       }
-      
+
       svg_file <- tempfile(fileext = ".svg")
-      
+
       # Convert Graphviz to SVG and save
       svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
       writeLines(svg_content, svg_file)  # Write to temporary SVG file
-      
+
       # Get actual width from UI
       default <-700
-      
+
       # Scale dimensions based on zoom input
       scaled_zoom <- default * input$zoomM
-      
-      
+
+
       # Convert SVG to PNG with specified width & height
       if (input$file_formatM == "PNG") {
         suppressWarnings(
           rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
-          
+
         )} else if(input$file_formatM == "PDF"){
           suppressWarnings(
-            rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
+            rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  )
           )}
     }
   )
-  
-  
-  
+
+
+
 
   click_plotM<-reactive ({
     click_node(accordion_complete, ontology_celltype, PlotM(), tableInputComplete(),input$cellidM, ontology_def, input$diseaseM)
@@ -1723,7 +1723,7 @@ server <- function(input, output, session) {
 
   output$downloadDataM <- downloadHandler(
     filename = function() {
-      paste0("TheCellMarkerAccordion_database_v0.9.7", input$downloadTypeM)
+      paste0("TheCellMarkerAccordion_database_v1.0.0", input$downloadTypeM)
     },
     content = function(file) {
       if(input$downloadTypeM == ".csv"){
@@ -1758,7 +1758,7 @@ server <- function(input, output, session) {
       #textInput('text2', 'You can also put UI elements here')
     ))
   })
-  
+
   observeEvent(input$usermarkerinfo,{
     showModal(modalDialog(
       title = "Marker genes input file",
@@ -1898,7 +1898,7 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       file.copy("data/Demo_example_integration.xlsx", file)  # Copy from data folder to temp file
-      
+
     }
   )
 
@@ -2264,7 +2264,7 @@ server <- function(input, output, session) {
         } else {
           if(!all(is.na(tissue))){ #tissue aware
             table<-newTable()[,c("species","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","CL_celltype","CL_ID","CL_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
-            
+
           }else {
             table<-newTable()[,c("species","original_celltype","CL_celltype","CL_ID","CL_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
           }
@@ -2279,7 +2279,7 @@ server <- function(input, output, session) {
           if(!all(is.na(tissue))){ #tissue aware
             #print(colnames(newTable()))
             table<-newTable()[,c("species","Uberon_tissue","Uberon_ID","NCIT_celltype","NCIT_ID","marker","marker_type","EC_score","specificity_score")]
-            
+
           }else {
             table<-newTable()[,c("species","NCIT_celltype","NCIT_ID", "marker","marker_type","EC_score","specificity_score")]
           }
@@ -2287,19 +2287,19 @@ server <- function(input, output, session) {
           if(!all(is.na(tissue))){ #tissue aware
             #print(colnames(newTable()))
             table<-newTable()[,c("species","original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
-            
+
           }else {
             table<-newTable()[,c("species","original_celltype","NCIT_celltype","NCIT_ID","NCIT_cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1", "EC_score","specificity_score")]
           }
         }
       }
-          
+
       setnames(table, "EC_score","ECs")
       setnames(table, "specificity_score","SPs")
       table
       }
   })
-  
+
   output$table1Int <- renderDataTable({
     if(!is.null(tableType())){
       datatable(tableType(),rownames = FALSE,options = list(
@@ -2313,7 +2313,7 @@ server <- function(input, output, session) {
 
   output$downloadDataInt <- downloadHandler(
     filename = function() {
-      paste0("TheIntegratedCellMarkerAccordion_database_v0.9.7", input$downloadTypeInt)
+      paste0("TheIntegratedCellMarkerAccordion_database_v1.0.0", input$downloadTypeInt)
     },
     content = function(file) {
       if(input$downloadTypeInt == ".csv"){
@@ -2361,8 +2361,8 @@ server <- function(input, output, session) {
         setnames(table, "NCIT_cell_definition","cell_definition")
 
       }
-   
-      
+
+
       table<-table[,c("species","original_diseasetype","DO_diseasetype","DO_ID","DO_definition", "original_tissue","Uberon_tissue","Uberon_ID","tissue_definition","original_celltype","celltype","celltype_species","celltype_ID","cell_definition", "marker","gene_description","marker_type", "resource", "log2FC", "p.value", "adjusted_p.value","pct1")]
       table<-as.data.table(table)
       table
@@ -2484,7 +2484,7 @@ server <- function(input, output, session) {
         node_present<-V(onto_igraph)$name
         node_present <- gsub("CL:\\d+", "", gsub("\n", " ", node_present))
         # Trim extra spaces
-        node_present <- trimws(node_present)      
+        node_present <- trimws(node_present)
         dt<- data.table(celltype=character(), distance=numeric())
         for (i in 1:nrow(node)){
           if (node[i]$V1 %in% node_present) {
@@ -2493,7 +2493,7 @@ server <- function(input, output, session) {
             colnames(data)<-c("celltype","distance")
             dt<-rbind(dt,data)
           }
-        }  
+        }
         as.data.table(dt)
       } else{
         data.table(celltype="", distance =0)
@@ -2634,7 +2634,7 @@ server <- function(input, output, session) {
 
 
 
-  
+
 
   # Reactive expression to store the Graphviz plot
   graphPlotInt <- reactive({
@@ -2649,16 +2649,16 @@ server <- function(input, output, session) {
       }
     } else{
       return(NULL)  # Return NULL if no plot is available
-      
+
     }
   })
-  
+
   output$plot1Int <- renderGrViz({
     graphPlotInt()  # Use the reactive graphPlot()
   })
-  
-  
-  
+
+
+
   output$scalableplotInt <- renderUI({
     tagList( tags$div(
       #div(grVizOutput('plot1',height = input$height, width = input$width)))
@@ -2667,7 +2667,7 @@ server <- function(input, output, session) {
     )
     )
   })
-  
+
   output$save_plotInt <- downloadHandler(
     filename = function() {
       if (input$file_formatInt == "PNG") {
@@ -2678,37 +2678,37 @@ server <- function(input, output, session) {
     },
     content = function(file) {
       grViz_obj <- graphPlotInt()  # Use the stored reactive Graphviz plot
-      
+
       if (is.null(grViz_obj)) {
         stop("No plot available to save.")
       }
-      
+
       svg_file <- tempfile(fileext = ".svg")
-      
+
       # Convert Graphviz to SVG and save
       svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
       writeLines(svg_content, svg_file)  # Write to temporary SVG file
-      
+
       # Get actual width from UI
       default <-700
-      
+
       # Scale dimensions based on zoom input
       scaled_zoom <- default * input$zoomInt
-      
-      
+
+
       # Convert SVG to PNG with specified width & height
       if (input$file_formatInt == "PNG") {
         suppressWarnings(
           rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
-          
+
         )} else if(input$file_formatInt == "PDF"){
           suppressWarnings(
-            rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
+            rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  )
           )}
     }
   )
-  
-  
+
+
   click_plotInt<-reactive ({
     click_node(integratedDBmod(),ontology_celltype,PlotInt(),markerTableCompleteInt(),input$cellidInt, ontology_def, input$diseaseInt)
   })
@@ -2804,7 +2804,7 @@ server <- function(input, output, session) {
 
   output$downloadDataInt2 <- downloadHandler(
     filename = function() {
-      paste0("TheIntegratedCellMarkerAccordionFilt_database_v0.9.7", input$downloadTypeInt2)
+      paste0("TheIntegratedCellMarkerAccordionFilt_database_v1.0.0", input$downloadTypeInt2)
     },
     content = function(file) {
       if(input$downloadTypeInt2 == ".csv"){
@@ -2829,10 +2829,10 @@ server <- function(input, output, session) {
     showModal(modalDialog(
       title = "Cell type marker enrichment analysis",
       HTML("
-  Users can upload a file containing markers for each cluster or related to a single entity, and the 
+  Users can upload a file containing markers for each cluster or related to a single entity, and the
   <strong>Cell Marker Accordion</strong> will retrieve the respective cell type with the highest correlation.<br>
   <br>
-<strong>IMPORTANT! Enrichment analysis is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion annotation algorithm, 
+<strong>IMPORTANT! Enrichment analysis is performed using <em>Fisher's exact test</em> to identify significant associations between the input gene list and cell type-specific markers in the <strong>Cell Marker Accordion</strong> database. For full access to the Cell Marker Accordion annotation algorithm,
 we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordion\" target=\"_blank\">R package</a></strong>.<br>
 <p>
 <br>
@@ -2960,8 +2960,8 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     },
     content = function(file) {
       file.copy("data/Demo_example_annotation2.xlsx", file)  # Copy from data folder to temp file
-      
-      
+
+
     }
   )
 
@@ -2976,22 +2976,22 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   <li><strong>Select species:</strong> currently Human and/or Mouse.</li>
   <li><strong>Condition:</strong> healthy or multiple diseases.</li>
   <li>
-    <strong>Tissue:</strong> select one or multiple tissues from the list. If no tissue is selected, the enrichment will be performed using all tissues combined. 
+    <strong>Tissue:</strong> select one or multiple tissues from the list. If no tissue is selected, the enrichment will be performed using all tissues combined.
     If multiple tissues are selected, the enrichment will be performed by combining the selected tissues.
   </li>
   <li>
     <strong>Cell type:</strong> select one or multiple cell types from the list. If no cell type is selected, the enrichment will be performed using all cell types.
   </li>
   <li>
-    <strong>ECs (evidence consistency score):</strong> measures the agreement of different enrichment sources. 
+    <strong>ECs (evidence consistency score):</strong> measures the agreement of different enrichment sources.
     Filter marker genes from the <strong>Cell Marker Accordion</strong> database with an ECs &ge; the selected value.
   </li>
   <li>
-    <strong>SPs (specificity score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database. 
+    <strong>SPs (specificity score):</strong> indicates whether a gene is a marker for different cell types present in the entire <strong>Accordion</strong> database.
     Filter marker genes from the <strong>Accordion</strong> database with an SPs &ge; the selected value.
   </li>
   <li>
-    <strong>Maximum number of markers to keep for each cell type:</strong> specify the top N marker genes to retain for each cell type during automatic enrichment 
+    <strong>Maximum number of markers to keep for each cell type:</strong> specify the top N marker genes to retain for each cell type during automatic enrichment
     Markers are ranked based on their ECs and SPs. Default is <code>50</code>.
   </li>
 </ul>")    ))
@@ -3138,14 +3138,14 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
       })
   })
 
-  
+
   demoLoaded_anno <- reactiveVal(FALSE)  # Track if demo is loaded
-  
+
   observeEvent(input$demo_ex_anno, {
     showNotification("Demo example loaded!", type = "message", duration = 5)
     demoLoaded_anno(TRUE)  # Mark demo as loaded
   })
-  
+
   output$success_icon_anno <- renderUI({
     if (demoLoaded_anno()) {
       tags$span(
@@ -3154,7 +3154,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
       )
     }
   })
-  
+
 
   output$exampletable <- renderDataTable({
     if(input$demo_ex_anno>0 & is.null(input$clusterfile)){
@@ -3194,7 +3194,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   toListen_celltypeA <- reactive({
     list(input$speciesA, input$diseaseA, input$tissueA)
   })
-  
+
   observeEvent(toListen_celltypeA(),{
     updatePickerInput(session,'celltypeA', selected = unique(markerTable()$celltype),
                       choices=unique(markerTable()$celltype),
@@ -3210,14 +3210,14 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     } else{
       table<-markerTable()[Uberon_tissue %in% input$tissueA]
     }
-    tissue<-unique(table$Uberon_tissue) 
+    tissue<-unique(table$Uberon_tissue)
     if(length(tissue) >0){ #if more tissues are selected perform annotation with all aggregated tissues
       table[,Uberon_tissue:=paste(tissue,collapse=", ")]
     }
     if(!is.null(input$celltypeA)){ #if no cell types are selected consider all, otherwise consider only the selected cell type
       table<-table[celltype %in% input$celltypeA]
     }
-    
+
       #calculate EC score based on filtered tissue
       accordion_marker<-unique(table[,c("species","Uberon_tissue","Uberon_ID","celltype","celltype_ID","marker","marker_type","resource")])
       ECs<-ddply(accordion_marker,.(species,Uberon_tissue,Uberon_ID,celltype,celltype_ID,marker,marker_type),nrow)
@@ -3255,18 +3255,18 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   accMarkerAnnoTable <- reactive ({
     accordion_complete_filt<-markerTableTissue()[ECs >= input$EC_scoreA & SPs >= input$specificityA]
     #req(accordion_complete_filt)
-    validate(need(nrow(accordion_complete_filt)>0, "No marker genes found with the selected filters."))   
+    validate(need(nrow(accordion_complete_filt)>0, "No marker genes found with the selected filters."))
     if(nrow(accordion_complete_filt)>0){
       if(as.numeric(input$max_n_marker)){
         accordion_complete_filt<-accordion_complete_filt[order(-combined_score)]
         accordion_complete_filt<-accordion_complete_filt[,.SD[1:input$max_n_marker], by=c("celltype")]
       }
-  
+
       positive_marker_acc<-accordion_complete_filt[marker_type=="positive" & species %in% input$speciesA][,pos_marker_acc:= paste(marker, collapse=" "), by= celltype]
       positive_marker_acc<-unique(positive_marker_acc[,c("celltype","pos_marker_acc")])
       negative_marker_acc<-accordion_complete_filt[marker_type=="negative" & species %in% input$speciesA][,neg_marker_acc:= paste(marker, collapse=" "), by= celltype]
       negative_marker_acc<-unique(negative_marker_acc[,c("celltype","neg_marker_acc")])
-  
+
       table<-merge(positive_marker_acc,negative_marker_acc, by="celltype",all.x=TRUE, all.y=TRUE)
       as.data.table(table)
     }
@@ -3292,7 +3292,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
   })
   combineTable <- reactive({ #create table to perform Fisher Test
     if(!is.null(accMarkerAnnoTableLong())){
-      
+
     dt_combine<-cbind(inputTableLong(),accMarkerAnnoTableLong())
     dt_combine<-as.data.table(dt_combine)
     #IY overlap between input and anno
@@ -3449,7 +3449,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
     })
 
 
-    
+
     # Reactive expression to store the Graphviz plot
     graphPlotA <- reactive({
       if(!is.null(tablePlotOntology())){
@@ -3458,15 +3458,15 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
         }
       } else{
         return(NULL)  # Return NULL if no plot is available
-        
+
       }
     })
-    
+
     output$plot1A <- renderGrViz({
       graphPlotA()  # Use the reactive graphPlot()
     })
-    
-    
+
+
     output$scalableplotA <- renderUI({
       tagList( tags$div(
         #div(grVizOutput('plot1',height = input$height, width = input$width)))
@@ -3475,7 +3475,7 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
       )
       )
     })
-    
+
     output$save_plotA <- downloadHandler(
       filename = function() {
         if (input$file_formatA == "PNG") {
@@ -3486,36 +3486,36 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
       },
       content = function(file) {
         grViz_obj <- graphPlotA()  # Use the stored reactive Graphviz plot
-        
+
         if (is.null(grViz_obj)) {
           stop("No plot available to save.")
         }
-        
+
         svg_file <- tempfile(fileext = ".svg")
-        
+
         # Convert Graphviz to SVG and save
         svg_content <- export_svg(grViz_obj)  # Export Graphviz as SVG
         writeLines(svg_content, svg_file)  # Write to temporary SVG file
-        
+
         # Get actual width from UI
         default <-700
-        
+
         # Scale dimensions based on zoom input
         scaled_zoom <- default * input$zoomA
-        
-        
+
+
         # Convert SVG to PNG with specified width & height
         if (input$file_formatA == "PNG") {
           suppressWarnings(
             rsvg_png(svg_file, file, width = scaled_zoom, height = scaled_zoom)
-            
+
           )} else if(input$file_formatA == "PDF"){
             suppressWarnings(
-              rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  ) 
+              rsvg_pdf(svg_file, file, width = scaled_zoom  , height = scaled_zoom  )
             )}
       }
     )
-    
+
 
 
 
