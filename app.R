@@ -234,11 +234,24 @@ ui <- dashboardPage(
                                                       )
                                                     ),
 
-                                                     checkboxGroupInput("species", "Select species:",
-                                                                       choiceNames =
-                                                                         list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                                                       choiceValues =
-                                                                         list("Human","Mouse"),selected = c("Human"),inline=TRUE),
+                                                    checkboxGroupInput(
+                                                      "species",
+                                                      "Select species:",
+                                                      choiceNames = list(
+                                                        tags$span(tags$img(
+                                                          src = "Human.png",
+                                                          style = "height: 50px; width: 40px; object-fit: contain; vertical-align: middle;"
+                                                        )),
+                                                        tags$span(tags$img(
+                                                          src = "Mouse.png",
+                                                          style = "height: 50px; width: 50px; object-fit: contain; vertical-align: middle;"
+                                                        ))
+                                                      ),
+                                                      choiceValues = list("Human", "Mouse"),
+                                                      selected = c("Human"),
+                                                      inline = TRUE
+                                                    ),
+                                                    
                                                     br(),
                                                     #pickerInput('disease', 'Hematologic disorder', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
                                                     pickerInput('disease', 'Condition',  choices= NULL, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
@@ -351,11 +364,23 @@ ui <- dashboardPage(
                                                       )
                                                     ),
 
-                                                    checkboxGroupInput("speciesM", "Select species:",
-                                                                                    choiceNames =
-                                                                                      list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                                                                    choiceValues =
-                                                                                      list("Human","Mouse"),selected = c("Human"),inline=TRUE),
+                                                    checkboxGroupInput(
+                                                      "speciesM",
+                                                      "Select species:",
+                                                      choiceNames = list(
+                                                        tags$span(tags$img(
+                                                          src = "Human.png",
+                                                          style = "height: 50px; width: 40px; object-fit: contain; vertical-align: middle;"
+                                                        )),
+                                                        tags$span(tags$img(
+                                                          src = "Mouse.png",
+                                                          style = "height: 50px; width: 50px; object-fit: contain; vertical-align: middle;"
+                                                        ))
+                                                      ),
+                                                      choiceValues = list("Human", "Mouse"),
+                                                      selected = c("Human"),
+                                                      inline = TRUE
+                                                    ),
                                                     br(),
                                                     textInput("marker", "Insert marker genes", value = "OLIG2", width = NULL, placeholder = NULL),
                                                     fileInput("markerfile", "Upload file with marker genes ",buttonLabel=list(icon("upload")),
@@ -589,11 +614,23 @@ ui <- dashboardPage(
                                                         style = 'margin-top: 5px; margin-bottom: 5px;'
                                                       )
                                                     ),
-                                                    checkboxGroupInput("speciesInt", "Select species:",
-                                                                       choiceNames =
-                                                                         list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                                                       choiceValues =
-                                                                         list("Human","Mouse"),selected = c("Human"),inline=TRUE),
+                                                    checkboxGroupInput(
+                                                      "speciesInt",
+                                                      "Select species:",
+                                                      choiceNames = list(
+                                                        tags$span(tags$img(
+                                                          src = "Human.png",
+                                                          style = "height: 50px; width: 40px; object-fit: contain; vertical-align: middle;"
+                                                        )),
+                                                        tags$span(tags$img(
+                                                          src = "Mouse.png",
+                                                          style = "height: 50px; width: 50px; object-fit: contain; vertical-align: middle;"
+                                                        ))
+                                                      ),
+                                                      choiceValues = list("Human", "Mouse"),
+                                                      selected = c("Human"),
+                                                      inline = TRUE
+                                                    ),
                                                     br(),
                                                     #pickerInput('disease', 'Hematologic disorder', choices= NULL ,multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE)),
                                                     pickerInput('diseaseInt', 'Condition',  choices= NULL, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
@@ -756,11 +793,23 @@ ui <- dashboardPage(
                             actionButton('filterhelpA', 'Info', icon = icon("info"))
                         ),
 
-                        checkboxGroupInput("speciesA", "Select species:",
-                                           choiceNames =
-                                             list(tags$img(src = "human.png"),tags$img(src = "mouse.png")),
-                                           choiceValues =
-                                             list("Human","Mouse"),selected = c("Human"),inline=TRUE),
+                        checkboxGroupInput(
+                          "speciesA",
+                          "Select species:",
+                          choiceNames = list(
+                            tags$span(tags$img(
+                              src = "Human.png",
+                              style = "height: 50px; width: 40px; object-fit: contain; vertical-align: middle;"
+                            )),
+                            tags$span(tags$img(
+                              src = "Mouse.png",
+                              style = "height: 50px; width: 50px; object-fit: contain; vertical-align: middle;"
+                            ))
+                          ),
+                          choiceValues = list("Human", "Mouse"),
+                          selected = c("Human"),
+                          inline = TRUE
+                        ),
                         pickerInput('diseaseA', 'Condition',  choices= disease_list, selected = "healthy", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                         pickerInput('tissueA', 'Tissue',  choices= unique(accordion_complete[DO_diseasetype == "healthy"]$Uberon_tissue),selected="blood", multiple=TRUE, options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
                         pickerInput('celltypeA', 'Cell type', choices= unique(accordion_complete[DO_diseasetype == "healthy" & Uberon_tissue=="blood"]$celltype) ,multiple=TRUE,selected=unique(accordion_complete[DO_diseasetype == "healthy" & Uberon_tissue=="blood"]$celltype), options = list(`actions-box` = TRUE,`live-search`=TRUE, style="box-celltypes")),
