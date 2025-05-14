@@ -109,7 +109,7 @@ Outputs:
 - Hierarchies of input cell types following the Cell Ontology structure
 - Interactive and downloadable table with lists of cell types associated with the input markers
 
-### <img src= "https://github.com/user-attachments/assets/2391921c-e684-4ab4-bd4f-301578abb263" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
+### <img src= "https://github.com/user-attachments/assets/e7325b51-6257-4ca6-8547-256cd7cc882c" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
 
 <strong>Inputs:</strong>
 - Custom marker genes: upload a custom set of marker genes to be integrated with the Cell Marker Accordion database.
