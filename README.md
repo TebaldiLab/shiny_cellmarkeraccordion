@@ -92,7 +92,7 @@ Outputs:
 
 - Interactive and downloadable table with lists of markers genes associated with the input cell types
 
-<img src= https://github.com/user-attachments/assets/7a81788a-f3e6-4410-bbb6-1165e54de993  style="width:100%; height:100%;"> <br />
+<img src= https://github.com/user-attachments/assets/abd28329-f19a-4279-96e5-91aefb049259 style="width:100%; height:100%;"> <br />
 
 ### <img src="https://github.com/user-attachments/assets/168debe2-0a20-4be3-aec4-4dd3fce42293" width="25" height="25"> <strong>Search and download lists of cell types associated with input marker genes across different tissues in health and disease.</strong> <br />
 
@@ -103,7 +103,7 @@ Outputs:
 - Condition: healthy or multiple diseases.
 - Tissue: select one or multiple tissues from the list. When the *Tissue aware* button is enabled, tissue specificity is maintained (i.e., tissues remain separate). Otherwise tissues selected will be combined and analyzed together.
 
-<img src=https://github.com/user-attachments/assets/23399d3f-8a45-41ed-ba81-8890abe51aa9 style="width:30%; height:30%;"> <br />
+<img src= https://github.com/user-attachments/assets/080121b7-7fcc-486b-be0b-ab3a16875c38 style="width:30%; height:30%;"> <br />
 
 <strong>Outputs:</strong>
 - Hierarchies of input cell types following the Cell Ontology structure
@@ -130,7 +130,7 @@ Outputs:
 
 - Select the Accordion database: select the Accordion database to integrate with your custom set of marker genes, either healthy or disease. <br>
 
- <img src= https://github.com/user-attachments/assets/90f3aa3b-b9fa-4cf0-b524-aab1dc698ceb style="width:80%; height:80%;">  <br />
+ <img src= https://github.com/user-attachments/assets/ca3092dd-8aa3-4fca-af04-f4aa0e83d97a style="width:80%; height:80%;">  <br />
 
 <strong>Outputs</strong>
 - Interactive and downloadable integrated table  
@@ -287,7 +287,7 @@ In particular:
 - SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the Cell Marker Accordion database. Filter marker genes from the Accordion database with a specificity score >= the selected value.
 - Maximum number of markers to keep for each cell type: indicate the top N marker genes to keep for each cell type to perform enrichment analysis. Markers are ordered according to their ECs and SPs. Default is 50. 
 
- <img src=https://github.com/user-attachments/assets/1ae6fdba-d0f8-497b-b035-f5290d63deb7  style="width:40%; height:40%;">  <br />
+ <img src=https://github.com/user-attachments/assets/446ddd06-f835-4320-a9f7-402901334e89 style="width:40%; height:40%;">  <br />
 
 <strong>Outputs:</strong>
 - Interactive and downloadable Annotation table: for each cluster identity the cell type with the highest association is reported. The table also includes significance information and overlapping genes.
