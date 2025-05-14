@@ -99,7 +99,7 @@ ui <- dashboardPage(
                    
                    sidebarMenu(style = "position: relative; overflow: visible;",
                                menuItem(
-                                 HTML('<img src="Home.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Homepage'),                                 
+                                 HTML('<img src="home.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Homepage'),                                 
                                  tabName = "dashboard",
                                  icon = NULL
                                ),
