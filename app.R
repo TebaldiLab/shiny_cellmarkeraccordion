@@ -25,6 +25,7 @@ library(rsvg)
 library(rstudioapi)
 source('helper_function.R')
 
+# REMEMBER TO CHANGE WHEN  -----
 setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
 #setwd("/home/rdds/www/apps/CellMarkerAccordion/") # to run the online version of the app on
 
@@ -75,15 +76,65 @@ ui <- dashboardPage(
   )
   ),
 
+
+  
     ## Sidebar content
   dashboardSidebar(width=300,
+                   
+                   
+                   tags$head(
+                     tags$style(HTML("
+    .sidebar-icon {
+      height: 18px;
+      width: 18px;
+            vertical-align: middle;
+      filter: brightness(100%);
+      transition: filter 0s ease;
+    }
+    .sidebar-menu li a:hover .sidebar-icon {
+      filter: brightness(500%);
+    }
+  "))
+                   ),
+                   
                    sidebarMenu(style = "position: relative; overflow: visible;",
-                               menuItem("Homepage", tabName = "dashboard", icon = icon("home")),
-                               menuItem("Search by tissue and cell types", tabName = "celltype_h", icon = icon("circle-notch")),
-                               menuItem("Search by marker genes", tabName = "marker_h", icon = icon("dna")),
-                               menuItem("Custom markers integration", tabName = "integration", icon = icon("gear")),
-                               menuItem("Marker enrichment analysis", tabName = "anno", icon = icon("stack-overflow")),
-
+                               menuItem(
+                                 HTML('<img src="Home.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Homepage'),                                 
+                                 tabName = "dashboard",
+                                 icon = NULL
+                               ),
+                               
+                               #menuItem("Homepage", tabName = "dashboard", icon = icon("home")),
+                               
+                               menuItem(
+                                 HTML('<img src="circle.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Search by tissue and cell types'),                                 
+                                 tabName = "celltype_h",
+                                 icon = NULL
+                               ),
+                               
+                               #menuItem("Search by tissue and cell types", tabName = "celltype_h", icon = icon("circle-notch")),
+                               menuItem(
+                                 HTML('<img src="Gene.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Search by marker genes'),                                 
+                                 tabName = "marker_h",
+                                 icon = NULL
+                               ),
+                               #menuItem("Custom markers integration", tabName = "integration", icon = icon("gear")),
+                               menuItem(
+                                 HTML('<img src="gear.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Custom markers integration'),                                 
+                                 tabName = "integration",
+                                 icon = NULL
+                               ),
+                               
+                               
+                                #menuItem("Marker enrichment analysis", tabName = "anno", icon = icon("stack-overflow")),
+                                
+                               menuItem(
+                                 HTML('<img src="over.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;">Marker enrichment analysis'),                                 
+                                 tabName = "anno",
+                                 icon = NULL
+                               ),
+                               
+                               
                                # Centered Download Button
                                div(style = "display: flex; justify-content: center; margin-top: 20px;",
                                    downloadButton("downloadAccordionDB", HTML("Download the <br>Cell Marker Accordion database"), style = "background-color: transparent;
@@ -117,80 +168,206 @@ ui <- dashboardPage(
             Specifically, it enables:
         </p>")
               ),
+# 
+#               titlePanel(
+#                 div(
+#                   style = "display: flex; align-items: center;font-size: 24px;
+# 	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+# 
+#                   #icon("circle-notch", class = "about-icon fa-fw", lib = "font-awesome"),
+#                   HTML('<img src="circle.png" class="sidebar-icon" style="margin-right:10px; vertical-align:middle;'),                                 
+#                   p(
+# 
+#                     style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+#                     HTML("Search and download lists of marker genes associated with input cell types across different tissues in health and disease.")
+#                   )
+#                 )
+#               ),
+titlePanel(
+  div(
+    style = "display: flex; align-items: center; font-size: 18px;
+             font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica, sans-serif;
+             margin-bottom: -10px;",
+    
+    # Image icon (adjust size and spacing here)
+    tags$img(src = "circle.png", 
+             style = "height: 24px; width: 24px; margin-right: 15px;
+           filter: brightness(0) saturate(100%) invert(14%) sepia(96%) saturate(3800%) hue-rotate(355deg) brightness(80%) contrast(105%);"),    
+    # Justified text
+    div(
+      style = "text-align: justify; color: black; display: flex; align-items: center;font-size: 24px;
+      	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+      HTML("Search and download lists of cell types associated with input marker genes across different tissues in health and disease.")
+    )
+  )
+),
 
-              titlePanel(
-                div(
-                  style = "display: flex; align-items: center;font-size: 24px;
-	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
-                  icon("circle-notch", class = "about-icon fa-fw", lib = "font-awesome"),
-                  p(
-                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
-                    HTML("Search and download lists of marker genes associated with input cell types across different tissues in health and disease.")
-                  )
-                )
-              ),
+#               titlePanel(
+#                 div(
+#                   style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
+# 	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+#                   icon("dna", class = "about-icon fa-fw", lib = "font-awesome"),
+#                   p(
+#                     style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+#                     HTML("Search and download lists of cell types associated with input marker genes across different tissues in health and disease.")
+#                   )
+#                 )
+#               ),
 
-              titlePanel(
-                div(
-                  style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
-	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
-                  icon("dna", class = "about-icon fa-fw", lib = "font-awesome"),
-                  p(
-                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
-                    HTML("Search and download lists of cell types associated with input marker genes across different tissues in health and disease.")
-                  )
-                )
-              ),
-              titlePanel(
-                div(
-                  style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
-	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
-                  icon("gear", class = "about-icon fa-fw", lib = "font-awesome"),
-                  p(
-                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
-                    HTML("Integrate custom set of marker genes with the Cell Marker Accordion database.")
-                  )
-                )
-              ),
-              titlePanel(
-                div(
-                  style = "display: flex; align-items: center;font-size: 24px; margin-top: -20px;
-	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
-                  icon("stack-overflow", class = "about-icon fa-fw", lib = "font-awesome"),
-                  p(
-                    style = "margin: 0; padding-left: 10px; text-align: justify;color: black;",
-                    HTML("Perform cell type marker enrichment analysis across tissues in health and disease. ")
-                  )
-                )
-              ),
+
+titlePanel(
+  div(
+    style = "display: flex; align-items: center; font-size: 18px;
+             font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica, sans-serif;
+             margin-bottom: -10px;",
+    
+    # Image icon (adjust size and spacing here)
+    tags$img(src = "Gene.png", 
+             style = "height: 24px; width: 24px; margin-right: 15px; 
+           filter: brightness(0) saturate(100%) invert(14%) sepia(96%) saturate(3800%) hue-rotate(355deg) brightness(80%) contrast(105%);"),    
+    # Justified text
+    div(
+      style = "text-align: justify; color: black; display: flex; align-items: center;font-size: 24px;
+      	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+      HTML("Search and download lists of cell types associated with input marker genes across different tissues in health and disease.")
+    )
+  )
+),
+# 
+# 
+#               titlePanel(
+#                 div(
+#                   style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
+# 	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+#                   icon("gear", class = "about-icon fa-fw", lib = "font-awesome"),
+#                   p(
+#                     style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+#                     HTML("Integrate custom set of marker genes with the Cell Marker Accordion database.")
+#                   )
+#                 )
+#               ),
+
+titlePanel(
+  div(
+    style = "display: flex; align-items: center; font-size: 18px;
+             font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica, sans-serif;
+             margin-bottom: 0px;",
+    
+    # Image icon (adjust size and spacing here)
+    tags$img(src = "gear.png", 
+             style = "height: 24px; width: 24px; margin-right: 15px;
+           filter: brightness(0) saturate(100%) invert(14%) sepia(96%) saturate(3800%) hue-rotate(355deg) brightness(80%) contrast(105%);"),    
+    # Justified text
+    div(
+      style = "text-align: justify; color: black; display: flex; align-items: center;font-size: 24px;
+      	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+      HTML("Integrate custom set of marker genes with the Cell Marker Accordion database.")
+    )
+  )
+),
+
+
+#               titlePanel(
+#                 div(
+#                   style = "display: flex; align-items: center;font-size: 24px; margin-top: -20px;
+# 	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+#                   icon("stack-overflow", class = "about-icon fa-fw", lib = "font-awesome"),
+#                   p(
+#                     style = "margin: 0; padding-left: 10px; text-align: justify;color: black;",
+#                     HTML("Perform cell type marker enrichment analysis across tissues in health and disease. ")
+#                   )
+#                 )
+#               ),
+
+
+titlePanel(
+  div(
+    style = "display: flex; align-items: center; font-size: 18px;
+             font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica, sans-serif;
+             margin-bottom: 0px;",
+    
+    # Image icon (adjust size and spacing here)
+    tags$img(src = "over.png", 
+             style = "height: 24px; width: 24px; margin-right: 15px;
+           filter: brightness(0) saturate(100%) invert(14%) sepia(96%) saturate(3800%) hue-rotate(355deg) brightness(80%) contrast(105%);"),    
+    # Justified text
+    div(
+      style = "text-align: justify; color: black; display: flex; align-items: center;font-size: 24px;
+      	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+    HTML("Perform cell type marker enrichment analysis across tissues in health and disease. ")
+    )
+  )
+),
+
 
             br(),
             HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
 	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;'> Additionally, in all sections users can easily: </p>"),
+# 
+#             titlePanel(
+#               div(
+#                 style = "display: flex; align-items: center;font-size: 24px;
+# 	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+#                 icon("sitemap", class = "about-icon fa-fw", lib = "font-awesome"),
+#                 p(
+#                   style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+#                   HTML("Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.")
+#                 )
+#               )
+#             ),
 
-            titlePanel(
-              div(
-                style = "display: flex; align-items: center;font-size: 24px;
-	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
-                icon("sitemap", class = "about-icon fa-fw", lib = "font-awesome"),
-                p(
-                  style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
-                  HTML("Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.")
-                )
-              )
-            ),
+titlePanel(
+  div(
+    style = "display: flex; align-items: center; font-size: 18px;
+             font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica, sans-serif;
+             margin-bottom: -10px;",
+    
+    # Image icon (adjust size and spacing here)
+    tags$img(src = "tree.png", 
+             style = "height: 24px; width: 24px; margin-right: 15px; 
+           filter: brightness(0) saturate(100%) invert(14%) sepia(96%) saturate(3800%) hue-rotate(355deg) brightness(80%) contrast(105%);"),    
+    # Justified text
+    div(
+      style = "text-align: justify; color: black; display: flex; align-items: center;font-size: 24px;
+      	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+      HTML("Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.")
+    )
+  )
+),
 
-            titlePanel(
-              div(
-                style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
-	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
-                icon("arrow-down-short-wide", class = "about-icon fa-fw", lib = "font-awesome"),
-                p(
-                  style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
-                  HTML("Rank and select marker genes by their evidence consistency and specificity scores.")
-                )
-              )
-            ),
+#             titlePanel(
+#               div(
+#                 style = "display: flex; align-items: center;font-size: 24px;margin-top: -20px;
+# 	text-align: center;  font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+#                 icon("arrow-down-short-wide", class = "about-icon fa-fw", lib = "font-awesome"),
+#                 p(
+#                   style = "margin: 0; padding-left: 10px; text-align: justify;color: black",
+#                   HTML("Rank and select marker genes by their evidence consistency and specificity scores.")
+#                 )
+#               )
+#             ),
+
+
+
+titlePanel(
+  div(
+    style = "display: flex; align-items: center; font-size: 18px;
+             font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica, sans-serif;
+             margin-bottom: -10px;",
+    
+    # Image icon (adjust size and spacing here)
+    tags$img(src = "rank.png", 
+             style = "height: 24px; width: 24px; margin-right: 15px; 
+           filter: brightness(0) saturate(100%) invert(14%) sepia(96%) saturate(3800%) hue-rotate(355deg) brightness(80%) contrast(105%);"),    
+    # Justified text
+    div(
+      style = "text-align: justify; color: black; display: flex; align-items: center;font-size: 24px;
+      	 font-family: 'Futura', 'Tw Cen MT', 'Helvetica Neue', Helvetica;",
+      HTML("Rank and select marker genes by their evidence consistency and specificity scores.")
+    )
+  )
+),
+
             br(),
 
             HTML("<p style='text-align: justify; margin: 0; padding-left: 10px; color: black;font-size: 24px;
