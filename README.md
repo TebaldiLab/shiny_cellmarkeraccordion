@@ -94,7 +94,7 @@ Outputs:
 
 <img src= https://github.com/user-attachments/assets/7a81788a-f3e6-4410-bbb6-1165e54de993  style="width:100%; height:100%;"> <br />
 
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/12884ed0-0d8b-47cd-9e48-624ecbee467b" width="25" height="25"> <strong>Search and download lists of cell types associated with input marker genes across different tissues in health and disease.</strong> <br />
+### <img src="https://github.com/user-attachments/assets/168debe2-0a20-4be3-aec4-4dd3fce42293" width="25" height="25"> <strong>Search and download lists of cell types associated with input marker genes across different tissues in health and disease.</strong> <br />
 
 <strong>Inputs: </strong> 
 - Select species: currently Human and/or Mouse.
@@ -109,7 +109,7 @@ Outputs:
 - Hierarchies of input cell types following the Cell Ontology structure
 - Interactive and downloadable table with lists of cell types associated with the input markers
 
-### <img src= "https://github.com/user-attachments/assets/c7f589a9-be28-4713-b86f-40ef58507bcf" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
+### <img src= "https://github.com/user-attachments/assets/2391921c-e684-4ab4-bd4f-301578abb263" width="25" height="25"><strong> Integrate custom set of marker genes with the Cell Marker Accordion database.</strong>
 
 <strong>Inputs:</strong>
 - Custom marker genes: upload a custom set of marker genes to be integrated with the Cell Marker Accordion database.
@@ -135,7 +135,7 @@ Outputs:
 <strong>Outputs</strong>
 - Interactive and downloadable integrated table  
 
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/4030d4a7-a365-4c6c-b6fa-0acefaceeb9d" width="25" height="35"><strong> Perform cell type marker enrichment analysis across tissues in health and disease. </strong>  <br />
+### <img src="https://github.com/user-attachments/assets/62a2b61e-62f7-4736-8eb2-29062169a627" width="25" height="35"><strong> Perform cell type marker enrichment analysis across tissues in health and disease. </strong>  <br />
 User can upload a file containing markers for every cluster, or just related to one entity, and the Cell Marker Accordion will retrieve the respective cell type with the highest correlation. <br>
 <br>
 <strong> IMPORTANT! Enrichment analysis is performed using Fisher's exact test to identify significant associations between the input gene list and cell type-specific markers in the Cell Marker Accordion database.
@@ -297,7 +297,7 @@ In particular:
 
 ## Additionally, in all sections users can easily:
 
-### <img src= "https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/69e25ec8-75e9-42bd-8154-b446830e52a4" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.</strong>  <br /> 
+### <img src= "https://github.com/user-attachments/assets/12a57ce4-9a90-4b4c-93e7-5c2a46faef04" width="25" height="25"> <strong>Browse hierarchies of cell types following the Cell Ontology structure in order to obtain the desired level of specificity in the markers in both search options.</strong>  <br /> 
 
 Users can also explore the subtypes of a selected cell type.
 For example, to view all subtypes of the monocyte population:
@@ -311,7 +311,7 @@ For example, to view all subtypes of the monocyte population:
 
 <img src= https://github.com/user-attachments/assets/753224d1-d0dd-4463-8691-ab201a68693c style="width:50%; height:50%;"> <br />
 
-### <img src="https://github.com/TebaldiLab/shiny_cellmarkeraccordion/assets/68125242/3b01fd45-6bbc-4c2d-96a8-eb455fec72e9" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores)</strong>.  <br />
+### <img src="https://github.com/user-attachments/assets/9c064820-a18a-461b-9684-5aeaa3e88f54" width="25" height="25"><strong> Rank and select marker genes by SPs (specificity score) and by their ECs (evidence consistency scores)</strong>.  <br />
 <strong>Filters:</strong>
 - ECs: evidence consistency score, measuring the agreement of different annotation sources. Filter marker genes with an evidence consistency score >= the selected value.
 - SPs: specificity score, indicating whether a gene is a marker for different cell types present in all the accordion database. Filter marker genes with a specificity score >= the selected value.
