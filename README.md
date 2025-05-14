@@ -88,7 +88,7 @@ Inputs:
 Outputs:
 - Hierarchies of input cell types following the Cell Ontology structure
 
-<img src= https://github.com/user-attachments/assets/a61cdc52-d5a3-45b3-ac1d-bfcf0a072a60 style="width:20%; height:20%;"> <br />  <br />
+<img src= https://github.com/user-attachments/assets/c3742f39-59a3-4cc9-9acc-0583bdc284d5 style="width:20%; height:20%;"> <br />  <br />
 
 - Interactive and downloadable table with lists of markers genes associated with the input cell types
 
