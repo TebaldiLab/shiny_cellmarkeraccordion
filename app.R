@@ -1,6 +1,7 @@
 library(shinydashboard)
 library(shiny)
 library(stringr)
+library(stringi)
 library(DiagrammeR)
 library(DiagrammeRsvg)
 library(igraph)
@@ -24,6 +25,15 @@ library(shinyjs)
 library(rsvg)
 library(rstudioapi)
 source('helper_function.R')
+
+tmpdir<-stri_replace_all_regex(tempdir(), pattern = "/Rtmp\\w+", replacement = "")
+if (!dir.exists(file.path(tmpdir, "cellmarkeraccordion_shiny"))){
+  dir.create(file.path(tmpdir, "cellmarkeraccordion_shiny"), showWarnings = FALSE)
+}
+Sys.setenv(TMPDIR=file.path(tmpdir, "cellmarkeraccordion_shiny"))
+unlink(tempdir(), recursive = T)
+tempdir(check=T)
+
 
 # REMEMBER TO CHANGE WHEN  -----
 setwd(dirname(getActiveDocumentContext()$path)) # to run the app locally
@@ -3695,4 +3705,5 @@ we recommend using our <a href=\"https://github.com/TebaldiLab/cellmarkeraccordi
 
 
 shinyApp(ui = ui, server = server, options=list(port=8200))
+
 
